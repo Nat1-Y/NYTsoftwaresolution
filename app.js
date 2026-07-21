@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statNums = document.querySelectorAll('.stat-num');
   const counterData = [
     { target: 20, suffix: '+' },
-    { target: 8,  suffix: '+' },
+    { target: 8, suffix: '+' },
     { target: 20, suffix: '+' },
     { target: 100, suffix: '%' },
   ];
