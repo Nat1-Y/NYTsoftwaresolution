@@ -193,43 +193,51 @@ document.addEventListener('DOMContentLoaded', () => {
   let chatOpen = false;
   let greeted = false;
 
-  // FAQ Knowledge Base
+  // FAQ Knowledge Base — friendly, client-focused language
   const faqDB = [
     {
-      patterns: ['service', 'offer', 'do', 'what', 'build', 'develop'],
-      response: "We specialize in 5 core areas:\n\n• 🏢 **Enterprise ERP & SaaS** — Multi-tenant, role-based systems\n• 🍽️ **Hospitality & POS** — Restaurant POS with offline resilience\n• 🏥 **Healthcare Systems** — Patient EHR, billing & HIPAA compliance\n• 🛒 **E-Commerce & Logistics** — Multi-vendor marketplaces\n• 📱 **Mobile Apps** — Flutter & React Native cross-platform\n\nReach out via the Contact section to discuss your specific needs!"
+      patterns: ['service', 'offer', 'do', 'what', 'build', 'develop', 'make', 'create'],
+      response: "Great question! Here's what we can do for you:\n\n🍽️ **Restaurant & Café Software** — We build systems that manage your orders, kitchen, and daily sales automatically.\n\n🏥 **Clinic & Hospital Systems** — We organize patient records, appointments, and billing in one easy place.\n\n🛒 **Online Stores & Marketplaces** — We build websites where you or multiple sellers can sell products online.\n\n📱 **Mobile Apps** — We create apps that work on both iPhone and Android phones.\n\n💼 **Business Management Systems** — We build custom software to run your business day-to-day without the usual paperwork.\n\nNot sure what you need? Just describe your business problem below — we'll figure it out together! 😊"
     },
     {
-      patterns: ['quote', 'price', 'cost', 'how much', 'rate', 'pricing'],
-      response: "Our pricing depends on project scope, timeline, and complexity. We offer:\n\n• **Fixed-price** quotes for well-defined projects\n• **Monthly retainer** for ongoing remote team partnerships\n• **Milestone-based** billing for larger platforms\n\nUse the Contact form below for a free, no-obligation quote. We typically respond within 4 hours! 📩"
+      patterns: ['quote', 'price', 'cost', 'how much', 'rate', 'pricing', 'budget', 'pay', 'fee'],
+      response: "We'd love to give you a price! It depends on what you need, but here's how it works:\n\n💰 **Small projects** — Usually a one-time payment for a clear, defined job.\n📅 **Ongoing support** — A monthly fee if you want us available all the time.\n🏗️ **Big platforms** — We break payments into stages as we build.\n\nThe best part? **The first consultation is completely free!** Just fill in our Contact form below and tell us what you're looking for. We'll reply within a few hours with a honest estimate — no surprises, no hidden fees. 👍"
     },
     {
-      patterns: ['remote', 'international', 'global', 'timezone', 'hire'],
-      response: "Yes! We actively partner with international companies as a dedicated remote engineering team.\n\nWe offer:\n✓ Timezone-adapted stand-ups (EU, US, Asia-friendly)\n✓ Fluent technical English communication\n✓ GitHub-based workflows & sprint reports\n✓ Cost-efficient rates vs. Western agencies\n\nWe're based in Addis Ababa, Ethiopia 🇪🇹 — perfect for overlap with EU/Africa timezones."
+      patterns: ['remote', 'international', 'global', 'timezone', 'hire', 'abroad', 'overseas', 'partner'],
+      response: "Yes, absolutely! We work with clients from all over the world — not just Ethiopia. 🌍\n\nHere's what makes working with us easy:\n\n✅ We speak fluent English\n✅ We schedule meetings at times that work for you\n✅ You get regular updates so you always know what's happening\n✅ Our prices are very competitive compared to agencies in Europe or America\n\nMany of our international clients say we feel like their own in-house team — just in a different time zone! Ready to chat? Use the Contact form below."
     },
     {
-      patterns: ['tech', 'stack', 'technology', 'framework', 'language'],
-      response: "Our full tech ecosystem includes:\n\n**Frontend:** Next.js, React, Vue.js, Flutter, TypeScript\n**Backend:** Node.js, NestJS, FastAPI, Laravel, Python\n**Databases:** PostgreSQL, MongoDB, MySQL, Redis, Firebase\n**Infrastructure:** AWS, Google Cloud, Docker, Nginx, CI/CD Pipelines\n\nScroll to the Tech Ecosystem section to explore our full stack! ⚡"
+      patterns: ['tech', 'stack', 'technology', 'framework', 'language', 'tools', 'platform'],
+      response: "No worries — you don't need to be a tech person to work with us! We handle all of that.\n\nIn simple terms, we use the latest and most reliable tools available today to make sure your software:\n\n✅ Loads fast on any device\n✅ Stays secure and backed up\n✅ Can grow as your business grows\n✅ Works even if the internet goes down temporarily\n\nWe've successfully built everything from restaurant cash registers to hospital record systems using these tools. Your job is just to tell us what you need — we'll build it right! 💪"
     },
     {
-      patterns: ['project', 'portfolio', 'case', 'example', 'work', 'sample'],
-      response: "Our live production case studies include:\n\n• 🍖 **Fikrekun Spagna** — Multi-tenant restaurant & butchery POS\n• 🏥 **Saron Orthopedic** — Clinical patient management ERP\n• 🎡 **Bora Amusement Park** — QR ticketing (5,000+ daily validations)\n• 🛒 **Merkato88** — Multi-vendor marketplace (150+ merchants)\n\nEach project card has a live URL you can visit right now!"
+      patterns: ['project', 'portfolio', 'case', 'example', 'work', 'sample', 'done', 'built', 'previous'],
+      response: "Here are some real businesses we've already helped:\n\n🍖 **Fikrekun Spagna** — A restaurant and butchery in Addis Ababa. We built their ordering and inventory system — no more lost receipts or stock problems!\n\n🏥 **Saron Orthopedic Center** — A clinic where we built a system to manage all patient records and appointments.\n\n🎡 **Bora Amusement Park** — We built their ticketing system. Over 5,000 tickets are scanned every single day without any issues.\n\n🛒 **Merkato88** — An online marketplace with over 150 local shops selling their products.\n\nYou can click the 'Live System URL' on each project card to see them working right now! 👆"
     },
     {
-      patterns: ['contact', 'reach', 'email', 'talk', 'call', 'consult'],
-      response: "You can reach us directly:\n\n📧 **Email:** nytsoftwaresolutionplc@gmail.com\n💻 **GitHub:** github.com/Nat1-Y\n📍 **Location:** Addis Ababa, Ethiopia\n\nOr fill in the **Contact Form** at the bottom of this page — we reply within 4 hours during business days! 🕐"
+      patterns: ['contact', 'reach', 'email', 'talk', 'call', 'consult', 'meet', 'speak', 'discuss'],
+      response: "We'd love to hear from you! Here's how to reach us:\n\n📧 **Email us:** nytsoftwaresolutionplc@gmail.com\n📍 **We're based in:** Addis Ababa, Ethiopia\n💻 **See our work on:** github.com/Nat1-Y\n\nOr simply **scroll down to the Contact form** at the bottom of this page — fill in your name, email, and what you're looking for, and we'll personally get back to you within a few hours. No commitment needed! 🙂"
     },
     {
-      patterns: ['cafe', 'manager', 'flagship', 'nyt cafe', 'saas'],
-      response: "**NYT Cafe Manager** is our flagship SaaS platform built for modern hospitality:\n\n✓ Multi-Tenant Schema isolation\n✓ Kitchen Display System (KDS)\n✓ Offline POS Resiliency\n✓ OTA Software Delivery\n✓ COGS & Profit Dashboards\n✓ Multi-Branch Sync\n\nRequest a demo via the Contact section — we'll set up a personalized walkthrough! 🚀"
+      patterns: ['cafe', 'manager', 'flagship', 'nyt cafe', 'restaurant software', 'pos'],
+      response: "Our most popular product is **NYT Cafe Manager** — software made specifically for restaurants and cafés! ☕\n\nHere's what it does for your business:\n\n✅ Takes orders and sends them straight to the kitchen screen\n✅ Tracks your daily sales and expenses automatically\n✅ Works even when the internet is off\n✅ Manages multiple branches from one place\n✅ Tells you your profit and food costs in real time\n\nMany restaurant owners say it saved them hours of manual work every day. Want a free demo? Just contact us below!"
     },
     {
-      patterns: ['hello', 'hi', 'hey', 'good', 'morning', 'afternoon', 'evening'],
-      response: "Hello! 👋 Welcome to NYT Software Solutions!\n\nI'm here to answer any questions about our services, projects, tech stack, or how to get started. What can I help you with today?"
+      patterns: ['how long', 'timeline', 'time', 'duration', 'deadline', 'when'],
+      response: "Great question! It really depends on the size of what you need:\n\n⚡ **Simple websites or apps** — Usually 2 to 4 weeks\n📦 **Medium-sized systems** (like a POS or booking system) — 1 to 3 months\n🏗️ **Large platforms** (like a marketplace or hospital system) — 3 to 6 months\n\nWe always give you a clear timeline before we start, and we keep you updated every step of the way. No nasty surprises! 😊\n\nWant a more specific estimate? Just describe your project in the Contact form below."
     },
     {
-      patterns: ['thank', 'thanks', 'great', 'awesome', 'perfect', 'nice'],
-      response: "You're welcome! 😊 If you have any other questions about NYT Software Solutions or want to start a project conversation, feel free to ask or use the Contact form below!"
+      patterns: ['hello', 'hi', 'hey', 'good', 'morning', 'afternoon', 'evening', 'start', 'begin'],
+      response: "Hello! 👋 Welcome to NYT Software Solutions!\n\nWe help businesses like yours get the right software — whether you run a restaurant, clinic, shop, or anything else.\n\nFeel free to ask me anything! You can ask about:\n• What we can build for you\n• How much it costs\n• How long it takes\n• Projects we've already done\n\nWhat can I help you with today? 😊"
+    },
+    {
+      patterns: ['thank', 'thanks', 'great', 'awesome', 'perfect', 'nice', 'good job', 'excellent'],
+      response: "You're very welcome! 😊 It's our pleasure.\n\nIf you ever have more questions or you're ready to start a project, just reach out — we're always happy to help. The Contact form at the bottom of this page is the quickest way to get started!\n\nWishing you a wonderful day! 🌟"
+    },
+    {
+      patterns: ['guarantee', 'warranty', 'support', 'maintenance', 'after', 'fix', 'bug', 'issue', 'problem'],
+      response: "Absolutely! We don't just build your software and disappear. 😊\n\nAfter we deliver your project:\n\n✅ We fix any bugs or issues for free in the first period\n✅ We offer ongoing maintenance so things keep running smoothly\n✅ If your business grows and you need new features, we'll add them\n✅ We respond quickly when something needs attention\n\nThink of us as your long-term technology partner, not just a one-time contractor. We want your business to succeed! 💪"
     }
   ];
 
@@ -240,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return faq.response;
       }
     }
-    return "That's a great question! For specific inquiries, please reach out directly at **nytsoftwaresolutionplc@gmail.com** or use the Contact form below — our team will get back to you within 4 hours. 📩\n\nYou can also ask me about our services, pricing, tech stack, or case studies!";
+    return "Thanks for your message! 😊 I may not have the exact answer for that one, but our team definitely does.\n\nThe quickest way to get a proper answer is to:\n\n📧 **Email us:** nytsoftwaresolutionplc@gmail.com\n📝 Or fill in the **Contact Form** at the bottom of this page\n\nWe reply within a few hours and love hearing from new clients. Don't be shy — there are no silly questions! 🙌";
   }
 
   function renderMessage(text, role) {
@@ -309,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!greeted) {
       greeted = true;
       setTimeout(() => {
-        renderMessage("👋 Hi! I'm the NYT Assistant. How can I help you today?\n\nAsk me about our **services**, **tech stack**, **pricing**, or **case studies**!", 'bot');
+        renderMessage("👋 Hi there! Welcome to NYT Software Solutions!\n\nI'm here to help. You can ask me things like:\n\n• What software can you build for me?\n• How much does it cost?\n• How long does it take?\n• Can you show me your past work?\n\nWhat's on your mind today? 😊", 'bot');
       }, 400);
     }
     setTimeout(() => chatbotInput.focus(), 500);
