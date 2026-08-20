@@ -93,7 +93,7 @@ button, input, select, textarea {
   z-index: 10000;
   padding: 0.85rem 1.5rem;
   background: var(--accent);
-  color: #04120c;
+  color: var(--on-accent);
   font-weight: 700;
   border-radius: 0 0 var(--r-md) var(--r-md);
   transition: transform 0.2s var(--ease-out);
@@ -154,3 +154,7 @@ button, input, select, textarea {
   a::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #555; }
   .card-tab-content { display: block !important; }
 }
+
+/* [hidden] must win over component display rules — it is how JS removes an
+   element from both the layout and the accessibility tree. */
+[hidden] { display: none !important; }

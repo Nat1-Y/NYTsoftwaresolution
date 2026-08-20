@@ -17,7 +17,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   padding: 0.5rem 1.2rem;
   border-radius: 99px;
@@ -80,7 +80,7 @@
 }
 
 .stat-card {
-  background: rgba(13, 19, 33, 0.4);
+  background: var(--surface-2);
   border: 1px solid var(--border);
   padding: 1.8rem 1rem;
   border-radius: 16px;
@@ -93,7 +93,7 @@
 
 .stat-card:hover {
   border-color: var(--border-hover);
-  background: rgba(13, 19, 33, 0.6);
+  background: var(--surface-2);
   transform: translateY(-4px);
 }
 

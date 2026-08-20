@@ -5,7 +5,7 @@
   margin: 1.5rem 0 0;
   border: 1px solid var(--border);
   border-radius: var(--r-md);
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--surface-inset);
   overflow: hidden;
 }
 
@@ -17,13 +17,16 @@
 
 .arch-svg {
   display: block;
-  min-width: 460px;
+  /* Wide enough to stay legible, narrow enough to fit a two-column card at
+     desktop width. Below this the container scrolls instead of shrinking the
+     labels past readability. */
+  min-width: 400px;
   width: 100%;
   height: auto;
   margin: 0 auto;
 }
 
-.arch-node { fill: rgba(255, 255, 255, 0.04); stroke: var(--border-hover); stroke-width: 1; }
+.arch-node { fill: var(--surface-inset); stroke: var(--border-hover); stroke-width: 1; }
 .arch-node-accent { fill: rgba(var(--accent-rgb), 0.12); stroke: rgba(var(--accent-rgb), 0.5); stroke-width: 1; }
 .arch-label { fill: var(--text-primary); font-family: var(--font-sans); font-size: 11px; font-weight: 600; }
 .arch-sub { fill: var(--text-muted); font-family: var(--font-mono); font-size: 8.5px; }
@@ -40,7 +43,7 @@
   font-size: 0.78rem;
   color: var(--text-muted);
   line-height: 1.6;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--surface-inset);
 }
 
 .arch-caption strong { color: var(--text-secondary); }

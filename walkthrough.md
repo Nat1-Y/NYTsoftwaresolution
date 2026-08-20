@@ -1,63 +1,129 @@
-# Walkthrough - NYT Software Solutions Portfolio
+# Walkthrough
 
-This document provides a summary of the design architecture, core code files, and verified interactions for the official **NYT Software Solutions** company portfolio.
-
----
-
-## 🛠️ Summary of Files
-
-The repository consists of:
-1. **`index.html`**: The semantic document layout containing the responsive wrapper structures, active link pathways, guest credentials, form bindings, and SEO elements.
-2. **`styles.css`**: The core styling layout managing variables, interactive mode themes (Business vs Tech), dynamic background glow, grid configurations, and media query break-points.
-3. **`app.js`**: The script controlling page-level state management, perspective triggers, inner card tab routing, stack selection filtering, and mock form pipeline feedbacks.
+A tour of the site for anyone picking up the codebase.
 
 ---
 
-## 📸 Design Showcase & Interactive Demos
+## The idea
 
-Here is the visual demonstration of how the page behaves when users toggle perspectives, filters, or submit requests.
+One page, two audiences — and a logo with exactly two colours to serve them.
 
-````carousel
-![1. Business Perspective Home](screenshots/home_business.png)
-<!-- slide -->
-![2. Engineering Perspective Hero](screenshots/home_tech.png)
-<!-- slide -->
-![3. Case Study Card Technical View](screenshots/case_study_tech.png)
-<!-- slide -->
-![4. Tech Stack Category Filtration](screenshots/tech_filter.png)
-<!-- slide -->
-![5. Consultation Form Success Response](screenshots/contact_success.png)
-````
+A restaurant owner in Addis Ababa and a CTO hiring a remote team want
+completely different things from the same company. Rather than write for the
+average of the two and satisfy neither, the page has a **persona switcher**.
 
-### 📹 Full Interactive Session Recording
-Watch the full workflow showing perspective transitions, filtering, and form submission in the browser:
-![Portfolio Interactive Session Recording](screenshots/portfolio_showcase.webp)
+The logo is navy `#0F2350` with a blue `#2176FF` triangle. Those two colours
+can be arranged two ways, and each way suits one audience:
+
+| | Business Operations | Engineering & Tech Depth |
+| --- | --- | --- |
+| Navy is… | the ink | the ground |
+| Page | White, soft shadows | Deep navy, glowing borders |
+| Register | Corporate vendor | Technical / IDE |
+| Hero copy | Outcomes and operations | Architecture and stack |
+| Case studies | Business impact + metric | Specs, narrative, architecture diagram |
+
+So the toggle is not a colour preference — it is the same brand shown from
+the side that matters to whoever is looking.
+
+The choice is stored in `localStorage` and applied by an inline script in
+`<head>`, so a returning visitor never sees the wrong theme flash first.
 
 ---
 
-## 🔍 Verification & Test Results
+## Journey through the page
 
-### 1. Global Perspective Switcher
-- **Tested**: Clicking between `📊 Business Operations` and `💻 Engineering & Tech Depth` at the top of the page.
-- **Results**:
-  - The CSS theme colors dynamically transition (emerald green for Business, bright cyan for Tech).
-  - The hero subtitle smoothly swaps copy: Business highlights custom ERPs and POS networks; Tech details schema isolation, background workers, and REST API structures.
-  - The floating badge swaps from *"Serving Clients Worldwide | Based in Ethiopia"* to *"Remote Engineering Partner | Agile & Fluent English"*.
-  - Every project card on the page aligns its tab content to match the global selection automatically.
+1. **Header** — fixed nav, plus a ⌘K / Ctrl+K command palette for keyboard users.
+2. **Persona switcher** — a real ARIA tablist; arrow keys work.
+3. **Hero** — headline, two CTAs, four animated stat counters.
+4. **Who We Are** — positioning, plus a trust bar (encryption, code ownership,
+   warranty, timezone overlap, documentation).
+5. **What We Do** — four service pillars and a benefits grid.
+6. **Case Studies** — four production systems. Each card has a live link, and
+   tabs for *Business Impact* (headline metric with its source) and *Technical
+   Depth* (specs, narrative, and an inline SVG architecture diagram).
+7. **Flagship** — NYT Cafe Manager with a CSS-rendered dashboard mockup.
+8. **Tech Ecosystem** — 22 technologies, filterable by category.
+9. **Process** — seven steps from discovery to support.
+10. **Remote Partner Services** — the pitch for international clients.
+11. **How We Work Together** — three engagement models, so leads self-qualify
+    before they ever fill in the form.
+12. **Testimonials** — auto-rotating carousel that pauses on hover and focus.
+13. **FAQ** — eight straight answers; also feeds Google's FAQ rich result.
+14. **Contact** — details panel plus a validating form.
+15. **Chat assistant** — answers common questions from a scored intent matcher.
 
-### 2. Case Study Card Inner Switcher
-- **Tested**: Manually clicking `Technical Depth` or `Business Impact` tabs inside the Fikrekun Spagna System card.
-- **Results**:
-  - Changes the content area locally for that card without affecting other projects.
-  - Correctly shows local metrics and business bullet points in business mode, and database schema / update architecture specs in technical mode.
+---
 
-### 3. Tech Stack Filtering
-- **Tested**: Selecting categories like `Frontend`, `Backend & APIs`, `Databases` or `Infrastructure`.
-- **Results**:
-  - Unselected cards fade out and scale down smoothly while matching tech stack elements remain highlighted and fully visible.
+## Things worth knowing
 
-### 4. Consultations Contact Form
-- **Tested**: Entering name, email, interest, and messaging variables, and submitting.
-- **Results**:
-  - The submit button enters a premium "Sending..." state with an automated spinner.
-  - Correctly validates fields, fires a simulated async call, clears form inputs, and renders a persistent checkmark status message: *"✓ Thank you! Your request has been received. Our team will review and reply within 4 hours."*
+### The contact form will not lie
+
+If no form backend is configured, the form does **not** claim to have sent
+anything. It validates the input, then offers a pre-filled email draft and a
+copy-to-clipboard button. Once an endpoint is set in `src/data/site.ts` it
+posts for real — and a failed request is reported as a failure.
+
+This replaced a `setTimeout` that always displayed "your request has been
+received" while sending nothing anywhere.
+
+### The chatbot admits what it doesn't know
+
+Intents are scored, with multi-word phrases weighted above single keywords and
+a minimum threshold to fire. Below the threshold it says it can't answer
+reliably and points at a human. The previous version matched the first keyword
+it found anywhere in the message — and because one entry listed `'do'` and
+`'what'`, nearly every question returned the same answer.
+
+### Numbers carry their source
+
+Every case-study metric has an optional `source` line rendered under it.
+"85% — reported by Fikrekun Spagna operations after the first full quarter"
+survives scrutiny in a way that a bare "85%" does not.
+
+### Accessibility is tested, not assumed
+
+`npm run a11y` runs axe-core over six states: both personas, the technical
+tabs, the chat assistant, the command palette, and mobile with the menu open.
+Zero serious or critical violations.
+
+Along the way this caught real problems: muted text at 3.07:1 contrast, the
+architecture diagrams being scrollable but not keyboard-reachable, and floating
+controls sitting outside every landmark.
+
+### It works offline
+
+A service worker serves pages network-first and falls back to a cached copy,
+with a dedicated `/offline` page. Fitting, for a company that sells
+offline-first point-of-sale systems.
+
+---
+
+## Bugs found in the previous version
+
+Recorded because they are easy to reintroduce:
+
+| Bug | Effect |
+| --- | --- |
+| `.mobile-nav-menu` was `display:none` and `.active` only changed transform/opacity | The mobile menu never opened at all |
+| Contact form was a `setTimeout` with a hardcoded success message | Every lead was silently discarded |
+| No `scroll-margin` under a fixed header | Every anchor link landed under the nav |
+| Loader held the page 1.6s *after* `load` | Deliberately slowed a fast site |
+| Chatbot matched `'do'` / `'what'` first | Almost every question got the services blurb |
+| `repeat(2, 1fr)` with unbreakable card text | Horizontal overflow on phones |
+| `--text-muted: #64748b` | Failed WCAG AA on every card surface |
+| Carousel slides were reveal-animated | Slides 2–4 sat at opacity 0 until an 8s timer; clicking "next" showed a blank card |
+| Footer kept light-theme ink on its navy panel | Navy text on navy — three separate elements unreadable |
+
+---
+
+## Running it
+
+```bash
+npm install
+npm run dev
+
+# and to verify
+npm run build && npm run preview   # terminal 1
+npm run smoke && npm run a11y && npm run csp   # terminal 2
+```

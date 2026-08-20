@@ -10,7 +10,7 @@
 }
 
 .filter-btn {
-  background: rgba(255,255,255,0.03);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   color: var(--text-secondary);
   padding: 0.5rem 1.2rem;
@@ -29,7 +29,7 @@
 
 .filter-btn.active {
   background: var(--accent-gradient);
-  color: #07090e;
+  color: var(--on-accent);
   border-color: transparent;
   box-shadow: var(--shadow-glow);
 }

@@ -1,0 +1,192 @@
+---
+import { site } from '../data/site';
+import { faqs } from '../data/faq';
+import '../styles/index.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Emit the FAQPage structured data (index page only). */
+  includeFaqSchema?: boolean;
+}
+
+const {
+  title = `${site.name} | Enterprise Software & Remote Engineering`,
+  description = site.description,
+  includeFaqSchema = false,
+} = Astro.props;
+
+const fontHref =
+  'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap';
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const ogImage = new URL('/og-image.png', Astro.site ?? site.url).href;
+
+/* ---- Structured data ---------------------------------------------------- */
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': `${site.url}/#organization`,
+  name: site.name,
+  legalName: site.legalName,
+  url: site.url,
+  email: site.email,
+  description: site.description,
+  image: ogImage,
+  logo: `${site.url}/favicon.svg`,
+  foundingDate: site.founded,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.locality,
+    addressCountry: site.countryCode,
+  },
+  areaServed: [
+    { '@type': 'Country', name: 'Ethiopia' },
+    { '@type': 'Place', name: 'Worldwide (remote engagements)' },
+  ],
+  knowsAbout: [
+    'Enterprise Resource Planning',
+    'Multi-tenant SaaS architecture',
+    'Point of sale systems',
+    'Healthcare information systems',
+    'E-commerce marketplaces',
+    'Offline-first application design',
+  ],
+  sameAs: [site.github],
+  serviceType: [
+    'Custom software development',
+    'ERP development',
+    'SaaS platform engineering',
+    'Mobile application development',
+    'Remote engineering partnership',
+  ],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${site.url}/#website`,
+  url: site.url,
+  name: site.name,
+  publisher: { '@id': `${site.url}/#organization` },
+  inLanguage: 'en',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const schemas = includeFaqSchema
+  ? [orgSchema, websiteSchema, faqSchema]
+  : [orgSchema, websiteSchema];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="author" content={site.name} />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Icons & PWA -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!--
+      Fonts: preconnect early, fetch as a preload, then promote to a stylesheet
+      from script so the fetch never blocks first paint.
+
+      The usual trick for this is `media="print" onload="this.media='all'"`, but
+      an inline event-handler attribute needs `script-src 'unsafe-hashes'` to
+      survive our Content-Security-Policy. Doing the swap in the inline script
+      below keeps the CSP tight.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      id="font-css"
+      rel="preload"
+      as="style"
+      href={fontHref}
+    />
+    <noscript>
+      <link rel="stylesheet" href={fontHref} />
+    </noscript>
+    <script is:inline>
+      (function () {
+        var link = document.getElementById('font-css');
+        if (!link) return;
+        var promote = function () {
+          link.rel = 'stylesheet';
+        };
+        // If the preload already finished, promote immediately.
+        link.addEventListener('load', promote, { once: true });
+        link.addEventListener('error', promote, { once: true });
+        // Safety net: never leave the page without its fonts.
+        setTimeout(promote, 1200);
+      })();
+    </script>
+
+    {
+      schemas.map((s) => (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(s)}
+        />
+      ))
+    }
+
+    <!--
+      Set the persona class before first paint so the accent colour never
+      flashes from the default to the visitor's saved preference.
+    -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        var mode = 'business';
+        try {
+          if (localStorage.getItem('nyt-persona') === 'tech') mode = 'tech';
+        } catch (e) {
+          /* private mode — fall back to the default persona */
+        }
+        root.classList.add('mode-' + mode);
+      })();
+    </script>
+  </head>
+
+  <body>
+    <slot />
+  </body>
+</html>

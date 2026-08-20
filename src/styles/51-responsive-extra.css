@@ -30,3 +30,38 @@
   .engagement-card { padding: 1.85rem 1.35rem; }
   .toast-region { bottom: 5.5rem; }
 }
+
+/* --------------------------------------------------------------------------
+   Grid overflow guard.
+
+   `1fr` is shorthand for `minmax(auto, 1fr)`, so a track refuses to shrink
+   below its content's min-content width. A long unbreakable phrase inside a
+   card ("Role-based access control (RBAC)") therefore pushed one column wider
+   than its share and overflowed the page by a few pixels. `min-width: 0` lets
+   the track shrink as intended; the wrap rules stop words spilling instead.
+   -------------------------------------------------------------------------- */
+.services-grid > *,
+.projects-grid > *,
+.tech-grid > *,
+.engagement-grid > *,
+.benefits-grid > *,
+.process-timeline > *,
+.about-grid > *,
+.remote-grid > *,
+.contact-grid > *,
+.flagship-grid > * {
+  min-width: 0;
+}
+
+.service-card,
+.tech-card,
+.engagement-card,
+.project-card,
+.timeline-step {
+  overflow-wrap: break-word;
+}
+
+/* Two service cards side by side is too tight on a phone. */
+@media (max-width: 620px) {
+  .services-grid { grid-template-columns: 1fr; }
+}

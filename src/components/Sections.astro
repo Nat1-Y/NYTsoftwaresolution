@@ -1,0 +1,296 @@
+---
+/**
+ * The straightforward content sections. Keeping them together avoids a dozen
+ * near-identical single-use component files; anything with behaviour or its
+ * own data shape lives in its own file instead.
+ */
+import { services, benefits } from '../data/services';
+import { techFilters, techStack } from '../data/tech';
+import { process, remoteServices, remoteReasons } from '../data/process';
+import { personaCopy, trustSignals } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<!-- ================= Who We Are ================= -->
+<section id="about" class="about-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Who We Are</h2>
+      <p class="section-subtitle">
+        NYT Software Solutions is a digital engineering firm specialising in
+        high-availability systems.
+      </p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-info-card glass">
+        <h3>Enterprise Focus</h3>
+        <p>
+          We partner with retail networks, healthcare providers, hospitality
+          enterprises and global technology teams — designing systems that
+          eliminate operational leakage, automate workflow and hold up under
+          real security review.
+        </p>
+      </div>
+      <div class="about-info-card glass">
+        <h3>Engineering DNA</h3>
+        <p>
+          Clean schema separation, offline-first client replication, optimised
+          database indexing and automated deployment pipelines. International
+          enterprise-grade quality at competitive local rates.
+        </p>
+      </div>
+    </div>
+
+    <ul class="trust-bar">
+      {
+        trustSignals.map((t) => (
+          <li class="trust-item">
+            <Icon name={t.icon} size={16} />
+            <span>{t.text}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ================= What We Do ================= -->
+<section id="services" class="services-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">What We Do</h2>
+      <p class="section-subtitle" id="services-subtitle">
+        {personaCopy.business.servicesSubtitle}
+      </p>
+    </div>
+
+    <div class="services-grid">
+      {
+        services.map((service) => (
+          <div class="service-card glass">
+            <div class="service-icon">
+              <Icon name={service.icon} size={32} />
+            </div>
+            <h3>{service.title}</h3>
+            <ul class="service-list">
+              {service.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="benefits-container">
+      <h3 class="benefits-title">Why Business Partners Trust NYT</h3>
+      <div class="benefits-grid">
+        {
+          benefits.map((b) => (
+            <div class="benefit-tag">
+              <span aria-hidden="true">✓</span> {b}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<slot name="case-studies" />
+
+<!-- ================= Flagship ================= -->
+<section id="flagship" class="flagship-section">
+  <div class="container">
+    <div class="flagship-card glass">
+      <p class="flagship-badge">FLAGSHIP PLATFORM</p>
+      <div class="flagship-grid">
+        <div class="flagship-content">
+          <h2>NYT Cafe Manager</h2>
+          <p class="flagship-tagline">
+            The enterprise SaaS built for modern hospitality businesses.
+          </p>
+          <p class="flagship-desc">
+            A cloud-native, multi-tenant platform for running restaurant
+            branches: real-time kitchen tracking, offline-capable POS, dynamic
+            recipe costing and background updates that ship without downtime.
+          </p>
+
+          <div class="flagship-features-grid">
+            {
+              [
+                'Multi-tenant schema',
+                'Kitchen display (KDS)',
+                'Offline POS resiliency',
+                'OTA software delivery',
+                'COGS & profit reports',
+                'Multi-branch sync',
+              ].map((f) => (
+                <div class="f-item">
+                  <span aria-hidden="true">✓</span> {f}
+                </div>
+              ))
+            }
+          </div>
+
+          <div class="flagship-actions">
+            <a href="#contact" class="btn btn-primary">Request Demo Access</a>
+          </div>
+        </div>
+
+        <div class="flagship-visual" aria-hidden="true">
+          <div class="dashboard-mockup">
+            <div class="mockup-header">
+              <span class="circle-btn red"></span>
+              <span class="circle-btn yellow"></span>
+              <span class="circle-btn green"></span>
+              <span class="mockup-title">NYT Cafe Manager — Dashboard</span>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-sidebar">
+                <span class="line-ph short"></span>
+                <span class="line-ph"></span>
+                <span class="line-ph"></span>
+                <span class="line-ph short"></span>
+              </div>
+              <div class="mockup-main">
+                <div class="main-widgets">
+                  <div class="widget-box">
+                    <span class="w-title">Gross Revenue</span>
+                    <span class="w-val">ETB 142,500.00</span>
+                  </div>
+                  <div class="widget-box">
+                    <span class="w-title">COGS Margin</span>
+                    <span class="w-val color-green">24.6%</span>
+                  </div>
+                </div>
+                <div class="main-chart">
+                  <div class="chart-header">Real-time Order Volume</div>
+                  <div class="chart-bars">
+                    <div class="bar-col" style="height: 40%"></div>
+                    <div class="bar-col" style="height: 60%"></div>
+                    <div class="bar-col" style="height: 85%"></div>
+                    <div
+                      class="bar-col animate-pulse"
+                      style="height: 95%; background-color: var(--accent);"
+                    >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Tech Ecosystem ================= -->
+<section id="ecosystem" class="ecosystem-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">The NYT Technical Ecosystem</h2>
+      <p class="section-subtitle">
+        Our vetted development stack — chosen for speed, scale and long-term
+        maintainability.
+      </p>
+    </div>
+
+    <div class="tech-filters" role="group" aria-label="Filter technologies by category">
+      {
+        techFilters.map((f, i) => (
+          <button
+            class:list={['filter-btn', i === 0 && 'active']}
+            data-filter={f.id}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+          >
+            {f.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="tech-grid" id="tech-grid">
+      {
+        techStack.map((t) => (
+          <div class="tech-card glass" data-category={t.categories.join(' ')}>
+            <span class="tech-badge">{t.name}</span>
+            <p>{t.note}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="sr-only" role="status" id="tech-filter-status"></p>
+  </div>
+</section>
+
+<!-- ================= Process ================= -->
+<section class="process-section" aria-labelledby="process-title">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" id="process-title">Our Development Process</h2>
+      <p class="section-subtitle">
+        How we turn an idea into stable production software.
+      </p>
+    </div>
+
+    <ol class="process-timeline">
+      {
+        process.map((p) => (
+          <li class="timeline-step" data-step={p.step}>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- ================= Remote partnership ================= -->
+<section class="remote-services-section" aria-labelledby="remote-title">
+  <div class="container">
+    <div class="remote-box glass">
+      <div class="remote-header">
+        <h2 class="section-title" id="remote-title">
+          Remote Development Partner Services
+        </h2>
+        <p class="lead-text">
+          Need to scale your technical capacity? We act as a dedicated remote
+          engineering team for international businesses.
+        </p>
+      </div>
+
+      <div class="remote-grid">
+        <div class="remote-column">
+          <h3>Our Remote Services</h3>
+          <ul class="remote-list">
+            {
+              remoteServices.map((s) => (
+                <li>
+                  <span aria-hidden="true">➔</span> {s}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="remote-column">
+          <h3>Why International Clients Choose NYT</h3>
+          <ul class="remote-list">
+            {
+              remoteReasons.map((r) => (
+                <li>
+                  <span aria-hidden="true">➔</span> {r}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

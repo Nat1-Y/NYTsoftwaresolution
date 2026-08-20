@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+
+<Base
+  title={`Offline | ${site.name}`}
+  description="You are offline. Reconnect to load the full site."
+>
+  <main id="main" tabindex="-1" class="offline-page">
+    <div class="container">
+      <p class="offline-mark" aria-hidden="true">
+        <span class="logo-accent">&lt;</span>NYT<span class="logo-accent">/&gt;</span>
+      </p>
+      <h1 class="section-title">You're offline</h1>
+      <p class="section-subtitle">
+        No connection right now. This page was served from your device's cache —
+        the same offline-first technique we build into our clients' point-of-sale
+        systems. Reconnect and it will load in full.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="location.reload()">Try again</button>
+        <a class="btn btn-secondary" href={`mailto:${site.email}`}>Email us</a>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .offline-page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+  .offline-mark {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  .offline-page .hero-actions { justify-content: center; margin-top: 2rem; }
+</style>

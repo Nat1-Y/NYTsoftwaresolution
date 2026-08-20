@@ -48,7 +48,7 @@
 .form-group textarea[aria-invalid='true'],
 .form-group select[aria-invalid='true'] {
   border-color: var(--danger);
-  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.12);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 18%, transparent);
 }
 
 .required-mark {
@@ -130,7 +130,7 @@
   gap: 0.7rem;
   padding: 0.9rem 1.1rem;
   border-radius: var(--r-md);
-  background: rgba(11, 15, 24, 0.97);
+  background: var(--surface);
   border: 1px solid var(--border-hover);
   box-shadow: var(--shadow-md);
   font-size: 0.9rem;
@@ -138,8 +138,8 @@
   pointer-events: auto;
 }
 
-.toast.success { border-color: rgba(16, 185, 129, 0.4); }
-.toast.error { border-color: rgba(244, 63, 94, 0.4); }
+.toast.success { border-color: color-mix(in srgb, var(--success) 45%, transparent); }
+.toast.error { border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
 .toast.success svg { color: var(--success); }
 .toast.error svg { color: var(--danger); }
 
@@ -167,15 +167,11 @@
 
 .offline-banner.visible { transform: translateY(0); }
 
-/* --- Rendering performance: skip offscreen section paint --------------- */
-.process-section,
-.remote-services-section,
-.testimonials-section,
-.faq-section,
-.engagement-section {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 700px;
-}
+/* --- Rendering performance -------------------------------------------------
+   The CSS "content-visibility: auto" optimisation was tried here and removed
+   on purpose: skipping offscreen paint stopped IntersectionObserver from
+   firing reliably, so reveal-animated sections could stay invisible. The page
+   is small enough that it was not worth the correctness risk. ------------ */
 
 /* --- Active nav underline --------------------------------------------- */
 .nav-link { position: relative; }
@@ -196,3 +192,9 @@
 
 .nav-link:hover::after,
 .nav-link.active-nav::after { transform: scaleX(1); }
+
+/* --- Hero stats are a <dl>: label precedes value in the DOM (correct for
+       screen readers), value renders on top (correct visually). ----------- */
+.hero-stats { margin: 1rem 0 0; }
+.stat-card { flex-direction: column-reverse; }
+.stat-card dd { margin: 0; }

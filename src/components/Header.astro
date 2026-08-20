@@ -1,0 +1,59 @@
+---
+import { nav } from '../data/site';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+---
+
+<header class="main-header">
+  <div class="header-container">
+    <a href="#top" class="logo" aria-label="NYT Software Solutions — back to top">
+      <Logo size={30} />
+      <span class="logo-text" aria-hidden="true">
+        <span class="logo-text-main">NYT Software</span>
+        <span class="logo-text-sub">Solutions</span>
+      </span>
+    </a>
+
+    <nav class="nav-menu" aria-label="Primary">
+      {nav.map((item) => <a href={item.href} class="nav-link">{item.label}</a>)}
+
+      <button
+        type="button"
+        class="cmdk-trigger"
+        data-cmdk-open
+        aria-label="Open command palette (Control K)"
+      >
+        <Icon name="search" size={14} />
+        <span>Search</span>
+        <kbd class="cmdk-hint">Ctrl K</kbd>
+      </button>
+
+      <a href="#contact" class="btn btn-primary header-cta">Let's Build</a>
+    </nav>
+
+    <button
+      class="mobile-nav-toggle"
+      id="mobile-nav-toggle"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-nav-menu"
+    >
+      <span class="bar" aria-hidden="true"></span>
+      <span class="bar" aria-hidden="true"></span>
+      <span class="bar" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav-menu" id="mobile-nav-menu">
+  <nav aria-label="Mobile">
+    {
+      nav.map((item) => (
+        <a href={item.href} class="mobile-nav-link">
+          {item.label}
+        </a>
+      ))
+    }
+    <a href="#contact" class="btn btn-primary mobile-cta mobile-nav-link">Let's Build</a>
+  </nav>
+</div>

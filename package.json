@@ -10,14 +10,19 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "og": "node scripts/generate-og.mjs"
+    "og": "node scripts/generate-og.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "a11y": "node scripts/a11y.mjs",
+    "csp": "node scripts/csp-check.mjs"
   },
   "dependencies": {
-    "astro": "^5.13.0",
-    "@astrojs/sitemap": "^3.4.1"
+    "@astrojs/sitemap": "^3.4.1",
+    "astro": "^5.13.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "axe-core": "^4.13.0",
+    "puppeteer-core": "^25.8.0",
     "typescript": "^5.9.2"
   },
   "allowScripts": {

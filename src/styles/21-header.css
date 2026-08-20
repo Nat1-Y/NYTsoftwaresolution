@@ -7,7 +7,7 @@
   left: 0;
   width: 100%;
   z-index: 100;
-  background: rgba(7, 9, 14, 0.65);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -92,7 +92,7 @@
   top: 70px;
   left: 0;
   width: 100%;
-  background: #07090e;
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
   padding: 2rem;
   z-index: 99;
@@ -123,3 +123,75 @@
   width: 100%;
 }
 
+
+/* --------------------------------------------------------------------------
+   Mobile menu visibility fix.
+
+   `.mobile-nav-menu` ships as `display: none`, and `.active` only animated
+   transform/opacity — so the panel could never actually appear. Restore the
+   flex layout at the mobile breakpoint and drive open/closed with
+   `visibility`, which also keeps the links out of the tab order while closed.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .mobile-nav-menu {
+    display: flex;
+    visibility: hidden;
+    top: var(--header-h);
+    transition: transform 0.3s var(--ease-out), opacity 0.3s ease,
+      visibility 0s linear 0.3s;
+  }
+
+  .mobile-nav-menu.active {
+    visibility: visible;
+    transition: transform 0.3s var(--ease-out), opacity 0.3s ease,
+      visibility 0s linear 0s;
+  }
+
+  .mobile-nav-menu nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   v2: keep the bar on one line.
+   The nav gained an item and a search trigger, which pushed the logo and the
+   links into wrapping at 1440px. Nothing in the header should ever wrap.
+   -------------------------------------------------------------------------- */
+.header-container {
+  height: var(--header-h);
+  max-width: var(--container-max);
+  gap: 1.5rem;
+}
+
+.logo {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.logo-text { white-space: nowrap; }
+
+.nav-menu {
+  gap: 1.5rem;
+  flex-wrap: nowrap;
+}
+
+.nav-link { white-space: nowrap; }
+
+.header-cta { white-space: nowrap; flex-shrink: 0; }
+
+/* Between the mobile breakpoint and a comfortable desktop, tighten up
+   rather than wrap. The search trigger only appears above 1180px. */
+@media (max-width: 1180px) and (min-width: 769px) {
+  .nav-menu { gap: 1.1rem; }
+  .nav-link { font-size: 0.88rem; }
+  .logo { font-size: 1.2rem; }
+  .logo-text { font-size: 0.95rem; }
+}
+
+@media (max-width: 900px) and (min-width: 769px) {
+  /* Below this the six links plus a CTA stop fitting honestly. */
+  .logo-text { display: none; }
+}

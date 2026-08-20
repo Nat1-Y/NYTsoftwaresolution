@@ -1,0 +1,34 @@
+---
+import { faqs } from '../data/faq';
+import Icon from './Icon.astro';
+---
+
+<section id="faq" class="faq-section" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" id="faq-title">Questions People Actually Ask</h2>
+      <p class="section-subtitle">
+        Straight answers on cost, timelines, ownership and what happens after
+        launch.
+      </p>
+    </div>
+
+    <!--
+      Native <details> — the disclosure works with zero JavaScript, keyboard
+      support is free, and it prints expanded.
+    -->
+    <div class="faq-list">
+      {
+        faqs.map((f, i) => (
+          <details class="faq-item glass" open={i === 0}>
+            <summary class="faq-q">
+              <span>{f.q}</span>
+              <Icon name="chevronDown" size={20} class="faq-chevron" />
+            </summary>
+            <div class="faq-a" set:html={f.html ?? f.a} />
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

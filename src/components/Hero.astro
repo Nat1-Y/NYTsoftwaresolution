@@ -1,0 +1,48 @@
+---
+import { heroStats, personaCopy } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<section class="hero-section">
+  <div class="container hero-container">
+    <p class="hero-badge">
+      <span class="badge-dot" aria-hidden="true"></span>
+      <span class="badge-text" id="dynamic-badge">{personaCopy.business.badge}</span>
+    </p>
+
+    <h1 class="hero-title">
+      Enterprise-Grade Engineering.<br />
+      <span class="gradient-text">Local Operational Excellence.</span>
+    </h1>
+
+    <p class="hero-lead" id="hero-subtitle">{personaCopy.business.heroSubtitle}</p>
+
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">
+        <span>Explore Solutions</span>
+        <Icon name="arrow" size={18} class="arrow-icon" />
+      </a>
+      <a href="#contact" class="btn btn-secondary">Book a Consultation</a>
+    </div>
+
+    <!--
+      Counters animate from zero, but the real value is in the markup from the
+      start so it survives no-JS, print and screen readers.
+    -->
+    <dl class="hero-stats">
+      {
+        heroStats.map((stat) => (
+          <div class="stat-card">
+            <dt class="stat-label">{stat.label}</dt>
+            <dd
+              class="stat-num"
+              data-count-to={stat.value}
+              data-count-suffix={stat.suffix}
+              set:text={`${stat.value}${stat.suffix}`}
+            />
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

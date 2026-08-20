@@ -18,7 +18,7 @@
   width: 60px;
   height: 60px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -61,7 +61,7 @@
 /* Benefits Section */
 .benefits-container {
   margin-top: 5rem;
-  background: rgba(13, 19, 33, 0.3);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: 3rem;
@@ -82,7 +82,7 @@
 }
 
 .benefit-tag {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   border-radius: 99px;
   padding: 0.6rem 1.5rem;

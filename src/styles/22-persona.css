@@ -13,7 +13,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  background: rgba(13, 19, 33, 0.4);
+  background: var(--surface-2);
   padding: 1rem 2rem;
   border-radius: 24px;
   border: 1px solid var(--border);
@@ -53,7 +53,7 @@
 .switcher-widget {
   position: relative;
   display: flex;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   padding: 4px;
   border-radius: 99px;
@@ -81,7 +81,7 @@
 }
 
 .switcher-btn.active {
-  color: #07090e;
+  color: var(--on-accent);
 }
 
 .switcher-icon {
@@ -102,11 +102,58 @@
   border-radius: 99px;
   z-index: 1;
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.4s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px var(--surface-inset);
 }
 
 /* Switcher state translation script-based toggle */
+:root.mode-tech .switcher-slider,
 body.mode-tech .switcher-slider {
   transform: translateX(100%);
 }
 
+
+/* --------------------------------------------------------------------------
+   v2: the labels are longer than the emoji originals — give them room and
+   forbid wrapping, so the two halves of the toggle stay the same height.
+   -------------------------------------------------------------------------- */
+.switcher-widget { width: 540px; }
+
+.switcher-btn {
+  white-space: nowrap;
+  font-size: 0.92rem;
+  padding: 0.75rem 0.9rem;
+}
+
+.switcher-btn.active .switcher-icon { color: var(--on-accent); }
+
+@media (max-width: 620px) {
+  .switcher-widget { width: 100%; }
+  .switcher-btn { font-size: 0.78rem; padding: 0.7rem 0.5rem; gap: 0.35rem; }
+  .persona-switcher-container { padding: 0.9rem 1rem; width: 100%; }
+  .persona-section { padding-left: 1rem; padding-right: 1rem; }
+}
+
+@media (max-width: 400px) {
+  .switcher-btn .switcher-icon { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive labels. The long form is the accessible name at every width —
+   the short form is decorative (aria-hidden) and only swaps in visually on
+   narrow screens, where the long labels collided with the slider.
+   -------------------------------------------------------------------------- */
+.switcher-short { display: none; }
+
+@media (max-width: 620px) {
+  .switcher-long {
+    /* Kept in the accessibility tree, removed from the visual layout. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .switcher-short { display: inline; }
+  .switcher-btn { font-size: 0.9rem; }
+}

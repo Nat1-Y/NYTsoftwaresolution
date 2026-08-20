@@ -10,7 +10,7 @@
 
 .timeline-step {
   position: relative;
-  background: rgba(13, 19, 33, 0.2);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 2rem;
@@ -18,21 +18,31 @@
 }
 
 .timeline-step:hover {
-  background: rgba(13, 19, 33, 0.4);
+  background: var(--surface-2);
   border-color: var(--accent);
   transform: translateY(-4px);
 }
 
-.step-num {
+/*
+ * The step numeral is a watermark, not content — the <ol> already carries the
+ * sequence and each step has a visible heading. Rendering it as generated
+ * content keeps it out of the accessibility tree entirely, which is the honest
+ * encoding of "decorative" (and stops a contrast checker treating a deliberate
+ * ghost number as unreadable body text).
+ */
+.timeline-step::before {
+  content: attr(data-step);
+  display: block;
   font-family: var(--font-mono);
   font-size: 2.5rem;
   font-weight: 800;
+  line-height: 1.1;
   color: rgba(var(--accent-rgb), 0.15);
   margin-bottom: 0.5rem;
   transition: var(--transition-smooth);
 }
 
-.timeline-step:hover .step-num {
+.timeline-step:hover::before {
   color: var(--accent);
   text-shadow: var(--shadow-glow);
 }
@@ -48,3 +58,10 @@
   color: var(--text-secondary);
 }
 
+
+/* The timeline is an ordered list for semantics (the steps have a sequence),
+   but the numbers are rendered as the styled .step-num, not as markers. */
+.process-timeline {
+  list-style: none;
+  padding-left: 0;
+}

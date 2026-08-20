@@ -1,0 +1,143 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import ArchDiagram from './ArchDiagram.astro';
+
+interface Props {
+  study: CollectionEntry<'case-studies'>;
+}
+
+const { study } = Astro.props;
+const d = study.data;
+const id = study.id;
+const num = String(d.order).padStart(2, '0');
+---
+
+<article class="project-card glass" data-case-study={id}>
+  <div class="project-meta">
+    <span class="project-num" aria-hidden="true">{num}</span>
+    <span class="project-category">{d.category}</span>
+  </div>
+
+  <h3 class="project-name" id={`cs-${id}-name`}>{d.name}</h3>
+  <p class="project-tagline">{d.tagline}</p>
+
+  <div class="project-links">
+    <a
+      href={d.liveUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn-live"
+      aria-describedby={`cs-${id}-name`}
+    >
+      <Icon name="external" size={16} />
+      <span>{d.liveLabel}</span>
+      <span class="sr-only">(opens in a new tab)</span>
+    </a>
+
+    {
+      d.demo && (
+        <div class="guest-credentials">
+          <span class="cred-label">Demo access:</span>
+          <code>{d.demo.email}</code>
+          <span aria-hidden="true">/</span>
+          <code>{d.demo.password}</code>
+        </div>
+      )
+    }
+
+    {
+      d.status && (
+        <div class="guest-credentials">
+          <span class="cred-label">{d.status.label}:</span>
+          <span class={`badge-status ${d.status.variant}`}>{d.status.value}</span>
+        </div>
+      )
+    }
+  </div>
+
+  <!-- Real tabs: roving tabindex, arrow-key navigation, linked panels. -->
+  <div
+    class="card-inner-tabs"
+    role="tablist"
+    aria-label={`${d.name}: choose a level of detail`}
+  >
+    <button
+      class="card-tab-btn active"
+      role="tab"
+      data-tab="business"
+      id={`tab-${id}-business`}
+      aria-controls={`panel-${id}-business`}
+      aria-selected="true"
+      tabindex="0"
+    >
+      Business Impact
+    </button>
+    <button
+      class="card-tab-btn"
+      role="tab"
+      data-tab="tech"
+      id={`tab-${id}-tech`}
+      aria-controls={`panel-${id}-tech`}
+      aria-selected="false"
+      tabindex="-1"
+    >
+      Technical Depth
+    </button>
+  </div>
+
+  <div class="card-content-area">
+    <div
+      class="card-tab-content active"
+      role="tabpanel"
+      data-tab-content="business"
+      id={`panel-${id}-business`}
+      aria-labelledby={`tab-${id}-business`}
+      tabindex="0"
+    >
+      <div class="metric-highlight">
+        <span class="metric-val">{d.business.metric.value}</span>
+        <span class="metric-desc">{d.business.metric.description}</span>
+      </div>
+
+      {
+        d.business.metric.source && (
+          <span class="metric-source">{d.business.metric.source}</span>
+        )
+      }
+
+      <ul class="impact-bullets">
+        {
+          d.business.bullets.map((b) => (
+            <li>
+              <strong>{b.title}:</strong> {b.text}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div
+      class="card-tab-content"
+      role="tabpanel"
+      data-tab-content="tech"
+      id={`panel-${id}-tech`}
+      aria-labelledby={`tab-${id}-tech`}
+      tabindex="0"
+    >
+      <div class="tech-spec-grid">
+        {
+          d.tech.specs.map((s) => (
+            <div class="spec-item">
+              <strong>{s.label}:</strong> {s.value}
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="tech-narrative">{d.tech.narrative}</p>
+
+      <ArchDiagram variant={d.tech.diagram} project={d.name} />
+    </div>
+  </div>
+</article>

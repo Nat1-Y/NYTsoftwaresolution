@@ -86,10 +86,10 @@
 }
 
 .dashboard-mockup {
-  background: #0f172a;
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--surface-inset);
+  border: 1px solid var(--surface-inset);
   border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   width: 100%;
   aspect-ratio: 16/11;
@@ -98,9 +98,9 @@
 }
 
 .mockup-header {
-  background: #1e293b;
+  background: var(--surface-2);
   height: 38px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--surface-inset);
   display: flex;
   align-items: center;
   padding: 0 1rem;
@@ -114,9 +114,9 @@
   border-radius: 50%;
 }
 
-.circle-btn.red { background-color: #ef4444; }
-.circle-btn.yellow { background-color: #f59e0b; }
-.circle-btn.green { background-color: #10b981; }
+.circle-btn.red { background-color: var(--danger); }
+.circle-btn.yellow { background-color: var(--star); }
+.circle-btn.green { background-color: var(--success); }
 
 .mockup-title {
   position: absolute;
@@ -134,8 +134,8 @@
 }
 
 .mockup-sidebar {
-  background: #0b0f19;
-  border-right: 1px solid rgba(255,255,255,0.04);
+  background: var(--surface-inset);
+  border-right: 1px solid var(--surface-inset);
   padding: 1rem 0.5rem;
   display: flex;
   flex-direction: column;
@@ -144,7 +144,7 @@
 
 .line-ph {
   height: 6px;
-  background: rgba(255,255,255,0.05);
+  background: var(--surface-inset);
   border-radius: 3px;
   width: 100%;
 }
@@ -167,8 +167,8 @@
 }
 
 .widget-box {
-  background: #1e293b;
-  border: 1px solid rgba(255,255,255,0.03);
+  background: var(--surface-2);
+  border: 1px solid var(--surface-inset);
   padding: 1rem;
   border-radius: 8px;
   display: flex;
@@ -189,12 +189,12 @@
 }
 
 .w-val.color-green {
-  color: #10b981;
+  color: var(--success);
 }
 
 .main-chart {
-  background: #0b0f19;
-  border: 1px solid rgba(255,255,255,0.03);
+  background: var(--surface-inset);
+  border: 1px solid var(--surface-inset);
   padding: 1rem;
   border-radius: 8px;
   flex: 1;
@@ -220,7 +220,7 @@
 
 .bar-col {
   flex: 1;
-  background-color: rgba(255,255,255,0.05);
+  background-color: var(--surface-inset);
   border-radius: 4px;
   transition: height 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }

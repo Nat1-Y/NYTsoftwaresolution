@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+---
+
+<Base
+  title={`Page not found | ${site.name}`}
+  description="That page does not exist. Head back to the NYT Software Solutions homepage."
+>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="orb-container" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <Header />
+
+  <main id="main" tabindex="-1" class="error-page">
+    <div class="container">
+      <p class="error-code" aria-hidden="true">404</p>
+      <h1 class="section-title">This page doesn't exist</h1>
+      <p class="section-subtitle">
+        The link may be out of date, or the address slightly off. Everything
+        lives on the homepage — case studies, engagement models and contact
+        details included.
+      </p>
+
+      <div class="hero-actions">
+        <a href="/" class="btn btn-primary">
+          <span>Back to homepage</span>
+          <Icon name="arrow" size={18} class="arrow-icon" />
+        </a>
+        <a href={`mailto:${site.email}`} class="btn btn-secondary">Email us instead</a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .error-page {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding-top: calc(var(--header-h) + 4rem);
+  }
+
+  .error-code {
+    font-family: var(--font-mono);
+    font-size: clamp(5rem, 18vw, 10rem);
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 1rem;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .error-page .hero-actions {
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+</style>

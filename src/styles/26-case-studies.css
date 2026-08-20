@@ -75,7 +75,7 @@
 
 .btn-live:hover {
   background: var(--accent-gradient);
-  color: #07090e;
+  color: var(--on-accent);
   border-color: transparent;
   box-shadow: var(--shadow-glow);
 }
@@ -94,7 +94,7 @@
 
 .guest-credentials code {
   font-family: var(--font-mono);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   padding: 2px 6px;
   border-radius: 4px;
@@ -109,24 +109,24 @@
 }
 
 .badge-status.online {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  color: var(--success);
 }
 
 .badge-status.visitor {
-  background: rgba(0, 242, 254, 0.1);
-  color: #00f2fe;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .badge-status.active-vendors {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 /* Card-level Tab Selector */
 .card-inner-tabs {
   display: flex;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 3px;
@@ -147,9 +147,19 @@
 }
 
 .card-tab-btn.active {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+/* Keep the inactive tab the same height as the bordered active one. */
+.card-tab-btn {
+  border: 1px solid transparent;
+}
+
+.card-tab-btn:hover {
   color: var(--text-primary);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 /* Card dynamic switcher animations */
@@ -180,7 +190,7 @@
   display: flex;
   align-items: baseline;
   gap: 0.8rem;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-inset);
   padding: 1rem 1.5rem;
   border-radius: 12px;
   border-left: 3px solid var(--accent);
@@ -230,7 +240,7 @@
 .spec-item {
   font-size: 0.85rem;
   color: var(--text-secondary);
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   padding: 0.5rem 1rem;
   border-radius: 6px;
@@ -248,7 +258,7 @@
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.5;
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--surface-2);
   padding: 1rem;
   border-radius: 8px;
   border-left: 2px solid var(--border);

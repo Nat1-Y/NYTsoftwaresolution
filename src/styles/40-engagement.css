@@ -26,7 +26,7 @@
   top: -12px;
   left: 1.9rem;
   background: var(--accent-gradient);
-  color: #04120c;
+  color: var(--on-accent);
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 1px;

@@ -78,7 +78,7 @@
   align-self: flex-start;
   font-size: 0.7rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-inset);
   border: 1px dashed var(--border);
   color: var(--text-muted);
   padding: 2px 8px;
@@ -108,7 +108,7 @@
 .form-group input,
 .form-group select,
 .form-group textarea {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   color: var(--text-primary);
   padding: 0.8rem 1rem;
@@ -124,7 +124,7 @@
 }
 
 .form-group select option {
-  background-color: #0d1321;
+  background-color: var(--surface-inset);
   color: var(--text-primary);
 }
 
@@ -133,7 +133,7 @@
 .form-group textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 10px var(--accent-glow);
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--surface-inset);
 }
 
 .form-submit {
@@ -156,10 +156,10 @@
 }
 
 .form-status.success {
-  color: #10b981;
+  color: var(--success);
 }
 
 .form-status.error {
-  color: #ef4444;
+  color: var(--danger);
 }
 

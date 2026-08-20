@@ -1,0 +1,82 @@
+---
+import { testimonials } from '../data/testimonials';
+import Icon from './Icon.astro';
+---
+
+<section class="testimonials-section" aria-labelledby="testi-title">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" id="testi-title">What Clients Say</h2>
+      <p class="section-subtitle">
+        Feedback from the partners whose operations run on systems we built.
+      </p>
+    </div>
+
+    <!--
+      Carousel semantics: the region is a labelled group, slides are announced
+      as "n of m", and rotation stops on hover, focus, or reduced-motion.
+    -->
+    <div
+      class="testimonials-viewport"
+      role="group"
+      aria-roledescription="carousel"
+      aria-label="Client testimonials"
+      id="testimonials-carousel"
+    >
+      <div class="testimonials-track" id="testimonials-track" aria-live="polite">
+        {
+          testimonials.map((t, i) => (
+            <div
+              class="testimonial-slide"
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${testimonials.length}`}
+              aria-hidden={i === 0 ? 'false' : 'true'}
+            >
+              <figure class="testimonial-card glass">
+                <div class="testi-stars" role="img" aria-label="Rated 5 out of 5">
+                  <span aria-hidden="true">★★★★★</span>
+                </div>
+                <blockquote class="testi-quote">{t.quote}</blockquote>
+                <figcaption class="testi-author">
+                  <div class="testi-avatar" aria-hidden="true">
+                    {t.initials}
+                  </div>
+                  <div>
+                    <strong>{t.person?.name ?? t.org}</strong>
+                    <span>{t.person ? `${t.person.role}, ${t.org}` : t.context}</span>
+                  </div>
+                </figcaption>
+              </figure>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="testi-controls">
+      <button class="testi-arrow" id="testi-prev" aria-label="Previous testimonial">
+        <Icon name="chevronLeft" size={20} />
+      </button>
+
+      <div class="testi-dots" id="testi-dots" role="tablist" aria-label="Choose a testimonial">
+        {
+          testimonials.map((t, i) => (
+            <button
+              class:list={['testi-dot', i === 0 && 'active']}
+              role="tab"
+              data-idx={i}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-label={`Testimonial ${i + 1}: ${t.org}`}
+              tabindex={i === 0 ? 0 : -1}
+            />
+          ))
+        }
+      </div>
+
+      <button class="testi-arrow" id="testi-next" aria-label="Next testimonial">
+        <Icon name="chevronRight" size={20} />
+      </button>
+    </div>
+  </div>
+</section>

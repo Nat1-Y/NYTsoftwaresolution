@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import PersonaSwitcher from '../components/PersonaSwitcher.astro';
+import Hero from '../components/Hero.astro';
+import Sections from '../components/Sections.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+import Engagement from '../components/Engagement.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Faq from '../components/Faq.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import Chatbot from '../components/Chatbot.astro';
+import CommandPalette from '../components/CommandPalette.astro';
+import Icon from '../components/Icon.astro';
+import Logo from '../components/Logo.astro';
+
+const caseStudies = (await getCollection('case-studies')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<Base includeFaqSchema>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <div class="page-loader" id="page-loader" role="presentation" aria-hidden="true">
+    <div class="loader-logo">
+      <Logo variant="full" size={54} />
+    </div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+  </div>
+
+  <div class="orb-container" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <span id="top"></span>
+  <Header />
+
+  <main id="main" tabindex="-1">
+    <div class="hero-block">
+      <PersonaSwitcher />
+      <Hero />
+    </div>
+
+    <Sections>
+      <section id="projects" class="projects-section" slot="case-studies">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Case Studies</h2>
+            <p class="section-subtitle">
+              Four systems running in production today. Every one has a live
+              link — open them and judge for yourself.
+            </p>
+          </div>
+
+          <div class="projects-grid">
+            {caseStudies.map((study) => <CaseStudyCard study={study} />)}
+          </div>
+        </div>
+      </section>
+    </Sections>
+
+    <Engagement />
+    <Testimonials />
+    <Faq />
+    <Contact />
+  </main>
+
+  <Footer />
+
+  <!-- Floating utilities need a landmark of their own, or their content
+       belongs to no region of the page. -->
+  <aside class="page-tools" aria-label="Page tools">
+    <button class="scroll-top-btn" id="scroll-top-btn" aria-label="Scroll back to top">
+      <Icon name="chevronUp" size={22} />
+    </button>
+    <Chatbot />
+  </aside>
+
+  <CommandPalette />
+</Base>
+
+<script>
+  import { initMain } from '../scripts/main';
+  import { initPersona } from '../scripts/persona';
+  import { initCaseStudyTabs } from '../scripts/tabs';
+  import { initTechFilters } from '../scripts/filters';
+  import { initCarousel } from '../scripts/carousel';
+  import { initContactForm } from '../scripts/form';
+  import { initChatbot } from '../scripts/chatbot';
+  import { initCommandPalette } from '../scripts/palette';
+
+  // Tabs must be wired before the persona module aligns them.
+  initCaseStudyTabs();
+  initPersona();
+
+  initMain();
+  initTechFilters();
+  initCarousel();
+  initContactForm();
+  initChatbot();
+  initCommandPalette();
+
+  // Readiness flag: lets the smoke test wait for handlers to be attached
+  // instead of racing them, and gives us a hook for future instrumentation.
+  document.documentElement.dataset.ready = 'true';
+</script>

@@ -13,13 +13,15 @@ section {
   position: relative;
 }
 
-/* Glassmorphism base utility */
+/*
+ * Card primitive. Formerly glassmorphism over a black page; now a real
+ * surface that works on white and on navy, with the theme supplying both
+ * the fill and the elevation.
+ */
 .glass {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--r-lg);
   box-shadow: var(--shadow-sm);
   transition: var(--transition-smooth);
 }
@@ -55,11 +57,11 @@ section {
 .section-title::after {
   content: '';
   display: block;
-  width: 60px;
-  height: 4px;
-  background: var(--accent-gradient);
+  width: 52px;
+  height: 3px;
+  background: var(--accent);
   margin: 1rem auto 0 auto;
-  border-radius: 2px;
+  border-radius: 0;
   transition: var(--transition-smooth);
 }
 
@@ -78,32 +80,32 @@ section {
   padding: 0.8rem 1.8rem;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 99px;
+  border-radius: var(--r-sm);
   cursor: pointer;
   transition: var(--transition-smooth);
 }
 
 .btn-primary {
   background: var(--accent-gradient);
-  color: #07090e;
+  color: var(--on-accent);
   border: none;
   box-shadow: var(--shadow-glow);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  filter: brightness(1.1);
-  box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.3);
+  background: var(--accent-strong);
+  box-shadow: 0 10px 26px rgba(var(--accent-rgb), 0.34);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-inset);
   color: var(--text-primary);
   border: 1px solid var(--border);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface-2);
   border-color: var(--border-hover);
   transform: translateY(-2px);
 }

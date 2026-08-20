@@ -1,0 +1,273 @@
+/* ==========================================================================
+   BRAND LAYER
+   The design language taken from the logo: hard geometry, navy/blue only,
+   the downward triangle as a recurring mark, and letter-spaced uppercase
+   labels flanked by rules.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Logo lockup
+   -------------------------------------------------------------------------- */
+.logo-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.logo-mark {
+  display: block;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+/* The triangle in the Y always carries the accent, in both themes. */
+.logo-triangle {
+  fill: var(--accent);
+  transition: fill 0.35s var(--ease-out);
+}
+
+.logo-full {
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.logo-wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.logo-line-1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.logo-line-2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* The short rules either side of "SOLUTIONS". */
+.logo-rule {
+  display: block;
+  width: 26px;
+  height: 1.5px;
+  background: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Header wordmark beside the mark
+   -------------------------------------------------------------------------- */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.logo .logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  line-height: 1.05;
+}
+
+.logo-text-main {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.logo-text-sub {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Section rhythm — alternating bands give a light page structure that a
+   dark page got for free from its glow.
+   -------------------------------------------------------------------------- */
+.about-section,
+.projects-section,
+.process-section,
+.faq-section {
+  background: var(--bg-alt);
+}
+
+.services-section,
+.ecosystem-section,
+.engagement-section,
+.testimonials-section,
+.contact-section,
+.flagship-section,
+.remote-services-section,
+.hero-section {
+  background: var(--bg);
+}
+
+/* A hairline between bands keeps the edges crisp rather than muddy — but
+   not between the persona bar and the hero, which read as one block. */
+main > section + section,
+main > .hero-block + section {
+  border-top: 1px solid var(--border);
+}
+
+.persona-section {
+  background: transparent;
+  border: none;
+}
+
+/* --------------------------------------------------------------------------
+   Eyebrow label — uppercase, letter-spaced, rule-flanked, like "SOLUTIONS"
+   -------------------------------------------------------------------------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.eyebrow::before,
+.eyebrow::after {
+  content: '';
+  width: 22px;
+  height: 1.5px;
+  background: currentColor;
+}
+
+.section-header .eyebrow {
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   The triangle, reused as a bullet and a corner mark
+   -------------------------------------------------------------------------- */
+.tri-bullet {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid var(--accent);
+  flex-shrink: 0;
+  margin-top: 0.45em;
+}
+
+/* --------------------------------------------------------------------------
+   Deep navy panels — the logo's ink used as a ground inside a light page
+   -------------------------------------------------------------------------- */
+.panel-deep {
+  background: var(--bg-deep);
+  color: var(--text-on-deep);
+  border-color: transparent;
+}
+
+.panel-deep h2,
+.panel-deep h3,
+.panel-deep strong {
+  color: var(--text-on-deep);
+}
+
+.panel-deep p,
+.panel-deep li {
+  color: var(--text-on-deep-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Blueprint grid — a faint technical texture behind the hero, in place of
+   the old glow orbs.
+   -------------------------------------------------------------------------- */
+/* The blueprint grid spans the persona bar and the hero as one field, so
+   there is no seam where the two meet. */
+.hero-block {
+  position: relative;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: center calc(var(--header-h) * -1);
+}
+
+/* Fade the grid away before the first content section. */
+.hero-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 55%,
+    var(--bg) 100%
+  );
+  z-index: 0;
+}
+
+.hero-block > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+
+/* --------------------------------------------------------------------------
+   Inverted surfaces
+
+   The footer is a navy panel even in the light theme, so its contents must
+   not inherit ink meant for a white ground. Redefining the tokens on the
+   subtree flips every descendant at once — no per-element overrides, and any
+   component dropped in here inherits correct colours automatically.
+   -------------------------------------------------------------------------- */
+.main-footer,
+.panel-deep {
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-2: rgba(255, 255, 255, 0.08);
+  --surface-inset: rgba(0, 0, 0, 0.22);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --border-hover: rgba(255, 255, 255, 0.3);
+
+  --text-primary: #eef3fc;
+  --text-secondary: #c3d4ee;
+  --text-muted: #9fb6dd;
+
+  /* #1560d6 only reaches 2.67:1 on navy; this clears AA comfortably. */
+  --accent: #7fb8ff;
+  --accent-rgb: 127, 184, 255;
+  --accent-soft: rgba(127, 184, 255, 0.16);
+  --on-accent: #04122e;
+
+  background: var(--bg-deep);
+  color: var(--text-primary);
+}
+
+.main-footer a:hover,
+.panel-deep a:hover {
+  color: var(--accent);
+}

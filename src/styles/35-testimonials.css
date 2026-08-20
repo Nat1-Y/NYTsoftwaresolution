@@ -25,7 +25,7 @@
 }
 .testi-stars {
   font-size: 1.4rem;
-  color: #f59e0b;
+  color: var(--star);
   letter-spacing: 4px;
   margin-bottom: 1.5rem;
 }
@@ -55,7 +55,7 @@
   justify-content: center;
   font-weight: 700;
   font-size: 0.85rem;
-  color: #000;
+  color: var(--on-accent);
   flex-shrink: 0;
 }
 .testi-author strong {
@@ -109,3 +109,36 @@
   box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
 }
 
+
+/* --------------------------------------------------------------------------
+   v2: viewport wrapper + real buttons for the dots
+   -------------------------------------------------------------------------- */
+.testimonials-viewport {
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+
+.testimonials-track {
+  margin-bottom: 0;
+  overflow: visible;
+  will-change: transform;
+}
+
+.testi-dot {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  padding: 0;
+  background: var(--border-strong);
+  cursor: pointer;
+}
+
+.testi-dot.active { background: var(--accent); }
+
+.testimonial-card {
+  /* blockquote/figure reset so the card keeps its original spacing */
+  margin: 0 auto;
+}
+
+.testi-quote { margin: 0 0 1.75rem; }
+.testi-author { margin: 0; }

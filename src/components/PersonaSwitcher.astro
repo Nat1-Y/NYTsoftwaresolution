@@ -1,0 +1,48 @@
+---
+import Icon from './Icon.astro';
+---
+
+<section class="persona-section" aria-label="Choose how this page is presented">
+  <div class="persona-switcher-container">
+    <div class="switcher-intro">
+      <span class="live-pulse" aria-hidden="true"></span>
+      <span class="switcher-label" id="persona-label">Optimise this page for:</span>
+    </div>
+
+    <!--
+      A real tablist: arrow keys move between the two views, and the panels
+      they control announce themselves to assistive tech.
+    -->
+    <div class="switcher-widget" role="tablist" aria-labelledby="persona-label">
+      <button
+        class="switcher-btn active"
+        id="btn-business"
+        role="tab"
+        data-mode="business"
+        aria-selected="true"
+        aria-controls="main"
+        tabindex="0"
+      >
+        <Icon name="chart" size={18} class="switcher-icon" />
+        <span class="switcher-long">Business Operations</span>
+        <span class="switcher-short" aria-hidden="true">Business</span>
+      </button>
+
+      <button
+        class="switcher-btn"
+        id="btn-tech"
+        role="tab"
+        data-mode="tech"
+        aria-selected="false"
+        aria-controls="main"
+        tabindex="-1"
+      >
+        <Icon name="code" size={18} class="switcher-icon" />
+        <span class="switcher-long">Engineering &amp; Tech Depth</span>
+        <span class="switcher-short" aria-hidden="true">Engineering</span>
+      </button>
+
+      <span class="switcher-slider" aria-hidden="true"></span>
+    </div>
+  </div>
+</section>

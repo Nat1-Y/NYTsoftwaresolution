@@ -1,0 +1,177 @@
+---
+import { site, formConfig } from '../data/site';
+import Icon from './Icon.astro';
+
+const hasBackend = Boolean(formConfig.endpoint);
+---
+
+<section id="contact" class="contact-section" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" id="contact-title">Let's Build Something</h2>
+      <p class="section-subtitle">
+        A project in mind, a custom ERP to scope, or a remote engineering
+        partnership to discuss? The first consultation is free.
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-details glass">
+        <h3>{site.name}</h3>
+        <p class="location-details">
+          Based in {site.locality}, {site.country} · {site.timezone} · Available
+          for global remote contracts
+        </p>
+
+        <div class="contact-item">
+          <Icon name="mail" size={20} class="contact-icon" />
+          <div>
+            <span class="detail-label">Direct contact email</span>
+            <a href={`mailto:${site.email}`} class="detail-val">{site.email}</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <Icon name="globe" size={20} class="contact-icon" />
+          <div>
+            <span class="detail-label">Website domain</span>
+            <div class="placeholder-container">
+              <span class="detail-val placeholder-val">www.nytsoftwaresolutions.com</span>
+              <span class="badge-placeholder">Available for domain linking</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <Icon name="linkedin" size={20} class="contact-icon" />
+          <div>
+            <span class="detail-label">LinkedIn</span>
+            <div class="placeholder-container">
+              <span class="detail-val placeholder-val">{site.name}</span>
+              <span class="badge-placeholder">Awaiting corporate account link</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <Icon name="github" size={20} class="contact-icon" />
+          <div>
+            <span class="detail-label">Developer GitHub</span>
+            <a href={site.github} target="_blank" rel="noopener noreferrer" class="detail-val">
+              github.com/Nat1-Y
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <form
+        class="contact-form glass"
+        id="contact-form"
+        novalidate
+        data-endpoint={formConfig.endpoint}
+        data-access-key={formConfig.accessKey}
+        data-mailto={site.email}
+      >
+        <div class="form-group">
+          <label for="form-name">
+            Full name / organisation<span class="required-mark" aria-hidden="true">*</span>
+          </label>
+          <input
+            type="text"
+            id="form-name"
+            name="name"
+            autocomplete="organization"
+            placeholder="e.g. Spagna Restaurant, or Jane Doe"
+            required
+            aria-describedby="err-name"
+          />
+          <span class="field-error" id="err-name" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="form-email">
+            Contact email<span class="required-mark" aria-hidden="true">*</span>
+          </label>
+          <input
+            type="email"
+            id="form-email"
+            name="email"
+            autocomplete="email"
+            placeholder="email@example.com"
+            required
+            aria-describedby="err-email"
+          />
+          <span class="field-error" id="err-email" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="form-subject">Interest area</label>
+          <select id="form-subject" name="subject">
+            <option value="Custom ERP / SaaS platform">Custom ERP / SaaS platform</option>
+            <option value="Restaurant / POS system">Restaurant / POS system</option>
+            <option value="Remote developer partnership">Remote developer partnership</option>
+            <option value="Free consultation call">Free consultation call</option>
+            <option value="Other inquiry">Other inquiry</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-message">
+            Project description<span class="required-mark" aria-hidden="true">*</span>
+          </label>
+          <textarea
+            id="form-message"
+            name="message"
+            rows="5"
+            placeholder="Outline your scope, the features you need, or your timezone requirements…"
+            required
+            aria-describedby="err-message"></textarea>
+          <span class="field-error" id="err-message" role="alert"></span>
+        </div>
+
+        <!-- Bot trap: hidden from people, irresistible to spam scripts. -->
+        <div class="hp-field" aria-hidden="true">
+          <label for="form-company-url">Do not fill this in</label>
+          <input type="text" id="form-company-url" name="company_url" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <label class="form-consent" for="form-consent">
+          <input type="checkbox" id="form-consent" name="consent" required />
+          <span>
+            I'm happy for NYT Software Solutions to contact me about this
+            enquiry. We don't share your details with anyone else.
+          </span>
+        </label>
+
+        <button type="submit" class="btn btn-primary form-submit">
+          <span class="submit-label">Send message</span>
+          <Icon name="send" size={18} class="send-icon" />
+        </button>
+
+        <!--
+          Status is polite-live so the outcome is announced, and it only ever
+          reports what actually happened.
+        -->
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+
+        {
+          !hasBackend && (
+            <div class="form-fallback" id="form-fallback" hidden>
+              <strong>One more step.</strong> This site has no form server
+              connected yet, so we can't deliver the message for you — and we
+              won't pretend otherwise. Your details are ready to send:
+              <div class="form-fallback-actions">
+                <a class="btn btn-primary" id="fallback-mail" href={`mailto:${site.email}`}>
+                  Open in email app
+                </a>
+                <button type="button" class="btn btn-secondary" id="fallback-copy">
+                  Copy message
+                </button>
+              </div>
+            </div>
+          )
+        }
+      </form>
+    </div>
+  </div>
+</section>

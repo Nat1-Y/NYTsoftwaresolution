@@ -1,0 +1,60 @@
+---
+import { engagements } from '../data/engagement';
+---
+
+<section id="engagement" class="engagement-section" aria-labelledby="engagement-title">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" id="engagement-title">How We Work Together</h2>
+      <p class="section-subtitle">
+        Three ways to engage us. Pick the one that matches where your project
+        is today — we will tell you honestly if a different one fits better.
+      </p>
+    </div>
+
+    <div class="engagement-grid">
+      {
+        engagements.map((e) => (
+          <div class:list={['engagement-card', 'glass', e.featured && 'featured']}>
+            {e.featured && <span class="engagement-flag">Most requested</span>}
+
+            <h3>{e.title}</h3>
+            <p class="engagement-for">{e.audience}</p>
+            <p class="engagement-desc">{e.description}</p>
+
+            <dl class="engagement-meta">
+              {e.meta.map((m) => (
+                <div>
+                  <dt>{m.label}</dt>
+                  <dd>{m.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <ul class="engagement-includes">
+              {e.includes.map((i) => (
+                <li>
+                  <span aria-hidden="true">✓</span>
+                  {i}
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="#contact"
+              class:list={['btn', e.featured ? 'btn-primary' : 'btn-secondary']}
+            >
+              {e.cta}
+            </a>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="engagement-note">
+      We do not publish fixed price lists, because a number without a scope
+      behind it is guesswork. Tell us what you need and you will get a written
+      estimate — the consultation that produces it is free.
+    </p>
+  </div>
+</section>

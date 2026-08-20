@@ -1,0 +1,74 @@
+---
+/**
+ * The NYT monogram, drawn as geometry rather than set in a typeface.
+ *
+ * N, Y and T are entirely straight-edged, so they reproduce exactly as
+ * polygons — no font dependency, crisp at any size, and the letterforms
+ * recolour with the theme (`currentColor`) while the triangle in the Y's fork
+ * always carries the brand accent.
+ *
+ * The chamfered corners on the N and T echo the angular cuts in the mark.
+ *
+ * If you later drop the original artwork at `public/logo.png`, this component
+ * is the only place that needs to change.
+ */
+interface Props {
+  /** `mark` = monogram only. `full` = monogram above the stacked wordmark. */
+  variant?: 'mark' | 'full';
+  /** Height of the monogram in px. */
+  size?: number;
+  class?: string;
+}
+
+const { variant = 'mark', size = 34, class: className } = Astro.props;
+
+// viewBox is 230 × 100; scale the width to match the requested height.
+const width = Math.round((230 / 100) * size);
+---
+
+<span class:list={['logo-lockup', `logo-${variant}`, className]}>
+  <svg
+    class="logo-mark"
+    viewBox="0 0 230 100"
+    width={width}
+    height={size}
+    aria-hidden="true"
+    focusable="false"
+  >
+    <!-- N — chamfered top-left outer corner -->
+    <path
+      fill="currentColor"
+      d="M0,100 L0,14 L14,0 L22,0 L62,60 L62,0 L84,0 L84,100 L62,100 L22,40 L22,100 Z"
+    />
+
+    <!-- Y -->
+    <path
+      fill="currentColor"
+      transform="translate(78,0)"
+      d="M0,0 L24,0 L38,26 L52,0 L76,0 L49,50 L49,100 L27,100 L27,50 Z"
+    />
+
+    <!-- The triangle seated in the Y's fork — always the brand accent -->
+    <path class="logo-triangle" transform="translate(78,0)" d="M24,0 L52,0 L38,24 Z" />
+
+    <!-- T — chamfered top-right outer corner -->
+    <path
+      fill="currentColor"
+      transform="translate(158,0)"
+      d="M0,0 L58,0 L72,14 L72,20 L47,20 L47,100 L25,100 L25,20 L0,20 Z"
+    />
+  </svg>
+
+  {
+    variant === 'full' && (
+      <span class="logo-wordmark">
+        <span class="logo-line-1">NYT Software</span>
+        <span class="logo-line-2">
+          <span class="logo-rule" aria-hidden="true" />
+          Solutions
+          <span class="logo-rule" aria-hidden="true" />
+        </span>
+      </span>
+    )
+  }
+</span>

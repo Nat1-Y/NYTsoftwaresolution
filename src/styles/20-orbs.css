@@ -25,7 +25,7 @@
   height: 500px;
   top: -150px;
   right: -50px;
-  background-color: var(--hero-orb-1);
+  background-color: var(--orb-1);
   animation: floatOrb1 20s infinite alternate ease-in-out;
 }
 
@@ -34,7 +34,7 @@
   height: 400px;
   top: 50%;
   left: -100px;
-  background-color: var(--hero-orb-2);
+  background-color: var(--orb-2);
   animation: floatOrb2 25s infinite alternate ease-in-out;
 }
 
@@ -43,7 +43,7 @@
   height: 350px;
   bottom: 100px;
   right: -50px;
-  background-color: var(--hero-orb-3);
+  background-color: var(--orb-3);
   animation: floatOrb1 18s infinite alternate-reverse ease-in-out;
 }
 

@@ -1,0 +1,88 @@
+---
+import Icon from './Icon.astro';
+---
+
+<div class="chatbot-container" id="chatbot-container">
+  <button
+    class="chatbot-toggle"
+    id="chatbot-toggle"
+    aria-label="Open chat assistant"
+    aria-expanded="false"
+    aria-controls="chatbot-window"
+  >
+    <span class="chatbot-toggle-icon chatbot-open-icon">
+      <Icon name="chat" size={26} />
+    </span>
+    <span class="chatbot-toggle-icon chatbot-close-icon" style="display:none">
+      <Icon name="close" size={24} />
+    </span>
+    <span class="chatbot-notif" aria-hidden="true">1</span>
+  </button>
+
+  <div
+    class="chatbot-window"
+    id="chatbot-window"
+    role="dialog"
+    aria-label="NYT assistant"
+    aria-modal="false"
+  >
+    <div class="chatbot-header">
+      <div class="chatbot-avatar" aria-hidden="true">
+        <Icon name="bot" size={22} />
+      </div>
+      <div class="chatbot-header-info">
+        <strong>NYT Assistant</strong>
+        <span class="chatbot-online">
+          <span class="online-dot" aria-hidden="true"></span>Automated replies
+        </span>
+      </div>
+      <button class="chatbot-minimize" id="chatbot-minimize" aria-label="Close chat">
+        <Icon name="close" size={18} />
+      </button>
+    </div>
+
+    <!--
+      Replies are announced politely rather than assertively so the assistant
+      never interrupts a screen reader mid-sentence.
+    -->
+    <div
+      class="chatbot-messages"
+      id="chatbot-messages"
+      tabindex="0"
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions"
+      aria-label="Conversation"
+    >
+    </div>
+
+    <div class="chatbot-suggestions" id="chatbot-suggestions">
+      <button class="suggest-btn" data-question="What can you build for my business?">
+        What can you build?
+      </button>
+      <button class="suggest-btn" data-question="How much does a project cost?">
+        How much does it cost?
+      </button>
+      <button class="suggest-btn" data-question="Can you work with international clients remotely?">
+        Do you work remotely?
+      </button>
+      <button class="suggest-btn" data-question="Can you show me past projects you have done?">
+        Show me your work
+      </button>
+    </div>
+
+    <div class="chatbot-input-area">
+      <label class="sr-only" for="chatbot-input">Message the NYT assistant</label>
+      <input
+        type="text"
+        id="chatbot-input"
+        class="chatbot-input"
+        placeholder="Ask about pricing, timelines, or our work…"
+        autocomplete="off"
+      />
+      <button class="chatbot-send" id="chatbot-send" aria-label="Send message">
+        <Icon name="send" size={20} />
+      </button>
+    </div>
+  </div>
+</div>

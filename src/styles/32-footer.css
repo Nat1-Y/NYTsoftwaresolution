@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------- */
 .main-footer {
   border-top: 1px solid var(--border);
-  background: #05070a;
+  background: var(--bg-deep);
   padding: 4rem 0 3rem 0;
 }
 
@@ -63,3 +63,27 @@
   display: block;
 }
 
+
+/* --------------------------------------------------------------------------
+   v2: the footer gained a Contact column; stop the link text wrapping and
+   give the columns room to breathe.
+   -------------------------------------------------------------------------- */
+.footer-right {
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a,
+.footer-links h4 {
+  white-space: nowrap;
+}
+
+.footer-links .footer-span {
+  white-space: normal;
+  max-width: 22ch;
+}
+
+@media (max-width: 560px) {
+  .footer-links a,
+  .footer-links h4 { white-space: normal; }
+}
