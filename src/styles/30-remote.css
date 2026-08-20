@@ -1,0 +1,56 @@
+/* --------------------------------------------------------------------------
+   13. Remote Collaboration & Services Layout
+   -------------------------------------------------------------------------- */
+.remote-box {
+  padding: 4rem;
+}
+
+.remote-header {
+  margin-bottom: 3rem;
+}
+
+.remote-header h2 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.lead-text {
+  color: var(--text-secondary);
+  font-size: 1.15rem;
+}
+
+.remote-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+}
+
+.remote-column h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.remote-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.remote-list li {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.remote-list li span {
+  color: var(--accent);
+  font-weight: bold;
+  transition: var(--transition-smooth);
+}
+

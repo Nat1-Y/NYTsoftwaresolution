@@ -1,0 +1,111 @@
+/* --------------------------------------------------------------------------
+   Testimonials Section
+   -------------------------------------------------------------------------- */
+.testimonials-section {
+  padding: 7rem 0;
+  position: relative;
+}
+.testimonials-track {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 2.5rem;
+}
+.testimonial-slide {
+  min-width: 100%;
+  padding: 0.5rem;
+  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.testimonial-card {
+  padding: 2.5rem;
+  border-radius: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+.testi-stars {
+  font-size: 1.4rem;
+  color: #f59e0b;
+  letter-spacing: 4px;
+  margin-bottom: 1.5rem;
+}
+.testi-quote {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 2rem;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.testi-author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.testi-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #000;
+  flex-shrink: 0;
+}
+.testi-author strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+.testi-author span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.testi-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.testi-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.testi-arrow:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+}
+.testi-dots {
+  display: flex;
+  gap: 0.6rem;
+}
+.testi-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-hover);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.testi-dot.active {
+  background: var(--accent);
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+}
+

@@ -1,0 +1,50 @@
+/* --------------------------------------------------------------------------
+   12. Development Process Timeline Layout
+   -------------------------------------------------------------------------- */
+.process-timeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.timeline-step {
+  position: relative;
+  background: rgba(13, 19, 33, 0.2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: var(--transition-smooth);
+}
+
+.timeline-step:hover {
+  background: rgba(13, 19, 33, 0.4);
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: rgba(var(--accent-rgb), 0.15);
+  margin-bottom: 0.5rem;
+  transition: var(--transition-smooth);
+}
+
+.timeline-step:hover .step-num {
+  color: var(--accent);
+  text-shadow: var(--shadow-glow);
+}
+
+.timeline-step h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.timeline-step p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+

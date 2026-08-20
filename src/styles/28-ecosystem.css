@@ -1,0 +1,77 @@
+/* --------------------------------------------------------------------------
+   11. The NYT Technical Ecosystem (Tech Stack)
+   -------------------------------------------------------------------------- */
+.tech-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 3.5rem;
+}
+
+.filter-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.5rem 1.2rem;
+  border-radius: 99px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.filter-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.filter-btn.active {
+  background: var(--accent-gradient);
+  color: #07090e;
+  border-color: transparent;
+  box-shadow: var(--shadow-glow);
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.2rem;
+}
+
+.tech-card {
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  height: 120px;
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.tech-card.hidden {
+  opacity: 0.08;
+  pointer-events: none;
+  transform: scale(0.92);
+}
+
+.tech-badge {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tech-card p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.tech-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+

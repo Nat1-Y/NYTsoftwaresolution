@@ -1,0 +1,198 @@
+/* --------------------------------------------------------------------------
+   Assorted refinements: trust bar, metric sourcing, toasts, form states
+   -------------------------------------------------------------------------- */
+
+/* --- Metric provenance ------------------------------------------------ */
+.metric-source {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* --- Trust / credibility bar ------------------------------------------ */
+.trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.75rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+
+.trust-item svg { color: var(--accent); flex-shrink: 0; }
+
+/* --- Form: field-level validation ------------------------------------- */
+.form-group { position: relative; }
+
+.field-error {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--danger);
+  min-height: 1rem;
+}
+
+.form-group input[aria-invalid='true'],
+.form-group textarea[aria-invalid='true'],
+.form-group select[aria-invalid='true'] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.12);
+}
+
+.required-mark {
+  color: var(--danger);
+  margin-left: 0.15rem;
+}
+
+.form-consent {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.form-consent input {
+  margin-top: 0.2rem;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Honeypot — hidden from humans, catchable by bots */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+/* --- Fallback panel when no form backend is configured ---------------- */
+.form-fallback {
+  margin-top: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  background: rgba(var(--accent-rgb), 0.06);
+  border-radius: var(--r-md);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.form-fallback a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.form-fallback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.9rem;
+}
+
+/* --- Toast ------------------------------------------------------------- */
+.toast-region {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  pointer-events: none;
+  width: min(420px, calc(100vw - 2rem));
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--r-md);
+  background: rgba(11, 15, 24, 0.97);
+  border: 1px solid var(--border-hover);
+  box-shadow: var(--shadow-md);
+  font-size: 0.9rem;
+  animation: toast-in 0.3s var(--ease-spring);
+  pointer-events: auto;
+}
+
+.toast.success { border-color: rgba(16, 185, 129, 0.4); }
+.toast.error { border-color: rgba(244, 63, 94, 0.4); }
+.toast.success svg { color: var(--success); }
+.toast.error svg { color: var(--danger); }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Offline banner (PWA) --------------------------------------------- */
+.offline-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5500;
+  padding: 0.7rem 1rem;
+  text-align: center;
+  background: var(--warning);
+  color: #1a1205;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transform: translateY(100%);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.offline-banner.visible { transform: translateY(0); }
+
+/* --- Rendering performance: skip offscreen section paint --------------- */
+.process-section,
+.remote-services-section,
+.testimonials-section,
+.faq-section,
+.engagement-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+/* --- Active nav underline --------------------------------------------- */
+.nav-link { position: relative; }
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-gradient);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.nav-link:hover::after,
+.nav-link.active-nav::after { transform: scaleX(1); }

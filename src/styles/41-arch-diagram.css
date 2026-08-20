@@ -1,0 +1,60 @@
+/* --------------------------------------------------------------------------
+   Architecture Diagrams — inline SVG, theme-aware, scrollable on small screens
+   -------------------------------------------------------------------------- */
+.arch-figure {
+  margin: 1.5rem 0 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.arch-scroll {
+  overflow-x: auto;
+  padding: 1.25rem 1rem;
+  scrollbar-width: thin;
+}
+
+.arch-svg {
+  display: block;
+  min-width: 460px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.arch-node { fill: rgba(255, 255, 255, 0.04); stroke: var(--border-hover); stroke-width: 1; }
+.arch-node-accent { fill: rgba(var(--accent-rgb), 0.12); stroke: rgba(var(--accent-rgb), 0.5); stroke-width: 1; }
+.arch-label { fill: var(--text-primary); font-family: var(--font-sans); font-size: 11px; font-weight: 600; }
+.arch-sub { fill: var(--text-muted); font-family: var(--font-mono); font-size: 8.5px; }
+.arch-edge { stroke: var(--text-muted); stroke-width: 1.2; fill: none; opacity: 0.55; }
+.arch-edge-accent { stroke: var(--accent); stroke-width: 1.4; fill: none; opacity: 0.85; }
+.arch-edge-dashed { stroke-dasharray: 4 3; }
+.arch-edge-label { fill: var(--text-muted); font-family: var(--font-mono); font-size: 8px; }
+.arch-arrow { fill: var(--text-muted); opacity: 0.55; }
+.arch-arrow-accent { fill: var(--accent); opacity: 0.85; }
+
+.arch-caption {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.arch-caption strong { color: var(--text-secondary); }
+
+/* Animated dataflow pulse along accent edges */
+.arch-pulse {
+  fill: var(--accent);
+  animation: arch-flow 3s linear infinite;
+  offset-rotate: 0deg;
+}
+
+@keyframes arch-flow {
+  from { offset-distance: 0%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  to   { offset-distance: 100%; opacity: 0; }
+}

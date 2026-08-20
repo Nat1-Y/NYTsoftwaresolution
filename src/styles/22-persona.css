@@ -1,0 +1,112 @@
+/* --------------------------------------------------------------------------
+   5. Persona Switcher Widget
+   -------------------------------------------------------------------------- */
+.persona-section {
+  padding-top: 100px;
+  padding-bottom: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.persona-switcher-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(13, 19, 33, 0.4);
+  padding: 1rem 2rem;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.switcher-intro {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.live-pulse {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 1.5s infinite;
+  transition: var(--transition-smooth);
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+.switcher-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.switcher-widget {
+  position: relative;
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  padding: 4px;
+  border-radius: 99px;
+  width: 480px;
+  max-width: 100%;
+}
+
+.switcher-btn {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.switcher-btn.active {
+  color: #07090e;
+}
+
+.switcher-icon {
+  transition: transform 0.3s ease;
+}
+
+.switcher-btn:hover .switcher-icon {
+  transform: scale(1.1);
+}
+
+.switcher-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  width: calc(50% - 4px);
+  background: var(--accent-gradient);
+  border-radius: 99px;
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.4s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Switcher state translation script-based toggle */
+body.mode-tech .switcher-slider {
+  transform: translateX(100%);
+}
+

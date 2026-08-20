@@ -1,0 +1,165 @@
+/* --------------------------------------------------------------------------
+   14. Contact Form & Corporate Info
+   -------------------------------------------------------------------------- */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 3rem;
+  align-items: stretch;
+}
+
+.contact-details {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.contact-details h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.location-details {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: -1.5rem;
+}
+
+.contact-item {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.contact-icon {
+  color: var(--accent);
+  margin-top: 0.2rem;
+  transition: var(--transition-smooth);
+}
+
+.detail-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.detail-val {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.detail-val:hover {
+  color: var(--accent);
+}
+
+/* Custom placeholder badge style */
+.placeholder-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.placeholder-val {
+  color: var(--text-muted);
+  font-style: italic;
+  cursor: default;
+}
+
+.placeholder-val:hover {
+  color: var(--text-muted);
+}
+
+.badge-placeholder {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Contact Form Input Fields Styling */
+.contact-form {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.form-group select {
+  cursor: pointer;
+}
+
+.form-group select option {
+  background-color: #0d1321;
+  color: var(--text-primary);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.form-submit {
+  border: none;
+  margin-top: 1rem;
+}
+
+.send-icon {
+  transition: transform 0.2s ease;
+}
+
+.form-submit:hover .send-icon {
+  transform: translate(2px, -2px);
+}
+
+.form-status {
+  font-size: 0.9rem;
+  text-align: center;
+  min-height: 24px;
+}
+
+.form-status.success {
+  color: #10b981;
+}
+
+.form-status.error {
+  color: #ef4444;
+}
+

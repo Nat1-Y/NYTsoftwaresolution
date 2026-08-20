@@ -1,0 +1,41 @@
+/* --------------------------------------------------------------------------
+   7. About Section Layout
+   -------------------------------------------------------------------------- */
+.about-section {
+  background: radial-gradient(circle at 50% 50%, rgba(13, 19, 33, 0.3), transparent 70%);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.about-info-card {
+  padding: 3rem 2.5rem;
+}
+
+.about-info-card h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.about-info-card h3::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  background-color: var(--accent);
+  margin-top: 0.5rem;
+  border-radius: 2px;
+  transition: var(--transition-smooth);
+}
+
+.about-info-card p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
