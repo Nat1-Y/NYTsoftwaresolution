@@ -44,6 +44,18 @@ const check = (name, pass, detail = '') => {
 await mkdir(OUT, { recursive: true });
 
 /**
+ * Screenshots are diagnostics, not assertions. A full disk or a slow paint
+ * must not take the whole suite down with it.
+ */
+async function snap(page, path) {
+  try {
+    await page.screenshot({ path });
+  } catch (err) {
+    console.log(`  note   screenshot skipped (${String(err.message).split('\n')[0]})`);
+  }
+}
+
+/**
  * Click via the element itself rather than by screen coordinate. Reveal
  * animations move elements while they run, and a coordinate click can land on
  * whatever slid into that spot instead.
@@ -274,7 +286,7 @@ try {
     reply.slice(0, 60).replace(/\s+/g, ' '));
 
   await page.evaluate(() => document.getElementById('chatbot-minimize')?.click());
-  await page.screenshot({ path: `${OUT}/desktop.png` });
+  await snap(page, `${OUT}/desktop.png`);
 
   /* --- Splash timing: honours the configured hold, and always ends ------- */
   {
@@ -404,11 +416,11 @@ try {
   check('offline banner hidden while online', banner.online ? !banner.visible : true,
     'navigator.onLine=' + banner.online);
 
-  await m.screenshot({ path: `${OUT}/mobile-menu.png` });
+  await snap(m, `${OUT}/mobile-menu.png`);
 
   await tap(m, '#mobile-nav-toggle');
   await new Promise((r) => setTimeout(r, 400));
-  await m.screenshot({ path: `${OUT}/mobile.png`, fullPage: true });
+  await snap(m, `${OUT}/mobile.png`);
 
   /* ============================ REDUCED MOTION =========================== */
   console.log('\nReduced motion');
