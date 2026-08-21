@@ -103,6 +103,7 @@ Almost nothing needs a code change.
 | Tech stack + filters | [`src/data/tech.ts`](src/data/tech.ts) |
 | Process steps, remote services | [`src/data/process.ts`](src/data/process.ts) |
 | Engagement models | [`src/data/engagement.ts`](src/data/engagement.ts) |
+| Blueprint Studio: systems, modules, scales, phases | [`src/data/blueprint.ts`](src/data/blueprint.ts) |
 | FAQ (also feeds Google's FAQ rich result) | [`src/data/faq.ts`](src/data/faq.ts) |
 | Testimonials | [`src/data/testimonials.ts`](src/data/testimonials.ts) |
 | Chatbot answers | [`src/scripts/chatbot.ts`](src/scripts/chatbot.ts) |
@@ -205,6 +206,41 @@ Inverted regions (the footer in the light theme, any `.panel-deep`) redefine
 the colour tokens on their own subtree, so anything dropped inside them
 inherits correct contrast automatically rather than needing per-element
 overrides.
+
+### The Blueprint Studio
+
+![The Blueprint Studio, engineering view](screenshots/blueprint-studio.png)
+
+The page's one interactive tool, and the strongest lead qualifier on the site.
+A visitor answers four questions — what they are building, how far it has to
+reach, what it must do, how they want it run — and the page answers with:
+
+- an **architecture diagram generated from their selection**, laid out from a
+  node list rather than hand-drawn, so any combination renders legibly;
+- a **phased calendar** split across discovery, design, build, hardening and
+  launch;
+- a **written brief** they can copy, or drop straight into the contact form
+  with one click.
+
+Everything it knows lives in [`src/data/blueprint.ts`](src/data/blueprint.ts):
+system types with their base durations, capability modules with the weeks and
+the components each adds, scale multipliers, and delivery paces. Adding a new
+capability is one object in the `modules` array — the estimate, the diagram and
+the brief all pick it up.
+
+**It does not print a price, on purpose.** The tool knows four facts about a
+project; that is nowhere near enough to put a number on an invoice, and a
+visitor who plans around a guessed figure has been badly served. It gives a
+duration *range* — widening with the size of the job, because a twenty-week
+estimate is not as knowable as a six-week one — and says plainly on screen that
+this is a shape, not a quote. Cost stays a conversation.
+
+The controls are native radios and checkboxes moved off-screen, never
+`display: none` — the platform's keyboard behaviour for a radio group is
+already correct, and re-implementing it on `<div>`s means owning that
+correctness forever. The whole summary sits in one polite live region rather
+than four, so ticking a box announces one update instead of interrupting four
+times.
 
 ### Architecture diagrams
 

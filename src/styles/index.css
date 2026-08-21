@@ -9,7 +9,6 @@
 @import './10-layout.css';
 
 /* Core sections (original cascade order preserved) */
-@import './20-orbs.css';
 @import './21-header.css';
 @import './22-persona.css';
 @import './23-hero.css';
@@ -38,4 +37,11 @@
 @import './41-arch-diagram.css';
 @import './42-extras.css';
 @import './43-brand.css';
+@import './44-blueprint.css';
 @import './51-responsive-extra.css';
+
+/* Hero v2 — loaded last so it wins the cascade over the original hero rules */
+@import './45-hero.css';
+
+/* Editorial layer — restates the primitives. Must load last. */
+@import './46-editorial.css';

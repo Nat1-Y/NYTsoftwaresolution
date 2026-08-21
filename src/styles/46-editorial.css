@@ -1,0 +1,1021 @@
+/* ==========================================================================
+   EDITORIAL LAYER
+
+   Loaded last, on purpose. Everything above it was built around one shape —
+   a rounded card with a soft shadow, floating on white, centred — repeated
+   at four different sizes. That shape is what makes a page look like it was
+   assembled rather than designed, and it is not worth un-picking rule by
+   rule across thirty files.
+
+   So this layer restates the primitives instead: the rule replaces the
+   shadow, the column replaces the card, the kicker replaces the pill, and
+   the serif replaces the gradient. Later sections inherit the new shapes
+   without knowing anything changed.
+
+   Rules of the house:
+     · a measurement is always mono, never the body face
+     · a heading is always the serif, never bold sans
+     · a label is always small-caps and tracked, never a pill
+     · separation is a 1px rule, never a shadow
+     · nothing is centred unless it is genuinely symmetrical content
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   TYPE — the foundation the rest of this file assumes
+   -------------------------------------------------------------------------- */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.62;
+  letter-spacing: -0.003em;
+}
+
+h1, h2, h3, h4,
+.section-title,
+.hero-title {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: var(--display-wonk);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* The kicker. One shape, used for every eyebrow, label and nav item on the
+   page — which is what makes them read as a system instead of as decoration. */
+.kicker,
+.hero-badge,
+.switcher-intro,
+.section-header::before {
+  font-family: var(--font-mono);
+  font-size: var(--kicker-size);
+  font-weight: 500;
+  letter-spacing: var(--kicker-track);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Anything that is a number is set in mono with tabular figures, so columns
+   of them line up and none of them wobble while a counter animates. */
+.stat-num,
+.console-metric-val,
+.metric-value,
+.error-code {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   THE GROUND
+
+   A single hairline grid, fixed to the viewport, at the threshold of
+   visibility. It is the one piece of background decoration left, and unlike
+   the drifting blurred orbs it does something: it gives the page a measure,
+   so the asymmetric columns below read as placed on a grid rather than as
+   arbitrary.
+   -------------------------------------------------------------------------- */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 96px 96px;
+  /* Fades out fast. It should register as a texture you notice on the second
+     look, not as a wireframe running behind the type. */
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 42%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 42%);
+}
+
+/* --------------------------------------------------------------------------
+   SECTION HEADERS
+
+   Was: centred, 700px wide, with a 52px dash floating under the title.
+   Now: a numbered masthead rule across the full measure, title left, standfirst
+   in a second column. The counter means the sections number themselves — no
+   markup anywhere needs to know its own position.
+   -------------------------------------------------------------------------- */
+main { counter-reset: sec; }
+
+.section-header {
+  counter-increment: sec;
+  text-align: left;
+  max-width: none;
+  margin: 0 0 3.5rem 0;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  column-gap: 3rem;
+  align-items: start;
+  position: relative;
+}
+
+.section-header::before {
+  content: counter(sec, decimal-leading-zero);
+  position: absolute;
+  top: 1.15rem;
+  right: 0;
+  color: var(--mark);
+}
+
+.section-title {
+  font-size: var(--step-3);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+/* The dash under every title was the same 52px on every section. Gone. */
+.section-title::after { content: none; }
+
+/* The right gutter is reserved for the section number, which is positioned
+   out of flow — without it the standfirst runs straight underneath. */
+.section-subtitle {
+  font-size: var(--step-0);
+  color: var(--text-secondary);
+  max-width: 46ch;
+  margin: 0;
+  align-self: end;
+  padding-bottom: 0.4rem;
+  padding-right: 3.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   THE CARD, DEMOTED
+
+   .glass is used by nearly every section. It stops being an object that
+   floats and becomes a panel that sits on the paper: hairline, no shadow,
+   4px corners. Hover moves the rule, not the box — a card that lifts off the
+   page on mouseover is the other half of the generated-site signature.
+   -------------------------------------------------------------------------- */
+.glass {
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  box-shadow: none;
+  transition: border-color 0.28s var(--ease-out), background-color 0.28s var(--ease-out);
+}
+
+.glass:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-2);
+  box-shadow: none;
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   BUTTONS — flat, sharp, and honest about which one is primary
+   -------------------------------------------------------------------------- */
+.btn {
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  padding: 0.82rem 1.6rem;
+  border-radius: var(--r-sm);
+  box-shadow: none;
+}
+
+.btn-primary {
+  background: var(--text-primary);
+  color: var(--bg);
+  border: 1px solid var(--text-primary);
+  box-shadow: none;
+}
+
+.btn-primary:hover {
+  background: var(--mark);
+  border-color: var(--mark);
+  color: #fff;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: transparent;
+  border-color: var(--text-primary);
+  transform: none;
+}
+
+/* The arrow travels on hover instead of the whole button jumping. */
+.btn .arrow-icon { transition: transform 0.28s var(--ease-out); }
+.btn:hover .arrow-icon { transform: translateX(4px); }
+
+/* --------------------------------------------------------------------------
+   HERO
+   -------------------------------------------------------------------------- */
+
+/* The badge was a pill with a pulsing dot — the single most recognisable
+   tell on the web right now. Same markup, re-set as a printed kicker with a
+   rule where the dot was. */
+.hero-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 2rem;
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.hero-badge .badge-dot {
+  width: 28px;
+  height: 1px;
+  flex: none;
+  border-radius: 0;
+  background: var(--mark);
+  animation: none;
+  box-shadow: none;
+}
+
+.hero-title {
+  font-size: var(--step-4);
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  line-height: 1.02;
+  margin-bottom: 1.5rem;
+}
+
+/*
+ * The second clause was gradient-filled blue — decoration standing in for
+ * hierarchy. It becomes the serif's italic in the sienna mark: the same
+ * emphasis, made with the typeface instead of with a fill.
+ */
+.gradient-text {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: currentColor;
+  color: var(--mark);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.024em;
+}
+
+.hero-lead {
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  max-width: 48ch;
+  letter-spacing: -0.011em;
+}
+
+.hero-actions { gap: 0.75rem; }
+
+/* Stats: a rule-ruled row, numerals in mono, labels as kickers. */
+.hero-stats {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+  gap: 0;
+}
+
+.hero-stats .stat-card {
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.1rem 1.25rem;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+
+.hero-stats .stat-card:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.hero-stats .stat-card:hover {
+  background: none;
+  border-color: var(--rule);
+  transform: none;
+}
+
+.hero-stats .stat-num {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.hero-stats .stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+/* The console keeps its own voice — it was already the best thing on the
+   page — it just loses the pillow corners and the float. */
+.console {
+  border-radius: var(--r-lg);
+  box-shadow: none;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+}
+
+/* Same treatment as the case-study metric, so the console's headline number
+   and the card's headline number are visibly the same kind of object. */
+.console-metric {
+  background: none;
+  border: 0;
+  border-left: 2px solid var(--mark);
+  border-radius: 0;
+  padding: 0.1rem 0 0.1rem 1rem;
+}
+
+.console-metric-val { color: var(--text-primary); font-weight: 500; }
+.console-check { color: var(--mark); }
+.console-tab.active { border-bottom-color: var(--mark); }
+
+.hero-visual-note {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+.hero-visual-note a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border-hover);
+}
+
+.hero-visual-note a:hover { color: var(--mark); text-decoration-color: var(--mark); }
+
+/* --------------------------------------------------------------------------
+   MASTHEAD
+
+   The header sat on a blurred translucent bar with a filled blue pill at the
+   right end. It becomes a masthead: hairline underneath, nav set as kickers,
+   the call to action a ruled box rather than a lozenge.
+   -------------------------------------------------------------------------- */
+.main-header {
+  background: var(--surface-translucent);
+  border-bottom: 1px solid var(--rule);
+  box-shadow: none;
+}
+
+/*
+ * Full-bleed, like a masthead. It also buys back the ~240px the mono nav
+ * costs over the old sentence-case one: uppercase mono is a wide setting,
+ * and eight links plus a search trigger plus a CTA do not fit inside a
+ * 1200px measure at these letterforms.
+ */
+.header-container {
+  max-width: none;
+  padding: 0 2rem;
+  gap: 1.75rem;
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.nav-link:hover { color: var(--text-primary); }
+
+.nav-menu { gap: 1.15rem; }
+
+.header-cta {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.67rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Tighten before anything is allowed to overflow, the way the sans nav did. */
+@media (max-width: 1400px) and (min-width: 769px) {
+  .nav-menu { gap: 0.85rem; }
+  .nav-link { font-size: 0.63rem; letter-spacing: 0.05em; }
+}
+
+.cmdk-trigger {
+  border-radius: var(--r-sm);
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.71rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.cmdk-trigger:hover { border-color: var(--border-hover); background: transparent; }
+.cmdk-hint { border-radius: var(--r-sm); font-size: 0.62rem; }
+
+/* --------------------------------------------------------------------------
+   PERSONA SWITCH
+
+   Was a large rounded widget with a filled blue slider — a piece of chrome
+   competing with the hero for first attention. It becomes a single ruled
+   line: a label, and two states, one of which is underscored.
+   -------------------------------------------------------------------------- */
+/* Keeps 45-hero's header clearance and centring; only the skin changes. */
+.persona-section {
+  padding-top: calc(var(--header-h) + 2rem);
+  padding-bottom: 0;
+  background: none;
+  border: 0;
+}
+
+/*
+ * A running head: label at the left, the two states at the right, a hairline
+ * under the pair. The pill, the border, the blur and the drop shadow all go.
+ */
+.persona-switcher-container {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 0 0 0.55rem;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.switcher-intro {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.switcher-intro .live-pulse { display: none; }
+
+.switcher-label {
+  font-family: var(--font-mono);
+  font-size: var(--kicker-size);
+  font-weight: 400;
+  letter-spacing: var(--kicker-track);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* The 480px pill track collapses to whatever the two words need. The
+   margin-left:auto from the hero layer stays — it is what holds the two
+   states at the right end of the rule. */
+.switcher-widget {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  gap: 1.5rem;
+  width: auto;
+}
+
+.switcher-btn { flex: 0 0 auto; }
+
+.switcher-slider { display: none; }
+
+.switcher-btn {
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 0.3rem 0.9rem 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.71rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  box-shadow: none;
+  transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+
+.switcher-btn:first-child { padding-left: 0; }
+
+.switcher-btn.active,
+.switcher-btn[aria-pressed='true'] {
+  background: none;
+  color: var(--text-primary);
+  border-bottom-color: var(--mark);
+  box-shadow: none;
+}
+
+.switcher-btn:hover { color: var(--text-primary); }
+.switcher-icon { display: none; }
+
+/* --------------------------------------------------------------------------
+   SERVICES
+
+   Four identical cards, each with a rounded icon tile, a bold title and an
+   arrow-bulleted list. That is the generated layout, verbatim.
+
+   Same markup, re-set as four columns of a broadsheet: divided by rules
+   rather than boxed, numbered, icons reduced to a bare mark in sienna, and
+   the arrow bullets replaced by hanging rules.
+   -------------------------------------------------------------------------- */
+.services-grid {
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.service-card {
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 2rem 1.75rem 2.5rem;
+  gap: 1.15rem;
+  counter-increment: svc;
+}
+
+.services-grid { counter-reset: svc; }
+
+.service-card:first-child { border-left: 0; padding-left: 0; }
+.service-card:last-child { padding-right: 0; }
+
+.service-card:hover {
+  background: none;
+  border-color: var(--rule);
+  transform: none;
+  box-shadow: none;
+}
+
+/* The icon tile becomes a mark: no box, no fill, no glow. */
+.service-icon {
+  width: auto;
+  height: auto;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  color: var(--mark);
+  justify-content: flex-start;
+}
+
+.service-card:hover .service-icon { border: 0; box-shadow: none; }
+
+.service-card h3 {
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.service-list { gap: 0; }
+
+.service-list li {
+  padding: 0.62rem 0 0.62rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+/* The ➔ glyph on every bullet, four times over, twenty times down the page. */
+.service-list li::before { content: none; }
+
+/* --------------------------------------------------------------------------
+   BENEFITS — the pill cloud becomes a ruled index
+   -------------------------------------------------------------------------- */
+.benefits-container {
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--rule-strong);
+  border-radius: 0;
+  padding: 2.25rem 0 0;
+  text-align: left;
+  margin-top: 4.5rem;
+}
+
+.benefits-title {
+  font-size: var(--step-1);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  justify-content: start;
+  gap: 0;
+}
+
+.benefit-tag {
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0.7rem 1.5rem 0.7rem 0;
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  gap: 0.7rem;
+}
+
+.benefit-tag span {
+  color: var(--mark);
+  font-weight: 400;
+  font-size: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   ABOUT — two floating cards become two columns of set text
+   -------------------------------------------------------------------------- */
+.about-section { background: none; }
+
+.about-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.about-info-card {
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 2.25rem 3rem 1rem 0;
+}
+
+.about-info-card:first-child { border-left: 0; }
+.about-info-card:nth-child(2) { padding-left: 3rem; padding-right: 0; }
+
+.about-info-card:hover {
+  background: none;
+  border-color: var(--rule);
+  transform: none;
+  box-shadow: none;
+}
+
+.about-info-card h3 {
+  font-size: var(--step-2);
+  font-weight: 600;
+  margin-bottom: 0.9rem;
+}
+
+.about-info-card h3::after { content: none; }
+
+/*
+ * A drop cap. Entirely unnecessary, which is rather the point — it is the
+ * kind of detail that only gets set by hand, and it anchors the two columns
+ * to the broadsheet idea the rest of the page is running.
+ */
+.about-info-card p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.66;
+}
+
+.about-info-card:first-child p::first-letter {
+  font-family: var(--font-display);
+  font-variation-settings: var(--display-wonk);
+  font-size: 3.1rem;
+  line-height: 0.82;
+  font-weight: 600;
+  float: left;
+  padding: 0.16em 0.12em 0 0;
+  color: var(--mark);
+}
+
+/* --------------------------------------------------------------------------
+   CASE STUDIES
+
+   The cards are the strongest content on the page and mostly survive intact.
+   What goes is the tinted-lozenge vocabulary inside them: the tab pills, the
+   filled metric panel, the pill buttons.
+   -------------------------------------------------------------------------- */
+.project-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--mark);
+}
+
+.project-category {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.project-name { font-size: var(--step-2); font-weight: 600; }
+
+/* Tabs become tabs: a rule with one segment underscored, not two buttons. */
+.card-inner-tabs {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0;
+  gap: 0;
+}
+
+.card-tab-btn {
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.55rem 1.1rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.card-tab-btn:first-child { padding-left: 0; }
+
+.card-tab-btn.active {
+  background: none;
+  box-shadow: none;
+  color: var(--text-primary);
+  border-bottom-color: var(--mark);
+}
+
+/* The headline number: a rule and a large mono figure, no tinted panel. */
+.metric-highlight {
+  background: none;
+  border: 0;
+  border-left: 2px solid var(--mark);
+  border-radius: 0;
+  padding: 0.15rem 0 0.15rem 1.1rem;
+}
+
+.metric-val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+}
+
+.metric-desc { color: var(--text-secondary); }
+
+.metric-source {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.btn-live {
+  background: none;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.btn-live:hover {
+  background: none;
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  transform: none;
+}
+
+.cred-label,
+.guest-credentials code,
+.spec-item {
+  font-family: var(--font-mono);
+}
+
+/* The last two lozenges on the page. A status is a word, not a badge —
+   the colour and the mono setting carry it without a tinted capsule.
+   The variants are the ones the content actually uses: online, visitor,
+   active-vendors. Their colours are kept; only the capsule goes. */
+.badge-status,
+.guest-credentials code {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0.1rem 0;
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.badge-status.online { background: none; color: var(--success); }
+.badge-status.visitor,
+.badge-status.active-vendors { background: none; color: var(--accent); }
+
+.impact-bullets li::marker { color: var(--mark); }
+
+/* --------------------------------------------------------------------------
+   FLAGSHIP — the last pill, and a tagline doing its emphasis in blue
+   -------------------------------------------------------------------------- */
+.flagship-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: var(--kicker-size);
+  font-weight: 500;
+  letter-spacing: var(--kicker-track);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* The same rule that opens the hero eyebrow, so the two read as one device. */
+.flagship-badge::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--mark);
+}
+
+.flagship-tagline {
+  font-family: var(--font-display);
+  font-variation-settings: var(--display-wonk);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mark);
+  letter-spacing: -0.015em;
+}
+
+/*
+ * The trust strip was five items centred in a row, which wrapped 4 + 1 and
+ * left a stray item hanging under the middle of the page. A grid puts them
+ * on a measure, so the wrap is even wherever it lands.
+ */
+.trust-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0;
+  justify-content: start;
+  border-top: 1px solid var(--rule);
+  margin-top: 3rem;
+  padding: 0;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.5rem 0.75rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  justify-content: flex-start;
+}
+
+.trust-item svg { color: var(--mark); flex: none; }
+
+/* --------------------------------------------------------------------------
+   FLOATING UTILITIES — quieter, squarer, and no longer faking a notification
+   -------------------------------------------------------------------------- */
+.chatbot-toggle,
+.scroll-top-btn {
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-md);
+}
+
+.chatbot-toggle {
+  background: var(--text-primary);
+  color: var(--bg);
+  border: 1px solid var(--text-primary);
+}
+
+.chatbot-toggle:hover {
+  background: var(--mark);
+  border-color: var(--mark);
+  color: #fff;
+  transform: none;
+}
+
+.scroll-top-btn {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+}
+
+.chatbot-window,
+.command-palette-panel,
+.cmdk-panel {
+  border-radius: var(--r-lg);
+}
+
+/* --------------------------------------------------------------------------
+   RHYTHM
+
+   Every section was 6rem top and bottom, so the page had no phrasing — each
+   block landed with exactly the weight of the last. Alternating measures
+   give it a cadence, and the rule between sections does the separating.
+   -------------------------------------------------------------------------- */
+section { padding: 5.5rem 0; }
+.hero-section { padding-top: 2.5rem; }
+
+/* --------------------------------------------------------------------------
+   LINKS — one underline behaviour, everywhere
+   -------------------------------------------------------------------------- */
+main a:not(.btn):not(.nav-link):not([class*='card']):not([class*='tab']) {
+  text-underline-offset: 3px;
+}
+
+::selection {
+  background: var(--mark);
+  color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   NARROW SCREENS
+
+   The rules above are all vertical dividers between columns. Once the
+   columns stack, those dividers have to become horizontal or they turn into
+   stray marks down the left edge of the page.
+   -------------------------------------------------------------------------- */
+/*
+ * The hero centres itself below 1080px. Centred text is fine on its own, but
+ * not with an eyebrow that starts with a rule and a headline whose emphasis
+ * is a hanging italic — both of those are built off a left edge. Keep the
+ * column left-aligned all the way down.
+ */
+@media (max-width: 1080px) {
+  .hero-container { justify-items: stretch; text-align: left; }
+  .hero-copy { align-items: flex-start; }
+  .hero-stats .stat-card { align-items: flex-start; text-align: left; }
+  .hero-visual-note { text-align: left; }
+}
+
+@media (max-width: 900px) {
+  /* The bar stacks; the rule under it has to stay a rule, not a box. */
+  .persona-switcher-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 1.1rem;
+    padding: 0 0 0.55rem;
+    border-radius: 0;
+  }
+
+  .switcher-widget { width: auto; margin-left: 0; }
+
+  .section-header {
+    grid-template-columns: 1fr;
+    row-gap: 0.9rem;
+    padding-right: 3.5rem;
+  }
+
+  .section-subtitle { padding-bottom: 0; align-self: start; }
+
+  .services-grid,
+  .about-grid { border-top: 0; }
+
+  .service-card,
+  .about-info-card {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    padding: 1.75rem 0 2rem;
+  }
+
+  .about-info-card:nth-child(2) { padding-left: 0; }
+
+  .hero-stats .stat-card {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    padding: 0.85rem 0 0.6rem;
+  }
+
+  .hero-stats .stat-card:first-child { border-top: 0; }
+
+}
+
+/* Once the eyebrow wraps to two lines, its rule has to sit on the first one
+   rather than float in the middle of the pair. */
+@media (max-width: 700px) {
+  .hero-badge { align-items: flex-start; gap: 0.7rem; }
+  .hero-badge .badge-dot { margin-top: 0.45em; width: 20px; }
+}

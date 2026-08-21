@@ -1,48 +1,151 @@
 ---
+import { getCollection } from 'astro:content';
 import { heroStats, personaCopy } from '../data/site';
 import Icon from './Icon.astro';
+
+/**
+ * The hero.
+ *
+ * The old one stacked a badge, a headline and four stat cards down the middle
+ * of an empty screen — a visitor's first impression of a software company was
+ * a page with no software on it. The right-hand console fixes that: it is the
+ * four systems from the case studies below, with their real specs and their
+ * real headline metrics, cycling as a live readout.
+ *
+ * Nothing in it is invented. Every line is read from the same markdown the
+ * case-study cards use, so the console cannot drift from what we actually
+ * claim further down the page.
+ */
+const systems = (await getCollection('case-studies')).sort(
+  (a, b) => a.data.order - b.data.order
+);
 ---
 
 <section class="hero-section">
   <div class="container hero-container">
-    <p class="hero-badge">
-      <span class="badge-dot" aria-hidden="true"></span>
-      <span class="badge-text" id="dynamic-badge">{personaCopy.business.badge}</span>
-    </p>
+    <!-- ------------------------------------------------------------ copy -- -->
+    <div class="hero-copy">
+      <p class="hero-badge">
+        <span class="badge-dot" aria-hidden="true"></span>
+        <span class="badge-text" id="dynamic-badge">{personaCopy.business.badge}</span>
+      </p>
 
-    <h1 class="hero-title">
-      Enterprise-Grade Engineering.<br />
-      <span class="gradient-text">Local Operational Excellence.</span>
-    </h1>
+      <h1 class="hero-title">
+        Enterprise-Grade Engineering.<br />
+        <span class="gradient-text">Local Operational Excellence.</span>
+      </h1>
 
-    <p class="hero-lead" id="hero-subtitle">{personaCopy.business.heroSubtitle}</p>
+      <p class="hero-lead" id="hero-subtitle">{personaCopy.business.heroSubtitle}</p>
 
-    <div class="hero-actions">
-      <a href="#projects" class="btn btn-primary">
-        <span>Explore Solutions</span>
-        <Icon name="arrow" size={18} class="arrow-icon" />
-      </a>
-      <a href="#contact" class="btn btn-secondary">Book a Consultation</a>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">
+          <span>Explore Solutions</span>
+          <Icon name="arrow" size={18} class="arrow-icon" />
+        </a>
+        <a href="#contact" class="btn btn-secondary">Book a Consultation</a>
+      </div>
+
+      <!--
+        Counters animate from zero, but the real value is in the markup from
+        the start so it survives no-JS, print and screen readers.
+      -->
+      <dl class="hero-stats">
+        {
+          heroStats.map((stat) => (
+            <div class="stat-card">
+              <dt class="stat-label">{stat.label}</dt>
+              <dd
+                class="stat-num"
+                data-count-to={stat.value}
+                data-count-suffix={stat.suffix}
+                set:text={`${stat.value}${stat.suffix}`}
+              />
+            </div>
+          ))
+        }
+      </dl>
     </div>
 
+    <!-- --------------------------------------------------------- console -- -->
     <!--
-      Counters animate from zero, but the real value is in the markup from the
-      start so it survives no-JS, print and screen readers.
+      Hidden from assistive tech on purpose. It cycles every few seconds, and
+      a live region that rewrites itself on a timer is hostile to a screen
+      reader — while every fact inside it is already available, in stable
+      prose and with a working link, in the Case Studies section below.
     -->
-    <dl class="hero-stats">
-      {
-        heroStats.map((stat) => (
-          <div class="stat-card">
-            <dt class="stat-label">{stat.label}</dt>
-            <dd
-              class="stat-num"
-              data-count-to={stat.value}
-              data-count-suffix={stat.suffix}
-              set:text={`${stat.value}${stat.suffix}`}
-            />
-          </div>
-        ))
-      }
-    </dl>
+    <div class="hero-visual">
+      <div class="console" id="hero-console" aria-hidden="true">
+        <div class="console-chrome">
+          <span class="console-dots"><i></i><i></i><i></i></span>
+          <span class="console-path">nyt — production</span>
+          <span class="console-live">
+            <i class="console-live-dot"></i>
+            {systems.length} systems live
+          </span>
+        </div>
+
+        <div class="console-tabs">
+          {
+            systems.map((system, i) => (
+              <span class:list={['console-tab', { active: i === 0 }]} data-console-tab={i}>
+                {system.id}
+              </span>
+            ))
+          }
+        </div>
+
+        <div class="console-panels">
+          {
+            systems.map((system, i) => (
+              <div
+                class:list={['console-panel', { active: i === 0 }]}
+                data-console-panel={i}
+              >
+                <p class="console-cmd">
+                  <span class="console-prompt">$</span>
+                  <span class="console-typed" data-full={`nyt inspect ${system.id}`}>
+                    {`nyt inspect ${system.id}`}
+                  </span>
+                  <span class="console-caret" />
+                </p>
+
+                <p class="console-name">
+                  {system.data.name}
+                  <span class="console-category">{system.data.category}</span>
+                </p>
+
+                <ul class="console-lines">
+                  {system.data.tech.specs.slice(0, 3).map((spec) => (
+                    <li class="console-line">
+                      <span class="console-check">✓</span>
+                      <span class="console-key">{spec.label}</span>
+                      <span class="console-val">{spec.value}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div class="console-metric">
+                  <span class="console-metric-val">{system.data.business.metric.value}</span>
+                  <span class="console-metric-desc">
+                    {system.data.business.metric.description}
+                  </span>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="console-foot">
+          <span>Addis Ababa · EAT (UTC+3)</span>
+          <span class="console-foot-sep">·</span>
+          <span>source code handed over on delivery</span>
+        </div>
+      </div>
+
+      <p class="hero-visual-note">
+        The four systems above are in production today — open any of them from
+        <a href="#projects">Case Studies</a>.
+      </p>
+    </div>
   </div>
 </section>

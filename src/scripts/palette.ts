@@ -109,6 +109,15 @@ function buildCommands(): Command[] {
       run: () => $<HTMLButtonElement>('#btn-tech')?.click(),
     },
     {
+      id: 'blueprint',
+      label: 'Scope a project',
+      desc: 'Blueprint Studio — architecture, phases and a brief',
+      group: 'Actions',
+      icon: 'action',
+      keywords: 'estimate cost timeline how long quote scope planner calculator blueprint',
+      run: () => goTo('#blueprint'),
+    },
+    {
       id: 'open-chat',
       label: 'Ask the assistant',
       desc: 'Automated answers to common questions',

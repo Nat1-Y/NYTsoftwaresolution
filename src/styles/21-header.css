@@ -184,14 +184,14 @@
 
 /* Between the mobile breakpoint and a comfortable desktop, tighten up
    rather than wrap. The search trigger only appears above 1180px. */
-@media (max-width: 1180px) and (min-width: 769px) {
+@media (max-width: 1280px) and (min-width: 769px) {
   .nav-menu { gap: 1.1rem; }
   .nav-link { font-size: 0.88rem; }
   .logo { font-size: 1.2rem; }
   .logo-text { font-size: 0.95rem; }
 }
 
-@media (max-width: 900px) and (min-width: 769px) {
-  /* Below this the six links plus a CTA stop fitting honestly. */
+@media (max-width: 1020px) and (min-width: 769px) {
+  /* Below this the seven links plus a CTA stop fitting honestly. */
   .logo-text { display: none; }
 }

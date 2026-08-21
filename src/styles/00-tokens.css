@@ -1,19 +1,29 @@
 /* ==========================================================================
    NYT SOFTWARE SOLUTIONS — DESIGN TOKENS
 
-   The whole system derives from two colours in the logo:
-     navy  #0F2350   the letterforms and the wordmark
-     blue  #2176FF   the triangle in the Y, and "SOLUTIONS"
+   The idea: this is a firm whose initials read like a masthead, whose
+   product is evidence — four systems in production, with specs and numbers.
+   So the page is set like a technical broadsheet, not like a SaaS landing
+   page. Warm paper, navy ink, one sienna mark, hairline rules, a serif for
+   the headlines and a mono for anything that is a measurement.
 
-   The persona switch changes the entire theme rather than just a hue:
+   That register is the reason for every value below:
 
-     Business Operations  →  light. White surfaces, navy type, blue actions.
-                             The corporate register a restaurant owner or a
-                             clinic director expects from a vendor.
+     · the ground is paper (#FBFAF6), never #FFF — white is the tell of a
+       page nobody chose a colour for
+     · shadows are almost gone; separation is a 1px rule, the way it is on
+       a printed page
+     · radii are 2–4px, matching the hard edges of the wordmark, instead of
+       the 12–24px pillows that make every card look like the same card
+     · there is no gradient anywhere. --accent-gradient is kept as a token
+       name, resolved to a flat fill, so older rules that reference it stop
+       producing gradients without needing to be hunted down one by one
 
-     Engineering & Tech   →  dark. The same navy used as the ground instead
-                             of the ink, with a brighter blue that holds up
-                             against it. The register an engineer expects.
+   The persona switch changes the whole register, not just a hue:
+
+     Business Operations  →  paper. Navy type, sienna marks, blue actions.
+     Engineering & Tech   →  blueprint. The navy becomes the ground, the
+                             sienna warms to amber, the rules cool down.
 
    Both are the same brand. Nothing here is a second palette bolted on.
    ========================================================================== */
@@ -24,35 +34,58 @@
   --brand-navy-deep: #081735;
   --brand-blue: #2176ff;
 
-  /* --- Type ------------------------------------------------------------ */
-  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* --- Type ------------------------------------------------------------
+     Display is a serif on purpose. It is the single loudest signal that a
+     person chose the type, and it earns its place here: the wordmark is a
+     hard geometric sans, and the contrast between the two is the whole
+     visual idea. Fira Code stays — the console was already speaking it. */
+  --font-display: 'Fraunces', 'Iowan Old Style', 'Hoefler Text', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, Courier, monospace;
+
+  /* Fraunces is variable: opsz makes it tighten as it grows, WONK gives the
+     splayed leg and the curled terminals that keep it from reading generic. */
+  --display-wonk: 'SOFT' 0, 'WONK' 1;
+
+  /* --- Type scale — fluid, so nothing needs a breakpoint to stay sane --- */
+  --step--1: clamp(0.82rem, 0.79rem + 0.14vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.18vw, 1.09rem);
+  --step-1: clamp(1.2rem, 1.12rem + 0.36vw, 1.44rem);
+  --step-2: clamp(1.5rem, 1.36rem + 0.68vw, 1.95rem);
+  --step-3: clamp(1.9rem, 1.62rem + 1.36vw, 2.8rem);
+  --step-4: clamp(2.4rem, 1.86rem + 2.6vw, 4.1rem);
+
+  /* Small-caps kicker — used for every eyebrow, nav item and label. */
+  --kicker-size: 0.72rem;
+  --kicker-track: 0.14em;
 
   /* --- Layout ---------------------------------------------------------- */
   --header-h: 76px;
   --container-max: 1200px;
   --container-pad: 2rem;
 
-  /* --- Radius — squarer than before, to match the logo's hard edges ---- */
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-  --r-xl: 18px;
+  /* --- Radius — hard edges, like the wordmark -------------------------- */
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 4px;
+  --r-xl: 6px;
   --r-pill: 999px;
 
-  /* --- Motion ---------------------------------------------------------- */
-  --ease-out: cubic-bezier(0.25, 0.8, 0.25, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --transition-smooth: all 0.35s var(--ease-out);
-  --transition-fast: all 0.18s ease;
+  /* --- Motion ----------------------------------------------------------
+     Slower and flatter than before. A bouncy spring on everything is a
+     generator default; considered easing is not. */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --transition-smooth: all 0.28s var(--ease-out);
+  --transition-fast: all 0.16s var(--ease-out);
 
   /* --- Status (theme-independent) -------------------------------------- */
-  --star: #f59e0b;
-  --warning: #f59e0b;
+  --star: #c8871a;
+  --warning: #c8871a;
 }
 
 /* --------------------------------------------------------------------------
-   BUSINESS — light. Also the pre-JS default, so an unstyled first paint
+   BUSINESS — paper. Also the pre-JS default, so an unstyled first paint
    never lands on the wrong ground colour.
    -------------------------------------------------------------------------- */
 :root,
@@ -60,99 +93,121 @@
 body.mode-business {
   color-scheme: light;
 
-  --bg: #ffffff;
-  --bg-alt: #f4f7fc;
-  --bg-deep: #0f2350;              /* inverted panels inside a light page */
+  --bg: #fbfaf6;
+  --bg-alt: #f3f0e8;
+  --bg-deep: #101f3d;              /* inverted panels inside a paper page */
 
   --surface: #ffffff;
-  --surface-2: #f8fafd;
-  --surface-inset: #eff4fb;
-  --surface-translucent: rgba(255, 255, 255, 0.82);
+  --surface-2: #f7f4ec;
+  --surface-inset: #f2efe7;
+  --surface-translucent: rgba(251, 250, 246, 0.88);
 
-  --border: #e2e8f3;
-  --border-strong: #c8d5e9;
-  --border-hover: #a9bfe0;
+  /* Rules, not borders. Warm, so they sit on the paper instead of over it. */
+  --border: #e2dccc;
+  --border-strong: #c9c0aa;
+  --border-hover: #a89c80;
+  --rule: #e2dccc;
+  --rule-strong: #131f3a;
 
-  --text-primary: #0f2350;
-  --text-secondary: #46567a;
-  --text-muted: #5f6f93;
-  --text-on-deep: #eaf1ff;         /* type sitting on --bg-deep */
-  --text-on-deep-muted: #a8bde4;
+  --text-primary: #131f3a;
+  --text-secondary: #4a5570;
+  /* Warm paper is darker than white, so the old muted grey dropped to 4.07:1
+     against --bg-alt. This clears 4.5:1 on every surface in the theme, which
+     matters more here than before: the kickers are all set in it. */
+  --text-muted: #5f6884;
+  --text-on-deep: #eef2fb;
+  --text-on-deep-muted: #a9bade;
 
-  --accent: #1560d6;
-  --accent-rgb: 21, 96, 214;
-  --accent-strong: #0f4bab;
-  --accent-soft: #e8f0fe;
-  --accent-gradient: linear-gradient(135deg, #2176ff, #1560d6 55%, #0f4bab);
-  --accent-glow: rgba(21, 96, 214, 0.16);
+  --accent: #1450c8;
+  --accent-rgb: 20, 80, 200;
+  --accent-strong: #0e3b96;
+  --accent-soft: #e7edfb;
+  /* Deliberately flat. Keeps the token name alive, kills the gradient. */
+  --accent-gradient: linear-gradient(var(--accent), var(--accent));
+  --accent-glow: rgba(20, 80, 200, 0.14);
   --on-accent: #ffffff;
 
-  --success: #0f7a4f;
-  --danger: #c62828;
+  /* The mark: one warm colour, used only for numerals, rules and emphasis.
+     Two cool blues and nothing else is what makes a palette look automatic. */
+  --mark: #a8471a;
+  --mark-rgb: 168, 71, 26;
+  --mark-soft: #f4e8df;
 
-  --overlay: rgba(15, 35, 80, 0.42);
-  --header-bg: rgba(255, 255, 255, 0.86);
+  --success: #196b47;
+  --danger: #b32b26;
 
-  --shadow-sm: 0 1px 2px rgba(15, 35, 80, 0.06), 0 2px 8px rgba(15, 35, 80, 0.05);
-  --shadow-md: 0 4px 12px rgba(15, 35, 80, 0.08), 0 12px 32px rgba(15, 35, 80, 0.08);
-  --shadow-lg: 0 24px 60px rgba(15, 35, 80, 0.16);
-  --shadow-glow: 0 6px 20px rgba(var(--accent-rgb), 0.28);
+  --overlay: rgba(19, 31, 58, 0.44);
+  --header-bg: rgba(251, 250, 246, 0.9);
 
-  --orb-1: rgba(33, 118, 255, 0.1);
-  --orb-2: rgba(21, 96, 214, 0.07);
-  --orb-3: rgba(15, 35, 80, 0.04);
+  /* Elevation is a last resort. Most separation is a 1px rule. */
+  --shadow-sm: none;
+  --shadow-md: 0 1px 2px rgba(19, 31, 58, 0.05), 0 10px 28px rgba(19, 31, 58, 0.07);
+  --shadow-lg: 0 28px 70px rgba(19, 31, 58, 0.16);
+  --shadow-glow: none;
 
-  --grid-line: rgba(15, 35, 80, 0.05);
+  /* Orbs are retired. The tokens resolve to nothing so any stray rule that
+     still references them paints air. */
+  --orb-1: transparent;
+  --orb-2: transparent;
+  --orb-3: transparent;
+
+  --grid-line: rgba(19, 31, 58, 0.055);
 }
 
 /* --------------------------------------------------------------------------
-   ENGINEERING — dark. The brand navy becomes the ground.
+   ENGINEERING — blueprint. The brand navy becomes the ground.
    -------------------------------------------------------------------------- */
 :root.mode-tech,
 body.mode-tech {
   color-scheme: dark;
 
-  --bg: #071129;
-  --bg-alt: #0a1733;
-  --bg-deep: #050d20;
+  --bg: #0b1225;
+  --bg-alt: #0e1830;
+  --bg-deep: #070c1a;
 
-  --surface: #0e1e42;
-  --surface-2: #14294f;
-  --surface-inset: #0a1836;
-  --surface-translucent: rgba(14, 30, 66, 0.72);
+  --surface: #111c38;
+  --surface-2: #16233f;
+  --surface-inset: #0d1730;
+  --surface-translucent: rgba(11, 18, 37, 0.8);
 
-  --border: rgba(140, 175, 235, 0.16);
-  --border-strong: rgba(140, 175, 235, 0.3);
-  --border-hover: rgba(140, 175, 235, 0.42);
+  --border: rgba(150, 175, 220, 0.15);
+  --border-strong: rgba(150, 175, 220, 0.28);
+  --border-hover: rgba(150, 175, 220, 0.44);
+  --rule: rgba(150, 175, 220, 0.15);
+  --rule-strong: rgba(237, 241, 249, 0.62);
 
-  --text-primary: #eef3fc;
-  --text-secondary: #a9bcdd;
-  --text-muted: #8ea4ca;
-  --text-on-deep: #eef3fc;
-  --text-on-deep-muted: #8ea4ca;
+  --text-primary: #edf1f9;
+  --text-secondary: #a6b5d2;
+  --text-muted: #8896b4;
+  --text-on-deep: #edf1f9;
+  --text-on-deep-muted: #8896b4;
 
-  --accent: #58a0ff;
-  --accent-rgb: 88, 160, 255;
-  --accent-strong: #7fb8ff;
-  --accent-soft: rgba(88, 160, 255, 0.12);
-  --accent-gradient: linear-gradient(135deg, #58a0ff, #2176ff 55%, #1560d6);
-  --accent-glow: rgba(88, 160, 255, 0.22);
+  --accent: #6ea8ff;
+  --accent-rgb: 110, 168, 255;
+  --accent-strong: #96c2ff;
+  --accent-soft: rgba(110, 168, 255, 0.12);
+  --accent-gradient: linear-gradient(var(--accent), var(--accent));
+  --accent-glow: rgba(110, 168, 255, 0.2);
   --on-accent: #04122e;
 
-  --success: #34d399;
-  --danger: #ff6b7a;
+  --mark: #e9a05f;
+  --mark-rgb: 233, 160, 95;
+  --mark-soft: rgba(233, 160, 95, 0.14);
 
-  --overlay: rgba(3, 8, 20, 0.7);
-  --header-bg: rgba(7, 17, 41, 0.82);
+  --success: #35c58c;
+  --danger: #ff7b86;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 24px var(--accent-glow);
+  --overlay: rgba(3, 8, 20, 0.72);
+  --header-bg: rgba(11, 18, 37, 0.86);
 
-  --orb-1: rgba(88, 160, 255, 0.14);
-  --orb-2: rgba(33, 118, 255, 0.1);
-  --orb-3: rgba(21, 96, 214, 0.07);
+  --shadow-sm: none;
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 34px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 28px 70px rgba(0, 0, 0, 0.55);
+  --shadow-glow: none;
 
-  --grid-line: rgba(140, 175, 235, 0.06);
+  --orb-1: transparent;
+  --orb-2: transparent;
+  --orb-3: transparent;
+
+  --grid-line: rgba(150, 175, 220, 0.06);
 }

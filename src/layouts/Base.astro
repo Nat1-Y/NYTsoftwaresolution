@@ -16,8 +16,20 @@ const {
   includeFaqSchema = false,
 } = Astro.props;
 
+/*
+ * Three faces, each with a job:
+ *   Fraunces  — headlines. A variable serif with an optical-size axis, so it
+ *               tightens as it grows instead of being one shape scaled up.
+ *   Archivo   — body and UI. A grotesque with actual width in the lowercase,
+ *               which keeps small text from turning into grey mush.
+ *   Fira Code — anything that is a measurement: specs, metrics, the console.
+ */
 const fontHref =
-  'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap';
+  'https://fonts.googleapis.com/css2' +
+  '?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600' +
+  '&family=Archivo:wght@400;500;600;700' +
+  '&family=Fira+Code:wght@400;500' +
+  '&display=swap';
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
 const ogImage = new URL('/og-image.png', Astro.site ?? site.url).href;
@@ -97,7 +109,7 @@ const schemas = includeFaqSchema
     <link rel="canonical" href={canonical} />
     <meta name="generator" content={Astro.generator} />
     <meta name="author" content={site.name} />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#fbfaf6" />
 
     <!-- Icons & PWA -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

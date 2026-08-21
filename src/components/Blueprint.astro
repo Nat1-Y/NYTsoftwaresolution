@@ -1,0 +1,256 @@
+---
+/**
+ * Blueprint Studio.
+ *
+ * A visitor picks what they are building; the page answers with the
+ * architecture we would propose, a phased calendar, and a written brief they
+ * can send us in one click.
+ *
+ * Deliberately absent: a price. See src/data/blueprint.ts for why.
+ *
+ * The controls are native radios and checkboxes. A radiogroup built from
+ * <div>s would need a keyboard implementation we would then have to keep
+ * correct forever; the platform already has one.
+ */
+import { systemTypes, modules, scales, paces } from '../data/blueprint';
+import Icon from './Icon.astro';
+
+const defaultSystem = systemTypes.find((s) => s.id === 'pos') ?? systemTypes[0]!;
+---
+
+<section id="blueprint" class="blueprint-section" aria-labelledby="blueprint-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">
+        <Icon name="sparkle" size={15} />
+        Blueprint Studio
+      </span>
+      <h2 class="section-title" id="blueprint-title">Scope your build in 30 seconds</h2>
+      <p class="section-subtitle">
+        Tell us the shape of the thing you need. The page draws the architecture
+        we would propose, the phases it breaks into, and how long it takes —
+        then hands you a brief you can send in one click.
+      </p>
+    </div>
+
+    <div class="bp-studio">
+      <!-- ------------------------------------------------------ controls -- -->
+      <form class="bp-controls glass" id="bp-controls" aria-describedby="bp-controls-hint">
+        <p class="bp-hint" id="bp-controls-hint">
+          Nothing here is submitted anywhere until you choose to send it.
+        </p>
+
+        <fieldset class="bp-field">
+          <legend class="bp-legend">
+            <span class="bp-step">1</span> What are you building?
+          </legend>
+          <div class="bp-cards">
+            {
+              systemTypes.map((system) => (
+                <label class="bp-card" for={`bp-sys-${system.id}`}>
+                  <input
+                    type="radio"
+                    name="system"
+                    id={`bp-sys-${system.id}`}
+                    value={system.id}
+                    checked={system.id === defaultSystem.id}
+                  />
+                  <span class="bp-card-body">
+                    <span class="bp-card-icon" aria-hidden="true">
+                      <Icon name={system.icon} size={20} />
+                    </span>
+                    <span class="bp-card-text">
+                      <span class="bp-card-label">{system.label}</span>
+                      <span class="bp-card-blurb">{system.blurb}</span>
+                    </span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="bp-field">
+          <legend class="bp-legend">
+            <span class="bp-step">2</span> How far does it have to reach?
+          </legend>
+          <div class="bp-pills">
+            {
+              scales.map((scale, i) => (
+                <label class="bp-pill" for={`bp-scale-${scale.id}`}>
+                  <input
+                    type="radio"
+                    name="scale"
+                    id={`bp-scale-${scale.id}`}
+                    value={scale.id}
+                    checked={i === 0}
+                  />
+                  <span class="bp-pill-body">
+                    <span class="bp-pill-label">{scale.label}</span>
+                    <span class="bp-pill-blurb">{scale.blurb}</span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="bp-field">
+          <legend class="bp-legend">
+            <span class="bp-step">3</span> What does it need to do?
+            <span class="bp-legend-note">Pre-ticked from your choice above — change anything</span>
+          </legend>
+          <div class="bp-checks">
+            {
+              modules.map((module) => (
+                <label class="bp-check" for={`bp-mod-${module.id}`}>
+                  <input
+                    type="checkbox"
+                    name="module"
+                    id={`bp-mod-${module.id}`}
+                    value={module.id}
+                    checked={defaultSystem.defaults.includes(module.id)}
+                  />
+                  <span class="bp-check-box" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="13" height="13">
+                      <path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+                    </svg>
+                  </span>
+                  <span class="bp-check-text">
+                    <span class="bp-check-label">{module.label}</span>
+                    <span class="bp-check-blurb">{module.blurb}</span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="bp-field">
+          <legend class="bp-legend">
+            <span class="bp-step">4</span> How would you like to run it?
+          </legend>
+          <div class="bp-pills">
+            {
+              paces.map((pace, i) => (
+                <label class="bp-pill" for={`bp-pace-${pace.id}`}>
+                  <input
+                    type="radio"
+                    name="pace"
+                    id={`bp-pace-${pace.id}`}
+                    value={pace.id}
+                    checked={i === 0}
+                  />
+                  <span class="bp-pill-body">
+                    <span class="bp-pill-label">{pace.label}</span>
+                    <span class="bp-pill-blurb">{pace.blurb}</span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <button type="button" class="bp-reset" id="bp-reset">Start over</button>
+      </form>
+
+      <!-- -------------------------------------------------------- output -- -->
+      <div class="bp-output">
+        <div class="bp-result glass" id="bp-result">
+          <header class="bp-result-head">
+            <div>
+              <span class="bp-result-eyebrow">Your blueprint</span>
+              <h3 class="bp-result-title" id="bp-title">Retail / restaurant POS</h3>
+            </div>
+            <span class="bp-live-dot" aria-hidden="true"></span>
+          </header>
+
+          <!--
+            One live region for the whole summary. Announcing each tile
+            separately would read as four unrelated interruptions every time a
+            checkbox moves.
+          -->
+          <div class="bp-tiles" id="bp-tiles" role="status" aria-live="polite">
+            <div class="bp-tile">
+              <span class="bp-tile-val" id="bp-weeks">—</span>
+              <span class="bp-tile-label">Calendar weeks</span>
+            </div>
+            <div class="bp-tile">
+              <span class="bp-tile-val" id="bp-team">—</span>
+              <span class="bp-tile-label">Team shape</span>
+            </div>
+            <div class="bp-tile">
+              <span class="bp-tile-val" id="bp-components">—</span>
+              <span class="bp-tile-label">Components</span>
+            </div>
+            <div class="bp-tile">
+              <span class="bp-tile-val" id="bp-firstship">—</span>
+              <span class="bp-tile-label">First usable build</span>
+            </div>
+          </div>
+
+          <div class="bp-block">
+            <h4 class="bp-block-title">Delivery phases</h4>
+            <ol class="bp-phases" id="bp-phases"></ol>
+          </div>
+
+          <div class="bp-block">
+            <h4 class="bp-block-title">Included regardless</h4>
+            <ul class="bp-included" id="bp-included"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+      The diagram gets the full width of the container rather than half of it.
+      At five layers it needs about a thousand pixels to stay legible, and it
+      is the part of this tool people came for — squeezing it into a column
+      meant it arrived pre-scrolled with its data layer off the edge.
+    -->
+    <div class="bp-architecture glass">
+      <h4 class="bp-block-title">
+        Proposed architecture
+        <span class="bp-block-note">Generated from your selection</span>
+      </h4>
+      <figure class="arch-figure bp-figure">
+        <div class="arch-scroll" role="group" aria-label="Generated architecture diagram" id="bp-diagram"></div>
+        <figcaption class="arch-caption" id="bp-diagram-caption">
+          <strong>Reading it:</strong> data flows left to right, from the things
+          people touch to the systems of record behind them.
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="bp-close">
+      <p class="bp-caveat">
+        <Icon name="alert" size={16} />
+        <span>
+          <strong>What this is.</strong> An indicative shape and calendar from
+          four answers — not a quote, and not a commitment. Real scope moves
+          once we see your data and your constraints. We deliberately do not
+          print a price here: we would be guessing, and you would be planning
+          around a guess.
+        </span>
+      </p>
+
+      <div class="bp-actions">
+        <button type="button" class="btn btn-primary" id="bp-send">
+          <Icon name="send" size={17} />
+          Send this brief to us
+        </button>
+        <button type="button" class="btn btn-secondary" id="bp-copy">
+          Copy brief
+        </button>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="bp-noscript">
+        The Blueprint Studio needs JavaScript to draw your architecture. The
+        FAQ below covers timelines and scope in plain text, and you can email us
+        at any time.
+      </p>
+    </noscript>
+  </div>
+</section>

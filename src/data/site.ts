@@ -62,6 +62,7 @@ export const nav = [
   { href: '#flagship', label: 'Flagship' },
   { href: '#ecosystem', label: 'Tech Ecosystem' },
   { href: '#engagement', label: 'Engagement' },
+  { href: '#blueprint', label: 'Blueprint' },
 ] as const;
 
 export const heroStats = [

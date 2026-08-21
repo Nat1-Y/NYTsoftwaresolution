@@ -85,7 +85,8 @@ try {
     return {
       headingFamily: getComputedStyle(heading).fontFamily,
       monoFamily: getComputedStyle(mono).fontFamily,
-      outfitLoaded: document.fonts.check('700 3rem Outfit'),
+      displayLoaded: document.fonts.check('600 3rem Fraunces'),
+      sansLoaded: document.fonts.check('400 1rem Archivo'),
       firaLoaded: document.fonts.check('400 1rem "Fira Code"'),
       stylesheetPromoted: document.getElementById('font-css')?.rel,
     };
@@ -93,7 +94,8 @@ try {
 
   console.log('Fonts:');
   console.log('  link rel after promotion :', fonts.stylesheetPromoted);
-  console.log('  Outfit loaded            :', fonts.outfitLoaded);
+  console.log('  Fraunces loaded          :', fonts.displayLoaded);
+  console.log('  Archivo loaded           :', fonts.sansLoaded);
   console.log('  Fira Code loaded         :', fonts.firaLoaded);
 
   // The page must still be interactive under the policy.
@@ -105,7 +107,7 @@ try {
 
   console.log('\nInteractivity under CSP:', interactive ? 'OK' : 'BROKEN');
 
-  const fontOk = fonts.outfitLoaded && fonts.firaLoaded;
+  const fontOk = fonts.displayLoaded && fonts.sansLoaded && fonts.firaLoaded;
   console.log('\nCSP violations:', violations.length);
   violations.forEach((v) => console.log('  - ' + v.slice(0, 160)));
 

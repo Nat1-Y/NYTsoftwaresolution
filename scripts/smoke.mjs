@@ -125,6 +125,103 @@ try {
     `${chatAnchor.bottomGap}px from bottom, ${chatAnchor.rightGap}px from right`
   );
 
+  /* --- Hero console: the first screen has to show the product ------------ */
+  const hero = await page.evaluate(() => {
+    const box = document.querySelector('.console-panels');
+    const panels = [...document.querySelectorAll('.console-panel')];
+    const cs = getComputedStyle(panels[0]);
+    const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+
+    const needed = panels.map((p) => {
+      const kids = [...p.children];
+      return Math.round(
+        kids[kids.length - 1].getBoundingClientRect().bottom -
+          kids[0].getBoundingClientRect().top +
+          padY
+      );
+    });
+
+    return {
+      panels: panels.length,
+      ariaHidden: document.getElementById('hero-console')?.getAttribute('aria-hidden'),
+      focusables: document.querySelectorAll(
+        '#hero-console a, #hero-console button, #hero-console [tabindex]'
+      ).length,
+      boxH: Math.round(box.getBoundingClientRect().height),
+      tallest: Math.max(...needed),
+      active: document
+        .querySelector('.console-panel.active .console-name')
+        ?.childNodes[0]?.textContent?.trim(),
+      names: panels.map((p) => p.querySelector('.console-name')?.childNodes[0]?.textContent?.trim()),
+      cards: [...document.querySelectorAll('.project-name')].map((e) => e.textContent.trim()),
+    };
+  });
+
+  check('hero console renders every case study', hero.panels === 4, `${hero.panels} panels`);
+  check(
+    'console names match the case studies below',
+    hero.names.every((n) => hero.cards.some((c) => c.includes(n) || n.includes(c))),
+    hero.names.join(' | ')
+  );
+  check(
+    'console is hidden from assistive tech',
+    hero.ariaHidden === 'true' && hero.focusables === 0,
+    `aria-hidden=${hero.ariaHidden}, ${hero.focusables} focusable`
+  );
+
+  /*
+   * The readouts wrap differently per system and per width, so the panel box
+   * has to size to the longest one. A fixed height silently clipped the last
+   * two systems' final spec line.
+   */
+  check(
+    'no console panel is clipped',
+    hero.boxH >= hero.tallest,
+    `box ${hero.boxH}px vs tallest panel ${hero.tallest}px`
+  );
+
+  // The persona bar is the first thing in the flow under a fixed header.
+  const personaClear = await page.evaluate(() => {
+    const bar = document.querySelector('.persona-switcher-container');
+    const header = document.querySelector('.main-header, header');
+    return {
+      barTop: Math.round(bar.getBoundingClientRect().top),
+      headerBottom: Math.round(header.getBoundingClientRect().bottom),
+    };
+  });
+  check(
+    'persona bar clears the fixed header',
+    personaClear.barTop >= personaClear.headerBottom,
+    `bar at ${personaClear.barTop}px, header ends at ${personaClear.headerBottom}px`
+  );
+
+  // It has to actually advance on its own, or it is just a screenshot.
+  const first = hero.active;
+  await new Promise((r) => setTimeout(r, 6200));
+  const second = await page.evaluate(() =>
+    document
+      .querySelector('.console-panel.active .console-name')
+      ?.childNodes[0]?.textContent?.trim()
+  );
+  check('console advances to the next system', Boolean(second) && second !== first,
+    `${first} → ${second}`);
+
+  // Hovering must hold it — reading a panel that rewrites itself is hostile.
+  await page.hover('#hero-console');
+  const held = await page.evaluate(() =>
+    document
+      .querySelector('.console-panel.active .console-name')
+      ?.childNodes[0]?.textContent?.trim()
+  );
+  await new Promise((r) => setTimeout(r, 6200));
+  const stillHeld = await page.evaluate(() =>
+    document
+      .querySelector('.console-panel.active .console-name')
+      ?.childNodes[0]?.textContent?.trim()
+  );
+  check('hovering the console pauses the cycle', held === stillHeld, `${held} held`);
+  await page.mouse.move(0, 0);
+
   // Counters must never be left showing 0 for a stat that was scrolled past.
   await page.evaluate(() => window.scrollTo(0, 0));
   await new Promise((r) => setTimeout(r, 2600));
@@ -270,6 +367,96 @@ try {
   check(
     'fallback prefills a mailto draft',
     formState.mailHref.startsWith('mailto:') && formState.mailHref.includes('Test%20Restaurant')
+  );
+
+  /* --- Blueprint Studio: a plan, a diagram, and a brief that lands -------- */
+  await page.evaluate(() => document.getElementById('blueprint').scrollIntoView());
+  await new Promise((r) => setTimeout(r, 500));
+
+  const bpInitial = await page.evaluate(() => ({
+    weeks: document.getElementById('bp-weeks').textContent.trim(),
+    components: Number(document.getElementById('bp-components').textContent.trim()),
+    drawn: document.querySelectorAll('#bp-diagram .bp-node').length,
+    phases: [...document.querySelectorAll('.bp-phase-weeks')].map((e) => parseInt(e.textContent, 10)),
+    firstShip: document.getElementById('bp-firstship').textContent.trim(),
+  }));
+  check('blueprint renders a plan on load', /^\d+–\d+$/.test(bpInitial.weeks), bpInitial.weeks);
+  check(
+    'every component in the count is actually drawn',
+    bpInitial.drawn === bpInitial.components && bpInitial.drawn > 0,
+    `${bpInitial.drawn} drawn / ${bpInitial.components} counted`
+  );
+  check(
+    'the calendar splits into five non-empty phases',
+    bpInitial.phases.length === 5 && bpInitial.phases.every((w) => w >= 1),
+    bpInitial.phases.join(' + ')
+  );
+  check('first usable build is dated', /^Week \d+$/.test(bpInitial.firstShip), bpInitial.firstShip);
+
+  // Ticking a capability has to move the numbers, or the tool is a slideshow.
+  await tap(page, '#bp-mod-payments');
+  await new Promise((r) => setTimeout(r, 400));
+  const bpAfter = await page.evaluate(() => ({
+    components: Number(document.getElementById('bp-components').textContent.trim()),
+    low: Number(document.getElementById('bp-weeks').textContent.split('–')[0]),
+  }));
+  const bpLowBefore = Number(bpInitial.weeks.split('–')[0]);
+  check(
+    'adding a capability grows the estimate',
+    bpAfter.low > bpLowBefore,
+    `${bpLowBefore} → ${bpAfter.low} weeks`
+  );
+  check(
+    'adding a capability adds components',
+    bpAfter.components > bpInitial.components,
+    `${bpInitial.components} → ${bpAfter.components}`
+  );
+
+  // Changing the system re-ticks its defaults and redraws from scratch.
+  await tap(page, '#bp-sys-saas');
+  await new Promise((r) => setTimeout(r, 400));
+  const bpSaas = await page.evaluate(() => ({
+    title: document.getElementById('bp-title').textContent.trim(),
+    checked: [...document.querySelectorAll('input[name="module"]:checked')]
+      .map((i) => i.value)
+      .sort()
+      .join(','),
+    desc: document.getElementById('bp-svg-desc')?.textContent ?? '',
+  }));
+  check('changing the system retitles the blueprint', /SaaS/i.test(bpSaas.title), bpSaas.title);
+  check(
+    'changing the system re-ticks its own defaults',
+    bpSaas.checked === 'payments,reporting,roles',
+    bpSaas.checked
+  );
+  check(
+    'the generated diagram carries a text alternative',
+    bpSaas.desc.includes('Clients') && bpSaas.desc.includes('Data'),
+    bpSaas.desc.slice(0, 54) + '…'
+  );
+
+  // No price anywhere in the output. This is a standing promise, not a detail.
+  const bpMoney = await page.evaluate(() =>
+    /[$€£]|\bUSD\b|\bETB\b|\bbirr\b/i.test(document.getElementById('blueprint').textContent)
+  );
+  check('blueprint quotes no price', !bpMoney);
+
+  // The brief has to reach the form, or the whole tool is decorative.
+  await tap(page, '#bp-send');
+  await new Promise((r) => setTimeout(r, 1000));
+  const brief = await page.evaluate(() => ({
+    message: document.getElementById('form-message').value,
+    subject: document.getElementById('form-subject').value,
+  }));
+  check(
+    'blueprint hands the brief to the contact form',
+    /PROJECT BRIEF/.test(brief.message) && /Multi-tenant SaaS/.test(brief.message),
+    `${brief.message.length} chars`
+  );
+  check(
+    'blueprint picks a matching interest area',
+    brief.subject === 'Custom ERP / SaaS platform',
+    brief.subject
   );
 
   // Chatbot must not answer everything with the services blurb.

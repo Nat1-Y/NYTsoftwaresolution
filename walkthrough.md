@@ -48,10 +48,13 @@ The choice is stored in `localStorage` and applied by an inline script in
 10. **Remote Partner Services** — the pitch for international clients.
 11. **How We Work Together** — three engagement models, so leads self-qualify
     before they ever fill in the form.
-12. **Testimonials** — auto-rotating carousel that pauses on hover and focus.
-13. **FAQ** — eight straight answers; also feeds Google's FAQ rich result.
-14. **Contact** — details panel plus a validating form.
-15. **Chat assistant** — answers common questions from a scored intent matcher.
+12. **Blueprint Studio** — four answers in, and the page draws the architecture
+    we would propose, splits the calendar into phases, and writes a brief that
+    drops straight into the contact form.
+13. **Testimonials** — auto-rotating carousel that pauses on hover and focus.
+14. **FAQ** — eight straight answers; also feeds Google's FAQ rich result.
+15. **Contact** — details panel plus a validating form.
+16. **Chat assistant** — answers common questions from a scored intent matcher.
 
 ---
 
@@ -80,6 +83,18 @@ it found anywhere in the message — and because one entry listed `'do'` and
 Every case-study metric has an optional `source` line rendered under it.
 "85% — reported by Fikrekun Spagna operations after the first full quarter"
 survives scrutiny in a way that a bare "85%" does not.
+
+### The estimator refuses to name a price
+
+The Blueprint Studio knows four facts about a project. That is enough to
+propose a shape and a calendar; it is nowhere near enough to put a number on
+an invoice. So it gives a duration **range** — widening with the size of the
+job, because a twenty-week estimate is not as knowable as a six-week one — and
+says on screen that this is a shape, not a quote.
+
+A visitor who plans their year around a figure we guessed has been worse served
+than one we asked to get in touch. The smoke suite asserts the absence: if a
+currency symbol ever appears in that panel, the build fails.
 
 ### Accessibility is tested, not assumed
 

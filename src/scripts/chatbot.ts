@@ -23,14 +23,14 @@ const intents: Intent[] = [
     keywords: ['price', 'cost', 'quote', 'rate', 'pricing', 'budget', 'fee', 'charge', 'expensive', 'afford'],
     phrases: ['how much', 'what does it cost'],
     answer:
-      "Pricing depends on scope, so here is how it works rather than a number I would have to make up:\n\n💰 **Fixed-scope projects** — one agreed price, paid against milestones you sign off.\n📅 **Dedicated engineers** — a monthly rate per engineer working on your backlog.\n🔧 **Support retainer** — a monthly fee for keeping a live system healthy.\n\n**The first consultation and the written estimate are free.** Tell us what you need in the contact form and you will get a realistic figure with the assumptions spelled out.",
+      "Pricing depends on scope, so here is how it works rather than a number I would have to make up:\n\n💰 **Fixed-scope projects** — one agreed price, paid against milestones you sign off.\n📅 **Dedicated engineers** — a monthly rate per engineer working on your backlog.\n🔧 **Support retainer** — a monthly fee for keeping a live system healthy.\n\n**The first consultation and the written estimate are free.** Tell us what you need in the contact form and you will get a realistic figure with the assumptions spelled out.\n\n🧭 In the meantime, the **Blueprint Studio** on this page will shape the scope and the calendar for you. It stops short of a price on purpose — that part needs a conversation, not a guess.",
   },
   {
     id: 'timeline',
     keywords: ['timeline', 'deadline', 'duration', 'weeks', 'months', 'schedule'],
     phrases: ['how long', 'how fast', 'how quickly', 'when will', 'delivery time', 'turnaround'],
     answer:
-      'It scales with the size of the build:\n\n⚡ **Focused website or app** — 2 to 4 weeks\n📦 **Medium system** (POS, booking, dashboards) — 1 to 3 months\n🏗️ **Large platform** (marketplace, hospital ERP) — 3 to 6 months\n\nYou get a dated timeline before any code is written, and milestone demos along the way so you can see progress rather than take our word for it.',
+      'It scales with the size of the build:\n\n⚡ **Focused website or app** — 2 to 4 weeks\n📦 **Medium system** (POS, booking, dashboards) — 1 to 3 months\n🏗️ **Large platform** (marketplace, hospital ERP) — 3 to 6 months\n\nYou get a dated timeline before any code is written, and milestone demos along the way so you can see progress rather than take our word for it.\n\n🧭 For the same against your own build, the **Blueprint Studio** on this page turns four answers into a phased calendar and the architecture behind it.',
   },
   {
     id: 'services',

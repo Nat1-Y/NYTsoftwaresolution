@@ -8,6 +8,7 @@ import Hero from '../components/Hero.astro';
 import Sections from '../components/Sections.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
 import Engagement from '../components/Engagement.astro';
+import Blueprint from '../components/Blueprint.astro';
 import Testimonials from '../components/Testimonials.astro';
 import Faq from '../components/Faq.astro';
 import Contact from '../components/Contact.astro';
@@ -35,11 +36,6 @@ const caseStudies = (await getCollection('case-studies')).sort(
     <p class="loader-skip">Click or press any key to skip</p>
   </div>
 
-  <div class="orb-container" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
 
   <span id="top"></span>
   <Header />
@@ -69,6 +65,7 @@ const caseStudies = (await getCollection('case-studies')).sort(
     </Sections>
 
     <Engagement />
+    <Blueprint />
     <Testimonials />
     <Faq />
     <Contact />
@@ -97,6 +94,8 @@ const caseStudies = (await getCollection('case-studies')).sort(
   import { initContactForm } from '../scripts/form';
   import { initChatbot } from '../scripts/chatbot';
   import { initCommandPalette } from '../scripts/palette';
+  import { initBlueprint } from '../scripts/blueprint';
+  import { initHero } from '../scripts/hero';
 
   // Tabs must be wired before the persona module aligns them.
   initCaseStudyTabs();
@@ -108,6 +107,8 @@ const caseStudies = (await getCollection('case-studies')).sort(
   initContactForm();
   initChatbot();
   initCommandPalette();
+  initBlueprint();
+  initHero();
 
   // Readiness flag: lets the smoke test wait for handlers to be attached
   // instead of racing them, and gives us a hook for future instrumentation.
