@@ -23,12 +23,33 @@
   pointer-events: none;
 }
 .loader-logo {
-  font-family: var(--font-sans);
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
   color: var(--text-primary);
-  animation: loaderPulse 1.2s ease-in-out infinite;
+  animation: loaderRise 0.8s var(--ease-out) both;
+}
+
+@keyframes loaderRise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Skip affordance — hidden until the splash has clearly outlasted a normal
+   page load, so it never draws attention on a fast dismissal. */
+.loader-skip {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.page-loader.show-skip .loader-skip {
+  opacity: 1;
 }
 .loader-bar {
   width: 200px;
@@ -42,7 +63,10 @@
   width: 0%;
   background: var(--accent-gradient);
   border-radius: 999px;
-  animation: loaderProgress 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  /* Duration is set from JS to match the configured hold, so the bar tracks
+     the actual wait instead of filling early and sitting at 100%. */
+  animation: loaderProgress var(--loader-duration, 1500ms)
+    cubic-bezier(0.35, 0, 0.2, 1) forwards;
 }
 @keyframes loaderPulse {
   0%, 100% { opacity: 1; }
@@ -50,7 +74,9 @@
 }
 @keyframes loaderProgress {
   0% { width: 0%; }
-  60% { width: 75%; }
+  25% { width: 42%; }
+  60% { width: 72%; }
+  88% { width: 92%; }
   100% { width: 100%; }
 }
 

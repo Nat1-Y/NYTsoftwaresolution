@@ -38,6 +38,23 @@ export const formConfig = {
   accessKey: '',
 } as const;
 
+/**
+ * Intro splash timing.
+ *
+ * `minMs` is a deliberate hold — the loader stays up at least this long even
+ * when the page is ready sooner. `maxMs` is a hard ceiling so a slow asset can
+ * never strand a visitor on the splash.
+ *
+ * Note this is an intentional delay, not a measurement of load time: the site
+ * itself is ready in well under a second. Longer holds increase bounce rate,
+ * so treat these numbers as a branding choice with a real conversion cost.
+ * Set `minMs: 0` to show the page as soon as it is ready.
+ */
+export const loader = {
+  minMs: 5000,
+  maxMs: 7000,
+} as const;
+
 export const nav = [
   { href: '#about', label: 'Who We Are' },
   { href: '#services', label: 'What We Do' },

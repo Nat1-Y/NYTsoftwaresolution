@@ -2,28 +2,71 @@
  * Page-level behaviour: loader, reveals, counters, nav state, scroll affordances.
  */
 import { $, $$, prefersReducedMotion, rafThrottle } from './dom';
+import { loader as loaderConfig } from '../data/site';
 
 /* ---------------------------------------------------------------- loader -- */
 /**
- * The old loader held the page for 1.6s *after* `load` and hurt every
- * perceived-performance metric. Now it dismisses as soon as the document is
- * interactive, with a short safety timeout for a stalled asset.
+ * Intro splash.
+ *
+ * Held for a configured minimum (see `loader` in src/data/site.ts) so the
+ * brand animation gets its moment, then dismissed as soon as the page is
+ * ready. A hard ceiling guarantees nobody is ever stuck behind it.
+ *
+ * Any click or keypress skips the remainder — a visitor who wants the content
+ * should never be made to wait for an animation, and it doubles as the escape
+ * hatch for anyone tabbing straight into the page.
  */
 function initLoader(): void {
   const loader = $('#page-loader');
   if (!loader) return;
 
-  const hide = () => {
-    if (loader.classList.contains('hidden')) return;
+  const minMs = Math.max(0, loaderConfig.minMs);
+  const maxMs = Math.max(minMs, loaderConfig.maxMs);
+  const startedAt = performance.now();
+
+  let dismissed = false;
+
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
     loader.classList.add('hidden');
+    document.removeEventListener('keydown', onSkip);
+    loader.removeEventListener('click', onSkip);
     window.setTimeout(() => loader.remove(), 600);
   };
 
-  if (document.readyState === 'complete') hide();
-  else window.addEventListener('load', hide, { once: true });
+  function onSkip() {
+    dismiss();
+  }
 
-  // Never let a slow third-party asset hold the page hostage.
-  window.setTimeout(hide, 1500);
+  /** Dismiss once the page is ready AND the minimum hold has elapsed. */
+  const dismissWhenReady = () => {
+    const elapsed = performance.now() - startedAt;
+    window.setTimeout(dismiss, Math.max(0, minMs - elapsed));
+  };
+
+  if (document.readyState === 'complete') dismissWhenReady();
+  else window.addEventListener('load', dismissWhenReady, { once: true });
+
+  // Ceiling: a stalled asset must not extend the splash indefinitely.
+  window.setTimeout(dismiss, maxMs);
+
+  // Let people opt out of the wait.
+  document.addEventListener('keydown', onSkip);
+  loader.addEventListener('click', onSkip);
+
+  // Someone who has asked for reduced motion should not sit through a
+  // decorative animation at all.
+  if (prefersReducedMotion()) dismiss();
+
+  // Drive the progress bar over the real hold, so it does not fill early and
+  // then sit at 100% looking stuck.
+  loader.style.setProperty('--loader-duration', `${minMs}ms`);
+
+  // Reveal the skip hint once the splash has clearly outstayed a normal load.
+  window.setTimeout(() => {
+    if (!dismissed) loader.classList.add('show-skip');
+  }, Math.min(1800, minMs));
 }
 
 /* --------------------------------------------------------------- reveals -- */
