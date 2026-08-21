@@ -162,6 +162,27 @@ Design language taken from the mark: hard corners rather than pills, the
 downward triangle reused as a motif, and letter-spaced uppercase labels
 flanked by rules.
 
+### The intro splash
+
+The loader is a **deliberate hold**, not a measurement of load time — the site
+itself is interactive in well under a second. Timings live in
+[`src/data/site.ts`](src/data/site.ts):
+
+```ts
+export const loader = {
+  minMs: 5000,   // stay up at least this long, even when ready sooner
+  maxMs: 7000,   // hard ceiling — a stalled asset can never strand a visitor
+};
+```
+
+The progress bar is driven from `minMs`, so it tracks the real wait instead of
+filling early and sitting at 100%. Any click or keypress skips the remainder,
+and `prefers-reduced-motion` bypasses it entirely.
+
+> **Worth knowing:** a multi-second gate in front of the content is a
+> well-documented driver of bounce rate, and this is a lead-generation page.
+> Set `minMs: 0` to show the page as soon as it is ready.
+
 ### The persona switcher
 
 The signature interaction, and now the thing that carries the brand's two
@@ -206,7 +227,7 @@ sells offline-first POS systems ought to survive a dropped connection itself.
 | Gate | Status |
 | --- | --- |
 | `astro check` | 0 errors |
-| `npm run smoke` | 33/33 interaction checks |
+| `npm run smoke` | 36/36 interaction checks |
 | `npm run a11y` | 0 serious/critical axe violations across 6 scenarios |
 | `npm run csp` | 0 violations under the production Content-Security-Policy |
 | JS shipped | ~30 kB (~12 kB gzipped), no runtime framework |

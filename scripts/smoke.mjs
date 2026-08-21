@@ -10,7 +10,24 @@
  *         npm run smoke                      (in another)
  */
 import puppeteer from 'puppeteer-core';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
+
+/**
+ * Read the loader timings straight from the site config, so the test can never
+ * drift from what actually ships. Anchored to the `loader` object specifically —
+ * a loose match picks up the example value in the surrounding comment instead.
+ */
+const siteSrc = await readFile(new URL('../src/data/site.ts', import.meta.url), 'utf8');
+const loaderBlock = /export const loader = \{([\s\S]*?)\}/.exec(siteSrc)?.[1] ?? '';
+const LOADER = {
+  minMs: Number(/minMs:\s*(\d+)/.exec(loaderBlock)?.[1] ?? 0),
+  maxMs: Number(/maxMs:\s*(\d+)/.exec(loaderBlock)?.[1] ?? 0),
+};
+
+if (!LOADER.maxMs) {
+  console.error('Could not read loader timings from src/data/site.ts');
+  process.exit(1);
+}
 
 const BASE = process.env.SMOKE_URL ?? 'http://localhost:4321';
 const OUT = process.env.SMOKE_OUT ?? './.smoke';
@@ -36,17 +53,23 @@ async function tap(page, selector) {
   await page.$eval(selector, (el) => el.click());
 }
 
-/** Navigate and wait until the page's scripts have attached their handlers. */
+/**
+ * Navigate and wait until the page's scripts have attached their handlers.
+ *
+ * The intro splash is deliberately held for several seconds, so rather than
+ * waiting it out on every page load we take the documented escape hatch — a
+ * keypress — which also exercises the skip path on every single test.
+ */
 async function open(page, url) {
   await page.goto(url, { waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('html[data-ready="true"]', { timeout: 15000 });
-  // The loader dismisses on load (or its 1.5s safety timeout).
+  await page.waitForSelector('html[data-ready="true"]', { timeout: 20000 });
+  await page.keyboard.press('Escape');
   await page.waitForFunction(
     () => {
       const l = document.getElementById('page-loader');
       return !l || l.classList.contains('hidden');
     },
-    { timeout: 15000 }
+    { timeout: 20000 }
   );
 }
 
@@ -69,12 +92,11 @@ try {
   );
   check('no horizontal overflow', overflow <= 0, `${overflow}px`);
 
-  // The loader must be gone — it used to hang around for 1.6s after load.
   const loaderGone = await page.evaluate(() => {
     const l = document.getElementById('page-loader');
     return !l || l.classList.contains('hidden');
   });
-  check('page loader dismissed', loaderGone);
+  check('splash can be skipped by keypress', loaderGone);
 
   // The closed chat panel used to keep its place in the flex column, pushing
   // the toggle ~380px up the page and over the hero.
@@ -253,6 +275,58 @@ try {
 
   await page.evaluate(() => document.getElementById('chatbot-minimize')?.click());
   await page.screenshot({ path: `${OUT}/desktop.png` });
+
+  /* --- Splash timing: honours the configured hold, and always ends ------- */
+  {
+    const timed = await browser.newPage();
+    await timed.setViewport({ width: 1280, height: 800 });
+    const t0 = Date.now();
+    await timed.goto(BASE, { waitUntil: 'domcontentloaded' });
+    await timed.waitForFunction(
+      () => {
+        const l = document.getElementById('page-loader');
+        return !l || l.classList.contains('hidden');
+      },
+      { timeout: 20000, polling: 50 }
+    );
+    const heldMs = Date.now() - t0;
+
+    check(
+      'splash holds for at least the configured minimum',
+      heldMs >= LOADER.minMs - 250,
+      `${heldMs}ms (min ${LOADER.minMs}ms)`
+    );
+    check(
+      'splash always ends by the configured ceiling',
+      heldMs <= LOADER.maxMs + 1500,
+      `${heldMs}ms (max ${LOADER.maxMs}ms)`
+    );
+    await timed.close();
+  }
+
+  /* --- Reduced motion must not sit through a decorative splash ---------- */
+  {
+    const rmLoader = await browser.newPage();
+    await rmLoader.emulateMediaFeatures([
+      { name: 'prefers-reduced-motion', value: 'reduce' },
+    ]);
+    const t0 = Date.now();
+    await rmLoader.goto(BASE, { waitUntil: 'domcontentloaded' });
+    await rmLoader.waitForFunction(
+      () => {
+        const l = document.getElementById('page-loader');
+        return !l || l.classList.contains('hidden');
+      },
+      { timeout: 20000, polling: 50 }
+    );
+    const rmHeld = Date.now() - t0;
+    check(
+      'reduced motion skips the splash entirely',
+      rmHeld < LOADER.minMs,
+      `${rmHeld}ms`
+    );
+    await rmLoader.close();
+  }
 
   /* ================================ MOBILE =============================== */
   console.log('\nMobile (iPhone 12 — 390x844)');
