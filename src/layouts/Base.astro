@@ -23,12 +23,17 @@ const {
  *   Archivo   — body and UI. A grotesque with actual width in the lowercase,
  *               which keeps small text from turning into grey mush.
  *   Fira Code — anything that is a measurement: specs, metrics, the console.
+ *
+ * Noto Serif Ethiopic carries the two places the page sets Ge'ez: the section
+ * numerals and the footer sign-off. Google serves it behind a unicode-range,
+ * so a visitor who never renders an Ethiopic glyph never downloads the file.
  */
 const fontHref =
   'https://fonts.googleapis.com/css2' +
   '?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600' +
   '&family=Archivo:wght@400;500;600;700' +
   '&family=Fira+Code:wght@400;500' +
+  '&family=Noto+Serif+Ethiopic:wght@400;500' +
   '&display=swap';
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;

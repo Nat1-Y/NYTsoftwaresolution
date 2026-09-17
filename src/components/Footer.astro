@@ -6,6 +6,13 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="main-footer">
+  <!--
+    A tilet band — the woven border of a netela, drawn with two crossed
+    gradients. Purely decorative, so it is hidden from assistive tech and
+    appears exactly once on the page.
+  -->
+  <div class="footer-band" aria-hidden="true"></div>
+
   <div class="container footer-container">
     <div class="footer-left">
       <a href="#top" class="logo footer-logo" aria-label="Back to top">
@@ -41,5 +48,11 @@ const year = new Date().getFullYear();
         <span class="footer-span">All rights reserved.</span>
       </div>
     </div>
+
+    <p class="footer-signoff">
+      <span>Built in {site.locality}</span>
+      <span class="amharic" lang="am">አዲስ አበባ</span>
+      <span class="footer-coords">9.03°N 38.74°E · {site.timezone}</span>
+    </p>
   </div>
 </footer>

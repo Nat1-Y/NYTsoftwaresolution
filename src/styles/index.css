@@ -45,3 +45,6 @@
 
 /* Editorial layer — restates the primitives. Must load last. */
 @import './46-editorial.css';
+
+/* Editorial layer II — the sections 46 did not reach. Must load after it. */
+@import './47-editorial-tail.css';

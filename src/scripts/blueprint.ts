@@ -263,7 +263,7 @@ function renderDiagram(container: HTMLElement, plan: Plan, systemLabel: string):
           y,
           width: NODE_W,
           height: NODE_H,
-          rx: 8,
+          rx: 2,
           class: column.layer === 'external' ? 'arch-node' : 'arch-node-accent',
         })
       );
