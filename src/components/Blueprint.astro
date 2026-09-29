@@ -14,6 +14,7 @@
  */
 import { systemTypes, modules, scales, paces } from '../data/blueprint';
 import Icon from './Icon.astro';
+import Glyph from './visuals/Glyph.astro';
 
 const defaultSystem = systemTypes.find((s) => s.id === 'pos') ?? systemTypes[0]!;
 ---
@@ -57,7 +58,7 @@ const defaultSystem = systemTypes.find((s) => s.id === 'pos') ?? systemTypes[0]!
                   />
                   <span class="bp-card-body">
                     <span class="bp-card-icon" aria-hidden="true">
-                      <Icon name={system.icon} size={20} />
+                      <Glyph name={system.id} size={40} />
                     </span>
                     <span class="bp-card-text">
                       <span class="bp-card-label">{system.label}</span>

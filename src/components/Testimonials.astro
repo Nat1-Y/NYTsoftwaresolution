@@ -46,6 +46,12 @@ import Icon from './Icon.astro';
                     <strong>{t.person?.name ?? t.org}</strong>
                     <span>{t.person ? `${t.person.role}, ${t.org}` : t.context}</span>
                   </div>
+                  {t.caseStudy && (
+                    <a class="testi-case" href={`#case-${t.caseStudy}`}>
+                      See the system<span class="sr-only">: {t.org} case study</span>
+                      <Icon name="arrow" size={14} />
+                    </a>
+                  )}
                 </figcaption>
               </figure>
             </div>

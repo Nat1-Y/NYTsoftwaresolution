@@ -1,0 +1,38 @@
+---
+/**
+ * A plate: the one figure object on the page.
+ *
+ * Every image the site shows goes through here, so every image carries the
+ * same caption line — and that line always says what the image *is*. A live
+ * capture of a client system, an illustration, and a diagram look different
+ * on purpose and are labelled differently on purpose: a page whose argument
+ * is "open the live link and judge for yourself" cannot let a drawing pass
+ * for a screenshot.
+ */
+interface Props {
+  kind: 'capture' | 'illustration' | 'diagram';
+  /** Short provenance line, e.g. the host a capture was taken from. */
+  source?: string;
+  class?: string;
+  /** Hide the caption visually (it stays in the accessibility tree). */
+  quietCaption?: boolean;
+}
+
+const { kind, source, class: className, quietCaption = false } = Astro.props;
+
+const kindLabel = {
+  capture: 'Live capture',
+  illustration: 'Illustration',
+  diagram: 'Diagram',
+}[kind];
+---
+
+<figure class:list={['plate', `plate--${kind}`, className]}>
+  <div class="plate-art">
+    <slot />
+  </div>
+  <figcaption class:list={['plate-cap', { 'sr-only': quietCaption }]}>
+    <span class="plate-kind">{kindLabel}{source && <span class="plate-source"> · {source}</span>}</span>
+    <span class="plate-text"><slot name="caption" /></span>
+  </figcaption>
+</figure>

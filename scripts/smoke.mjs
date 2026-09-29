@@ -302,6 +302,54 @@ try {
   check('filter narrows the grid', filtered.shown === 5, `${filtered.shown} shown`);
   check('filtered-out cards are inert', filtered.hiddenInert);
   check('filter change is announced', filtered.status.includes('5'));
+  check(
+    'filter drives the stack drawing',
+    (await page.$eval('#ecosystem', (s) => s.dataset.filter)) === 'databases'
+  );
+
+  // Flagship tour: a tab shows its screen and takes the others out of the
+  // accessibility tree.
+  await tap(page, '[data-tour-tab="2"]');
+  await new Promise((r) => setTimeout(r, 200));
+  const tour = await page.evaluate(() => {
+    const panels = [...document.querySelectorAll('[data-tour-panel]')];
+    return {
+      active: panels.findIndex((p) => p.classList.contains('active')),
+      othersHidden: panels.filter((_, i) => i !== 2).every((p) => p.hasAttribute('hidden')),
+      selected: document.querySelector('[data-tour-tab="2"]')?.getAttribute('aria-selected'),
+    };
+  });
+  check('tour tab shows its screen', tour.active === 2 && tour.selected === 'true', `panel ${tour.active}`);
+  check('tour hides the other screens', tour.othersHidden);
+
+  // Every live capture actually arrives — they are lazy, so bring each into
+  // view first.
+  for (const plate of await page.$$('.case-plate')) {
+    await plate.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  await page.waitForFunction(
+    () => [...document.querySelectorAll('.case-plate img')].every((i) => i.complete),
+    { timeout: 15000 }
+  ).catch(() => {});
+  const captures = await page.evaluate(() =>
+    [...document.querySelectorAll('.case-plate img')].map((i) => i.naturalWidth)
+  );
+  check(
+    'live captures load',
+    captures.length === 4 && captures.every((w) => w > 0),
+    `${captures.filter((w) => w > 0).length}/${captures.length} loaded`
+  );
+
+  // A drawing must never be able to pass for a screenshot.
+  const plates = await page.evaluate(() =>
+    [...document.querySelectorAll('.plate')].map((p) => p.querySelector('.plate-kind')?.textContent?.trim() ?? '')
+  );
+  check(
+    'every plate says what it is',
+    plates.length > 0 && plates.every((k) => /^(Live capture|Illustration|Diagram)/.test(k)),
+    `${plates.length} plates`
+  );
 
   // Command palette opens on Ctrl+K and filters.
   await page.keyboard.down('Control');
@@ -582,6 +630,18 @@ try {
   );
   await m.$eval('#btn-business', (el) => el.click());
   await new Promise((r) => setTimeout(r, 300));
+
+  // The generated architecture stacks on a phone instead of arriving cropped.
+  const bpMobile = await m.evaluate(() => {
+    const r = document.getElementById('bp-diagram');
+    return { layout: r?.dataset.layout, overflows: r ? r.scrollWidth > r.clientWidth + 1 : true };
+  });
+  check(
+    'blueprint diagram stacks on a phone',
+    bpMobile.layout === 'stacked' && !bpMobile.overflows,
+    `layout=${bpMobile.layout} overflows=${bpMobile.overflows}`
+  );
+
   await tap(m, '#mobile-nav-toggle');
   await new Promise((r) => setTimeout(r, 350));
 

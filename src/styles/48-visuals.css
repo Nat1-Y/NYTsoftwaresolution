@@ -1,0 +1,718 @@
+/* ==========================================================================
+   VISUALS — PLATES, CAPTURES AND DRAWINGS
+
+   The page's images, set the way a technical journal sets its figures.
+   Two kinds, and they are never allowed to be confused:
+
+     · captures — genuine screenshots of the live client systems, shown in a
+       plain device frame and labelled "Live capture" with the host they came
+       from;
+     · drawings — original line illustrations in the page's own ink, labelled
+       "Illustration" or "Diagram". They are drawn, not rendered: hairline
+       strokes, three flat tones for the faces of a solid, and the sienna
+       mark for the one thing in each drawing that matters.
+
+   Stock photography is deliberately absent. On a page whose argument is
+   "four systems in production, open them and judge", a photograph of
+   somebody else's office would be the least credible thing on it.
+
+   Every drawing reads its colours from the theme tokens below, so the
+   persona switch turns the whole set from ink-on-paper into a blueprint
+   without a second copy of any artwork.
+   ========================================================================== */
+
+:root,
+:root.mode-business,
+body.mode-business {
+  --ill-ink: #1d2a48;
+  --ill-line: #c9c0aa;
+  --ill-paper: #ffffff;
+  --ill-tint: #f4f1e9;
+  --ill-shade: #e6e0d1;
+  --ill-grid: rgba(19, 31, 58, 0.07);
+}
+
+:root.mode-tech,
+body.mode-tech {
+  --ill-ink: rgba(214, 226, 248, 0.82);
+  --ill-line: rgba(150, 175, 220, 0.34);
+  --ill-paper: #1a2a4c;
+  --ill-tint: #14223f;
+  --ill-shade: #0f1a33;
+  --ill-grid: rgba(150, 175, 220, 0.09);
+}
+
+/* --------------------------------------------------------------------------
+   THE VOCABULARY — short class names, because they repeat thousands of
+   times across the inline drawings and every byte ships in the HTML.
+
+     k   outline stroke (ink)        l   secondary stroke (rule)
+     f0  paper face (lit)            f1  tint face          f2  shade face
+     fg  grey placeholder text bar   fi  ink fill
+     fm  mark fill                   fa  accent fill
+     sm  mark stroke                 sa  accent stroke
+   -------------------------------------------------------------------------- */
+.ill {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ill .k,
+.ill .l,
+.ill .sm,
+.ill .sa,
+.ill .wire,
+.ill .flow {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ill .k { stroke: var(--ill-ink); stroke-width: 1.1; }
+.ill .l { stroke: var(--ill-line); stroke-width: 1; }
+.ill .sm { stroke: var(--mark); stroke-width: 1.4; }
+.ill .sa { stroke: var(--accent); stroke-width: 1.4; }
+
+/* A fill class on the same element as a stroke class wins the fill. */
+.ill .f0 { fill: var(--ill-paper); }
+.ill .f1 { fill: var(--ill-tint); }
+.ill .f2 { fill: var(--ill-shade); }
+.ill .fg { fill: var(--ill-line); }
+.ill .fi { fill: var(--ill-ink); }
+.ill .fm { fill: var(--mark); }
+.ill .fa { fill: var(--accent); }
+.ill .fn { fill: none; }
+
+.ill .dash { stroke-dasharray: 3 3; }
+
+.ill text {
+  font-family: var(--font-mono);
+  fill: var(--text-secondary);
+}
+
+.ill .ill-label {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  fill: var(--text-secondary);
+}
+
+.ill .ill-tag {
+  font-size: 9px;
+  fill: var(--text-muted);
+}
+
+.ill .ill-head {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  fill: var(--text-primary);
+}
+
+.ill .ill-grid path { stroke: var(--ill-grid); }
+
+/* Data in motion: a short sienna dash travelling a wire. Decorative, so it
+   stops entirely for anyone who has asked for less motion. */
+.ill .wire { stroke: var(--ill-line); stroke-width: 1.4; }
+
+.ill .flow {
+  stroke: var(--mark);
+  stroke-width: 2.2;
+  stroke-dasharray: 7 90;
+  animation: ill-flow 3.2s linear infinite;
+}
+
+@keyframes ill-flow {
+  from { stroke-dashoffset: 97; }
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ill .flow { animation: none; stroke-dasharray: 7 12; opacity: 0.55; }
+}
+
+/* --------------------------------------------------------------------------
+   THE PLATE — frame and caption
+   -------------------------------------------------------------------------- */
+.plate {
+  margin: 0;
+  min-width: 0;
+}
+
+.plate-art {
+  position: relative;
+}
+
+.plate-cap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  align-items: baseline;
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* The provenance kicker: what this image is, before what it shows. */
+.plate-kind {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mark);
+}
+
+.plate-source {
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
+.plate-text:empty { display: none; }
+
+/* --------------------------------------------------------------------------
+   HERO — the drawing behind, the live readout in front
+   -------------------------------------------------------------------------- */
+.hero-plate .plate-art {
+  /* Reserve the drawing's shape before it paints — no layout shift. */
+  aspect-ratio: 518 / 386;
+}
+
+/* The caption sits under the console, as the note always did; the drawing's
+   own caption line is kept for assistive tech and moved there visually. */
+.hero-plate .plate-cap {
+  display: none;
+}
+
+.hero-visual .console {
+  position: relative;
+  z-index: 1;
+  width: 86%;
+  margin: -6% 0 0 auto;
+  box-shadow: var(--shadow-md);
+}
+
+.hero-figure-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  align-items: baseline;
+  margin: 1rem 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.hero-figure-note a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border-hover);
+}
+
+.hero-figure-note a:hover { color: var(--mark); text-decoration-color: var(--mark); }
+
+@media (max-width: 1080px) {
+  .hero-visual { max-width: 44rem; }
+}
+
+@media (max-width: 620px) {
+  /* Labels at phone size would set around 5px. The caption carries them. */
+  .hero-ill .ill-callouts { display: none; }
+
+
+  .hero-visual .console {
+    width: 96%;
+    margin-top: -5%;
+  }
+}
+
+/* Micro type inside drawn screens: the size a UI label would be at the
+   drawing's scale. It is texture, not copy — the caption carries meaning. */
+.ill .ill-micro {
+  font-size: 6.5px;
+  letter-spacing: 0.08em;
+  fill: var(--text-muted);
+}
+
+.ill text.ill-on-accent { fill: var(--on-accent); }
+/* Element-qualified so a size class declared later (ill-small) cannot
+   override the colour. */
+.ill text.ill-mark,
+.ill tspan.ill-mark { fill: var(--mark); }
+
+/* --------------------------------------------------------------------------
+   DEVICE FRAMES — a browser and a phone, drawn as plainly as the page draws
+   everything else: a hairline, a title bar, no gloss, no bezel render.
+   -------------------------------------------------------------------------- */
+.devices {
+  position: relative;
+  /* The phone hangs off the browser's lower-right corner; this reserves the
+     room it hangs into, so nothing below the plate is overlapped. */
+  padding: 0 11% 10% 0;
+}
+
+.dev-browser {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.dev-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 22px;
+  padding: 0 0.6rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.dev-dots { display: inline-flex; gap: 4px; flex: none; }
+
+.dev-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+.dev-url {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 70%;
+  padding: 0 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  line-height: 14px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+}
+
+/* The screen reserves its shape before the image arrives, so a lazy capture
+   never shifts the card; the tint behind it is the fallback if it fails. */
+.dev-screen {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.dev-screen--wide { aspect-ratio: 16 / 10; }
+.dev-screen--tall { aspect-ratio: 390 / 844; }
+
+.dev-screen picture { display: block; height: 100%; }
+
+.dev-screen img,
+.dev-screen > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.dev-phone {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 24%;
+  padding: 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+
+.dev-phone .dev-screen {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   CASE STUDIES
+   -------------------------------------------------------------------------- */
+.case-plate { margin-bottom: 0.25rem; }
+
+.project-card .plate-cap { font-size: 0.74rem; }
+
+/* --------------------------------------------------------------------------
+   FLAGSHIP — the product tour
+   -------------------------------------------------------------------------- */
+.ill .ill-small {
+  font-size: 8.5px;
+  letter-spacing: 0.07em;
+  fill: var(--text-muted);
+}
+
+.ill text.ill-strong { fill: var(--text-primary); font-weight: 500; }
+.ill text.ill-on-ink { fill: var(--ill-paper); }
+
+/* The same tab the case studies use: a rule with one segment underscored. */
+.tour-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid var(--rule);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tour-tabs::-webkit-scrollbar { display: none; }
+
+.tour-tab {
+  flex: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.55rem 0.95rem 0.6rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+
+.tour-tab:first-child { padding-left: 0; }
+.tour-tab:hover { color: var(--text-primary); }
+
+.tour-tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--mark);
+}
+
+.tour-tab:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+
+.tour-tab-num { color: var(--mark); font-size: 0.62rem; }
+
+/* All four screens share one cell, so the stage is sized once and a switch
+   never moves anything below it. */
+.tour-stage {
+  display: grid;
+  aspect-ratio: 480 / 300;
+}
+
+.tour-panel {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-out);
+}
+
+.tour-panel.active { opacity: 1; }
+
+/* `hidden` would drop the outgoing screen mid-fade; keep it painted for the
+   transition and let the attribute do its real job — leaving the a11y tree. */
+.tour-panel[hidden] { display: block; visibility: hidden; }
+.tour-panel.active[hidden] { visibility: visible; }
+
+.flagship-visual .plate-cap { margin-top: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-panel { transition: none; }
+}
+
+@media (max-width: 560px) {
+  .tour-tab { padding: 0.55rem 0.7rem 0.6rem; font-size: 0.64rem; }
+  .tour-tab-num { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   SERVICES — a drawing at the head of each column
+   -------------------------------------------------------------------------- */
+.service-art {
+  aspect-ratio: 240 / 120;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* --------------------------------------------------------------------------
+   PROCESS — a pictogram per stage, strung on one dashed line so the seven
+   rows read as a route rather than a list
+   -------------------------------------------------------------------------- */
+.timeline-step {
+  position: relative;
+  grid-template-columns: 3.5rem 44px minmax(9rem, 12rem) minmax(0, 1fr);
+  align-items: center;
+}
+
+.step-art {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-self: stretch;
+  align-items: center;
+}
+
+.step-art::before {
+  content: '';
+  position: absolute;
+  top: -1.15rem;
+  bottom: -1.25rem;
+  left: 50%;
+  border-left: 1px dashed var(--border-strong);
+}
+
+.timeline-step:first-child .step-art::before { top: 50%; }
+.timeline-step:last-child .step-art::before { bottom: 50%; }
+
+.step-art .glyph {
+  position: relative;
+  padding: 3px 0;
+  /* The section ground, so the route line appears to pass behind it. */
+  background: var(--bg-alt);
+  transition: background-color 0.2s var(--ease-out);
+}
+
+.timeline-step:hover .step-art .glyph { background: var(--surface-2); }
+
+@media (max-width: 720px) {
+  .timeline-step {
+    grid-template-columns: 2rem 40px minmax(0, 1fr);
+    column-gap: 0.9rem;
+    align-items: center;
+  }
+
+  .timeline-step p { grid-column: 3; }
+  .step-art { grid-row: span 2; align-items: flex-start; }
+  .step-art .glyph { width: 40px; height: 40px; }
+}
+
+/* --------------------------------------------------------------------------
+   BLUEPRINT — system cards carry a pictogram, not a 20px icon
+   -------------------------------------------------------------------------- */
+.bp-card-icon .glyph { display: block; }
+
+.bp-card input:checked + .bp-card-body .bp-card-icon .glyph .k { stroke: var(--text-primary); }
+
+/* --------------------------------------------------------------------------
+   ENGAGEMENT — the shape of each model, above its description
+   -------------------------------------------------------------------------- */
+.engagement-art {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 0 1rem;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.engage-ill { max-width: 320px; }
+
+/* --------------------------------------------------------------------------
+   REMOTE — the overlap chart and the review vignette
+   -------------------------------------------------------------------------- */
+.remote-plates {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 2.5rem;
+  align-items: end;
+  margin: 0 0 3rem;
+}
+
+.ill .ov-city {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  fill: var(--text-primary);
+}
+
+.ill .ov-tick {
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  fill: var(--text-muted);
+}
+
+.ill .ov-shared { opacity: 0.85; }
+
+/* Diff rows: a tint of the accent for additions, of the mark for removals. */
+.ill .ov-add { fill: rgba(var(--accent-rgb), 0.1); }
+.ill .ov-del { fill: rgba(var(--mark-rgb), 0.1); }
+
+@media (max-width: 900px) {
+  .remote-plates { grid-template-columns: minmax(0, 1fr); gap: 2rem; margin-bottom: 2rem; }
+  .review-plate { max-width: 26rem; }
+  .review-plate .ill { max-width: 300px; }
+}
+
+/* --------------------------------------------------------------------------
+   CONTACT — what happens after you write
+   -------------------------------------------------------------------------- */
+.contact-plate {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.contact-plate .ill { max-width: 380px; }
+
+/* --------------------------------------------------------------------------
+   ECOSYSTEM — the stack drawn as a key, the index grouped by layer
+   -------------------------------------------------------------------------- */
+.eco-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 250px) minmax(0, 1fr);
+  gap: 3.5rem;
+  align-items: start;
+}
+
+/* The key stays in view while the index scrolls past it. */
+.eco-art {
+  position: sticky;
+  top: calc(var(--header-h) + 2rem);
+}
+
+.stack-ill .stack-label { font-size: 11.5px; }
+
+.stack-layer {
+  transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+}
+
+.tech-group-label {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 1.75rem 0 0.6rem;
+  font-family: var(--font-mono);
+  font-size: var(--kicker-size);
+  font-weight: 500;
+  letter-spacing: var(--kicker-track);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: opacity 0.3s var(--ease-out);
+}
+
+.tech-group-label:first-child { padding-top: 0; }
+
+.tech-group-count { color: var(--mark); font-variant-numeric: tabular-nums; }
+
+/* 28-ecosystem centred the card's contents; with a mark beside the name the
+   pair has to range left, like every other list on the page. */
+.tech-card {
+  flex-direction: row;
+  justify-content: flex-start;
+  text-align: left;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.tech-card-text { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+
+.tech-mark {
+  flex: none;
+  margin-top: 0.1rem;
+  color: var(--text-secondary);
+  fill: currentColor;
+  transition: color 0.2s var(--ease-out);
+}
+
+.tech-card:hover .tech-mark { color: var(--mark); }
+
+/* One rule per layer: the chosen layer lifts and takes the mark; the rest
+   step back. "All" leaves the drawing as it is. */
+#ecosystem:not([data-filter='all']) .stack-layer { opacity: 0.28; }
+#ecosystem:not([data-filter='all']) .tech-group-label { opacity: 0.35; }
+
+#ecosystem[data-filter='frontend'] .stack-layer[data-layer='frontend'],
+#ecosystem[data-filter='backend'] .stack-layer[data-layer='backend'],
+#ecosystem[data-filter='databases'] .stack-layer[data-layer='databases'],
+#ecosystem[data-filter='infrastructure'] .stack-layer[data-layer='infrastructure'] {
+  opacity: 1;
+  transform: translateY(-6px);
+}
+
+#ecosystem[data-filter='frontend'] [data-layer='frontend'] .stack-top,
+#ecosystem[data-filter='backend'] [data-layer='backend'] .stack-top,
+#ecosystem[data-filter='databases'] [data-layer='databases'] .stack-top,
+#ecosystem[data-filter='infrastructure'] [data-layer='infrastructure'] .stack-top {
+  stroke: var(--mark);
+  stroke-width: 1.6;
+}
+
+#ecosystem[data-filter='frontend'] .tech-group-label[data-group='frontend'],
+#ecosystem[data-filter='backend'] .tech-group-label[data-group='backend'],
+#ecosystem[data-filter='databases'] .tech-group-label[data-group='databases'],
+#ecosystem[data-filter='infrastructure'] .tech-group-label[data-group='infrastructure'] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-layer { transition: none; }
+}
+
+@media (max-width: 900px) {
+  .eco-layout { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .eco-art { position: static; max-width: 230px; }
+}
+
+@media (max-width: 560px) {
+  .tech-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; }
+  .tech-card { padding-right: 0.25rem; gap: 0.55rem; }
+  .tech-mark { width: 18px; height: 18px; }
+}
+
+/* --------------------------------------------------------------------------
+   TESTIMONIALS — each quote points at the system it is about
+   -------------------------------------------------------------------------- */
+.testi-author { flex-wrap: wrap; }
+
+.testi-case {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+  align-self: center;
+  min-height: 44px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.testi-case:hover { color: var(--mark); }
+.testi-case svg { transition: transform 0.28s var(--ease-out); }
+.testi-case:hover svg { transform: translateX(3px); }
+
+/* --------------------------------------------------------------------------
+   BLUEPRINT — the stacked diagram for narrow screens (src/scripts/blueprint.ts)
+   -------------------------------------------------------------------------- */
+.arch-svg.bp-svg-stacked {
+  min-width: 0;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.bp-band {
+  fill: none;
+  stroke: var(--rule);
+  stroke-dasharray: 3 3;
+}
+
+.bp-svg-stacked .bp-col-label { text-anchor: start; }
+
+[data-layout='stacked'].arch-scroll { overflow-x: visible; padding: 0.75rem 0.5rem; }

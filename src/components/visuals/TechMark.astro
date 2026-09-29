@@ -1,0 +1,37 @@
+---
+/**
+ * A technology's mark, from the shared sprite (/tech-marks.svg). Names with no
+ * published mark — see src/data/tech-logos.ts — draw a neutral glyph in the
+ * page's own line style instead of an improvised logo.
+ */
+import { techLogos } from '../../data/tech-logos';
+import { slug } from '../../lib/slug';
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+const hasMark = name in techLogos;
+---
+
+<svg class="tech-mark" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+  {hasMark && <use href={`/tech-marks.svg#${slug(name)}`} />}
+  {!hasMark && name === 'AWS' && (
+    <path
+      d="M6.5 18a4.5 4.5 0 0 1-.4-9 6 6 0 0 1 11.4 1.3A3.9 3.9 0 0 1 17.5 18Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linejoin="round"
+    />
+  )}
+  {!hasMark && name !== 'AWS' && (
+    <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="9" width="5" height="6" />
+      <rect x="9.5" y="9" width="5" height="6" />
+      <rect x="17" y="9" width="5" height="6" />
+      <path d="M7 12h2.5M14.5 12H17M19.5 9V5.5H4.5V9" />
+    </g>
+  )}
+</svg>

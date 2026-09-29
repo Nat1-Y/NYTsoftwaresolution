@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { heroStats, personaCopy } from '../data/site';
 import Icon from './Icon.astro';
+import HeroPlate from './visuals/HeroPlate.astro';
 
 /**
  * The hero.
@@ -74,6 +75,8 @@ const systems = (await getCollection('case-studies')).sort(
       prose and with a working link, in the Case Studies section below.
     -->
     <div class="hero-visual">
+      <HeroPlate />
+
       <div class="console" id="hero-console" aria-hidden="true">
         <div class="console-chrome">
           <span class="console-dots"><i></i><i></i><i></i></span>
@@ -142,9 +145,13 @@ const systems = (await getCollection('case-studies')).sort(
         </div>
       </div>
 
-      <p class="hero-visual-note">
-        The four systems above are in production today — open any of them from
-        <a href="#projects">Case Studies</a>.
+      <p class="hero-figure-note">
+        <span class="plate-kind">Illustration</span>
+        <span>
+          The drawing shows the kinds of system we build; the readout in front
+          of it is real — four systems in production today. Open any of them
+          from <a href="#projects">Case Studies</a>.
+        </span>
       </p>
     </div>
   </div>

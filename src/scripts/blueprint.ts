@@ -21,6 +21,7 @@ import {
   scales,
   systemTypes,
   type BlueprintNode,
+  type Layer,
 } from '../data/blueprint';
 
 /* ------------------------------------------------------------ selection -- */
@@ -138,21 +139,19 @@ function el<K extends keyof SVGElementTagNameMap>(
  * than node-to-node: with four components either side, direct edges become a
  * cross-hatch that communicates nothing.
  */
-function renderDiagram(container: HTMLElement, plan: Plan, systemLabel: string): void {
-  const columns = layerOrder
-    .map((layer) => ({ layer, nodes: plan.nodes.filter((n) => n.layer === layer) }))
-    .filter((column) => column.nodes.length > 0);
+type Column = { layer: Layer; nodes: BlueprintNode[] };
 
-  container.textContent = '';
-  if (!columns.length) return;
+/**
+ * Below this container width the diagram is drawn top to bottom instead.
+ * Five columns side by side need ~1000px; on a phone that arrived cropped,
+ * with the data layer — the part people came to see — scrolled out of view.
+ */
+const STACK_BELOW = 640;
 
-  const rows = Math.max(...columns.map((c) => c.nodes.length));
-  const bodyH = rows * NODE_H + (rows - 1) * V_GAP;
-  const width = PAD * 2 + columns.length * NODE_W + (columns.length - 1) * COL_GAP;
-  const height = PAD * 2 + HEAD_H + bodyH;
-
+/** The <svg> shell both layouts share: size, title, description, arrowhead. */
+function frame(width: number, height: number, columns: Column[], systemLabel: string, extra = '') {
   const svg = el('svg', {
-    class: 'arch-svg bp-svg',
+    class: `arch-svg bp-svg ${extra}`.trim(),
     viewBox: `0 0 ${width} ${height}`,
     width,
     height,
@@ -185,6 +184,133 @@ function renderDiagram(container: HTMLElement, plan: Plan, systemLabel: string):
   marker.appendChild(el('path', { d: 'M 0 0 L 10 5 L 0 10 z', class: 'arch-arrow-accent' }));
   defs.appendChild(marker);
   svg.appendChild(defs);
+
+  return svg;
+}
+
+/** One component box, with its label and optional note. */
+function drawNode(node: BlueprintNode, layer: Layer, x: number, y: number, w: number, order: number) {
+  const group = el('g', { class: 'bp-node' });
+  group.style.setProperty('--bp-order', String(order));
+
+  group.appendChild(
+    el('rect', {
+      x,
+      y,
+      width: w,
+      height: NODE_H,
+      rx: 2,
+      class: layer === 'external' ? 'arch-node' : 'arch-node-accent',
+    })
+  );
+
+  const label = el('text', {
+    x: x + w / 2,
+    y: node.note ? y + 24 : y + 31,
+    'text-anchor': 'middle',
+    class: 'arch-label',
+  });
+  label.textContent = node.label;
+  group.appendChild(label);
+
+  if (node.note) {
+    const note = el('text', { x: x + w / 2, y: y + 39, 'text-anchor': 'middle', class: 'arch-sub' });
+    note.textContent = node.note;
+    group.appendChild(note);
+  }
+
+  return group;
+}
+
+/**
+ * The narrow-screen layout: each layer is a ruled band, two components to a
+ * row, and one arrow carries the flow down to the next band. Drawn at a fixed
+ * 340-unit width so it scales to the phone instead of scrolling.
+ */
+function renderStacked(columns: Column[], systemLabel: string): SVGSVGElement {
+  const W = 340;
+  const P = 12;
+  const GAP_X = 10;
+  const ROW_GAP = 10;
+  const BAND_HEAD = 26;
+  const BAND_GAP = 30;
+  const nodeW = (W - P * 2 - 16 - GAP_X) / 2;
+
+  const bands = columns.map((column) => {
+    const rows = Math.ceil(column.nodes.length / 2);
+    return { column, rows, h: BAND_HEAD + rows * NODE_H + (rows - 1) * ROW_GAP + 8 };
+  });
+  const height = P * 2 + bands.reduce((sum, b) => sum + b.h, 0) + BAND_GAP * (bands.length - 1);
+
+  const svg = frame(W, height, columns, systemLabel, 'bp-svg-stacked');
+  const edges = el('g', { class: 'bp-edges' });
+  const body = el('g');
+  let y = P;
+  let order = 0;
+
+  bands.forEach((band, b) => {
+    body.appendChild(
+      el('rect', { x: P, y, width: W - P * 2, height: band.h, rx: 2, class: 'bp-band' })
+    );
+
+    const heading = el('text', { x: P + 8, y: y + 16, class: 'bp-col-label' });
+    heading.textContent = layerLabels[band.column.layer].toUpperCase();
+    body.appendChild(heading);
+
+    band.column.nodes.forEach((node, n) => {
+      const row = Math.floor(n / 2);
+      const lone = n === band.column.nodes.length - 1 && n % 2 === 0;
+      const x = lone ? (W - nodeW) / 2 : P + 8 + (n % 2) * (nodeW + GAP_X);
+      const ny = y + BAND_HEAD + row * (NODE_H + ROW_GAP);
+      body.appendChild(drawNode(node, band.column.layer, x, ny, nodeW, order++));
+    });
+
+    y += band.h;
+
+    if (b < bands.length - 1) {
+      edges.appendChild(
+        el('line', {
+          x1: W / 2,
+          y1: y,
+          x2: W / 2,
+          y2: y + BAND_GAP - 3,
+          class: 'arch-edge-accent bp-edge',
+          'marker-end': 'url(#bp-arrow)',
+        })
+      );
+      y += BAND_GAP;
+    }
+  });
+
+  svg.append(edges, body);
+  return svg;
+}
+
+function renderDiagram(container: HTMLElement, plan: Plan, systemLabel: string): void {
+  const columns: Column[] = layerOrder
+    .map((layer) => ({ layer, nodes: plan.nodes.filter((n) => n.layer === layer) }))
+    .filter((column) => column.nodes.length > 0);
+
+  container.textContent = '';
+  if (!columns.length) return;
+
+  const stacked = container.clientWidth > 0 && container.clientWidth < STACK_BELOW;
+  container.dataset.layout = stacked ? 'stacked' : 'columns';
+
+  if (stacked) {
+    const svg = renderStacked(columns, systemLabel);
+    if (prefersReducedMotion()) svg.classList.add('bp-svg-static');
+    container.appendChild(svg);
+    container.removeAttribute('tabindex');
+    return;
+  }
+
+  const rows = Math.max(...columns.map((c) => c.nodes.length));
+  const bodyH = rows * NODE_H + (rows - 1) * V_GAP;
+  const width = PAD * 2 + columns.length * NODE_W + (columns.length - 1) * COL_GAP;
+  const height = PAD * 2 + HEAD_H + bodyH;
+
+  const svg = frame(width, height, columns, systemLabel);
 
   const colX = (i: number) => PAD + i * (NODE_W + COL_GAP);
   const nodeY = (column: { nodes: BlueprintNode[] }, i: number) => {
@@ -253,42 +379,7 @@ function renderDiagram(container: HTMLElement, plan: Plan, systemLabel: string):
     svg.appendChild(heading);
 
     column.nodes.forEach((node, n) => {
-      const y = nodeY(column, n);
-      const group = el('g', { class: 'bp-node' });
-      group.style.setProperty('--bp-order', String(order++));
-
-      group.appendChild(
-        el('rect', {
-          x,
-          y,
-          width: NODE_W,
-          height: NODE_H,
-          rx: 2,
-          class: column.layer === 'external' ? 'arch-node' : 'arch-node-accent',
-        })
-      );
-
-      const label = el('text', {
-        x: x + NODE_W / 2,
-        y: node.note ? y + 24 : y + 31,
-        'text-anchor': 'middle',
-        class: 'arch-label',
-      });
-      label.textContent = node.label;
-      group.appendChild(label);
-
-      if (node.note) {
-        const note = el('text', {
-          x: x + NODE_W / 2,
-          y: y + 39,
-          'text-anchor': 'middle',
-          class: 'arch-sub',
-        });
-        note.textContent = node.note;
-        group.appendChild(note);
-      }
-
-      svg.appendChild(group);
+      svg.appendChild(drawNode(node, column.layer, x, nodeY(column, n), NODE_W, order++));
     });
   });
 
@@ -414,8 +505,27 @@ export function initBlueprint(): void {
       });
     }
 
-    if (diagramEl) renderDiagram(diagramEl, plan, selection.system.label);
+    if (diagramEl) drawDiagram();
   };
+
+  const captionEl = $('#bp-diagram-caption');
+  const drawDiagram = () => {
+    if (!diagramEl || !current) return;
+    renderDiagram(diagramEl, current.plan, current.selection.system.label);
+    if (captionEl) {
+      const direction = diagramEl.dataset.layout === 'stacked' ? 'top to bottom' : 'left to right';
+      captionEl.innerHTML = `<strong>Reading it:</strong> data flows ${direction}, from the things people touch to the systems of record behind them.`;
+    }
+  };
+
+  // Redraw only when a resize crosses the layout threshold — rotating a
+  // tablet, say — not on every pixel of a window drag.
+  if (diagramEl && 'ResizeObserver' in window) {
+    new ResizeObserver(() => {
+      const wantStacked = diagramEl.clientWidth < STACK_BELOW;
+      if (wantStacked !== (diagramEl.dataset.layout === 'stacked')) drawDiagram();
+    }).observe(diagramEl);
+  }
 
   /*
    * Changing the system re-ticks that system's capabilities. Someone who has

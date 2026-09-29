@@ -3,6 +3,8 @@ export interface Engagement {
   audience: string;
   description: string;
   featured?: boolean;
+  /** Which drawing heads the column — see EngagementDiagram.astro. */
+  art: 'fixed' | 'team' | 'retainer';
   meta: { label: string; value: string }[];
   includes: string[];
   cta: string;
@@ -15,6 +17,7 @@ export interface Engagement {
 export const engagements: Engagement[] = [
   {
     title: 'Fixed-Scope Project',
+    art: 'fixed',
     audience: 'For a defined system with clear requirements',
     description:
       'We scope the work, agree a price and a delivery date, and build to it. Payment is staged against milestones you sign off.',
@@ -34,6 +37,7 @@ export const engagements: Engagement[] = [
   },
   {
     title: 'Dedicated Engineering Team',
+    art: 'team',
     audience: 'For companies scaling technical capacity',
     description:
       'One or more of our engineers work as an extension of your team — your standups, your board, your repository, your review process.',
@@ -54,6 +58,7 @@ export const engagements: Engagement[] = [
   },
   {
     title: 'Platform & Support Retainer',
+    art: 'retainer',
     audience: 'For systems already running in production',
     description:
       'Ongoing maintenance for software we built or inherited — monitoring, fixes, database health and incremental features as your business changes.',

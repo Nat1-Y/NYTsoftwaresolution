@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import Icon from './Icon.astro';
 import ArchDiagram from './ArchDiagram.astro';
+import CasePlate from './visuals/CasePlate.astro';
 
 interface Props {
   study: CollectionEntry<'case-studies'>;
@@ -13,7 +14,9 @@ const id = study.id;
 const num = String(d.order).padStart(2, '0');
 ---
 
-<article class="project-card glass" data-case-study={id}>
+<article class="project-card glass anchor-target" id={`case-${id}`} data-case-study={id}>
+  <CasePlate variant={d.tech.diagram} />
+
   <div class="project-meta">
     <span class="project-num" aria-hidden="true">{num}</span>
     <span class="project-category">{d.category}</span>

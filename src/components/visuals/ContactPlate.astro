@@ -1,0 +1,48 @@
+---
+/**
+ * What happens after someone writes: the three steps the FAQ already
+ * promises — a message, a free first consultation, a written estimate —
+ * drawn so the form reads as the start of a process rather than a void.
+ */
+import Plate from './Plate.astro';
+
+const steps = ['You write', 'Consultation', 'Estimate'];
+---
+
+<Plate kind="diagram" class="contact-plate">
+  <svg
+    class="ill"
+    viewBox="0 0 300 92"
+    role="img"
+    aria-label="Diagram: first you write to us, then a free consultation, then a written estimate."
+  >
+    <path d="M58 34 H104 M170 34 H216" class="wire" />
+    <path d="M58 34 H104 M170 34 H216" class="flow" />
+
+    <!-- message -->
+    <rect x="12" y="16" width="46" height="34" class="f0 k" />
+    <path d="M12 16 L35 36 L58 16" class="k" />
+    <rect x="44" y="10" width="12" height="12" class="fm" />
+
+    <!-- consultation -->
+    <path d="M110 14 h34 v20 h-22 l-8 7 v-7 h-4 z" class="f1 k" />
+    <path d="M132 28 h32 v20 h-4 v7 l-8 -7 h-20 z" class="f0 k" />
+    {[36, 41].map((y, i) => <rect x="138" y={y} width={[20, 14][i]} height="2.5" class="fg" />)}
+    {[20, 25].map((y, i) => <rect x="116" y={y} width={[20, 14][i]} height="2.5" class="fg" />)}
+
+    <!-- estimate -->
+    <rect x="222" y="10" width="36" height="46" class="f0 k" />
+    {[18, 24, 30, 36].map((y, i) => <rect x="228" y={y} width={[22, 18, 24, 14][i]} height="2.5" class="fg" />)}
+    <path d="M228 48 q4 -6 7 0 t7 0 t6 -2" class="sm" />
+
+    {steps.map((s, i) => (
+      <text x={[35, 137, 240][i]} y="76" text-anchor="middle" class="ill-small">
+        <tspan class="ill-mark">{i + 1}</tspan> {s.toUpperCase()}
+      </text>
+    ))}
+  </svg>
+  <Fragment slot="caption">
+    What happens after you write. The first consultation and the estimate
+    that follows are free.
+  </Fragment>
+</Plate>

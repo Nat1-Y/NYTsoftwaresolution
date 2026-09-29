@@ -43,6 +43,7 @@ npm run dev          # http://localhost:4321
 | `npm run a11y` | axe-core accessibility audit (needs `preview` running) |
 | `npm run csp` | Loads the site under the production CSP and reports violations |
 | `npm run og` | Regenerate the social card and app icons |
+| `npm run captures` | Re-shoot the live client screenshots (see [Images](#images)) |
 
 `smoke` and `a11y` drive your installed Chrome. If it lives somewhere unusual,
 set `CHROME_PATH`.
@@ -250,6 +251,54 @@ not stock art — because "schema-isolated multi-tenancy" means nothing to a
 reader until they can see its shape. See
 [`src/components/ArchDiagram.astro`](src/components/ArchDiagram.astro).
 
+### Images
+
+Every image on the page is a **plate** ([`Plate.astro`](src/components/visuals/Plate.astro)):
+a figure with a caption line that always says what the image *is* before what
+it shows. There are exactly three kinds, and a smoke check fails the build if
+any plate is missing its label:
+
+| Label | What it is | Where |
+| --- | --- | --- |
+| **Live capture** | A genuine screenshot of a client's public screens, with the host and capture date | Bora and Merkato88 case studies |
+| **Illustration** | An original line drawing in the page's own ink | Hero, Fikrekun and Saron plates, the Cafe Manager tour, services, process, engagement |
+| **Diagram** | A drawing of real structure or arithmetic | Time-zone overlap, "what happens after you write", the architecture diagrams |
+
+There is no stock photography, on purpose: on a page whose argument is "open
+the live system and judge for yourself", a photograph of somebody else's
+office is the least credible thing it could show. Where a client's system has
+no public screens — a POS full of trading figures, a clinical system full of
+patients — its plate is a drawing of the workflow, labelled as one.
+
+**The drawings** are inline SVG in [`src/components/visuals/`](src/components/visuals/).
+They read every colour from theme tokens (`--ill-*` in
+[`48-visuals.css`](src/styles/48-visuals.css)), so the persona switch turns
+them from ink-on-paper into a blueprint with no second copy of any artwork.
+The isometric ones (hero, service vignette, tech stack) are projected from 3D
+coordinates at build time by [`src/lib/iso.ts`](src/lib/iso.ts) — the same
+"drawn as geometry" rule as the logo — and ship no JavaScript.
+
+**The captures** live in [`src/assets/captures/`](src/assets/captures/) and
+are served as AVIF/WebP at several widths, lazy-loaded, with the frame's shape
+reserved so nothing shifts. Refresh them when a client redesigns:
+
+```bash
+npm run captures   # re-shoots the public screens, then rebuild
+```
+
+Then update the capture date in [`CasePlate.astro`](src/components/visuals/CasePlate.astro).
+
+**Technology marks** come from [Simple Icons](https://simpleicons.org) (CC0),
+held as path data in [`src/data/tech-logos.ts`](src/data/tech-logos.ts) and
+served as one cached sprite (`/tech-marks.svg`) instead of 31 kB inline. AWS
+has no mark on purpose — Simple Icons removed it at Amazon's request — so it
+and "CI/CD" draw a neutral glyph.
+
+**Adding real photography later.** If the company commissions photographs of
+the team or of a client site, or clients approve their logos, add them as
+`Plate kind="capture"` (or a new kind) with a source line — never as an
+unlabelled background.
+
 ### Offline support
 
 `public/sw.js` registers a service worker: network-first for pages,
@@ -263,7 +312,7 @@ sells offline-first POS systems ought to survive a dropped connection itself.
 | Gate | Status |
 | --- | --- |
 | `astro check` | 0 errors |
-| `npm run smoke` | 36/36 interaction checks |
+| `npm run smoke` | 61/61 interaction checks |
 | `npm run a11y` | 0 serious/critical axe violations across 6 scenarios |
 | `npm run csp` | 0 violations under the production Content-Security-Policy |
 | JS shipped | ~30 kB (~12 kB gzipped), no runtime framework |

@@ -76,7 +76,19 @@ try {
 
   await page.goto(BASE, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('html[data-ready="true"]', { timeout: 20000 });
-  await new Promise((r) => setTimeout(r, 2500));
+
+  // Wait for the faces themselves rather than a fixed interval: a fixed sleep
+  // raced the font CDN on slow links and failed a page with no violations.
+  // Capped, so a font that is genuinely blocked still fails the check.
+  await page
+    .waitForFunction(
+      () =>
+        document.fonts.check('600 3rem Fraunces') &&
+        document.fonts.check('400 1rem Archivo') &&
+        document.fonts.check('400 1rem "Fira Code"'),
+      { timeout: 15000, polling: 250 }
+    )
+    .catch(() => {});
 
   // Did the brand font actually apply, or did we fall back to a system face?
   const fonts = await page.evaluate(() => {

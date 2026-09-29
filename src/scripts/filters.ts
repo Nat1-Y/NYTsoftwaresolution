@@ -17,6 +17,9 @@ export function initTechFilters(): void {
         b.setAttribute('aria-pressed', String(active));
       });
 
+      // The stack drawing and the group headings key off this.
+      $('#ecosystem')?.setAttribute('data-filter', filter);
+
       let shown = 0;
       cards.forEach((card) => {
         const categories = (card.dataset.category ?? '').split(' ');

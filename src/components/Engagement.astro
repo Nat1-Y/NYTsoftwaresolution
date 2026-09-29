@@ -1,5 +1,6 @@
 ---
 import { engagements } from '../data/engagement';
+import EngagementDiagram from './visuals/EngagementDiagram.astro';
 ---
 
 <section id="engagement" class="engagement-section" aria-labelledby="engagement-title">
@@ -20,6 +21,9 @@ import { engagements } from '../data/engagement';
 
             <h3>{e.title}</h3>
             <p class="engagement-for">{e.audience}</p>
+            <div class="engagement-art">
+              <EngagementDiagram kind={e.art} />
+            </div>
             <p class="engagement-desc">{e.description}</p>
 
             <dl class="engagement-meta">

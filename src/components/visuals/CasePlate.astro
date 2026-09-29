@@ -1,0 +1,243 @@
+---
+/**
+ * The plate at the head of each case-study card: a browser and a phone.
+ *
+ * Where the client's system has public screens, these are genuine captures of
+ * it (Bora, Merkato88), optimised by the image pipeline into AVIF/WebP at
+ * several widths. Where it does not — a POS whose data is the client's
+ * trading figures, a clinical system whose data is patients — the same frames
+ * hold a line drawing of the workflow instead, labelled as one. The two are
+ * built to be told apart at a glance: photographs against hairlines.
+ *
+ * Captures are refreshed with `npm run captures`; see README → "Images".
+ */
+import { Picture } from 'astro:assets';
+import Plate from './Plate.astro';
+
+import boraDesktop from '../../assets/captures/bora-desktop.jpg';
+import boraMobile from '../../assets/captures/bora-mobile.jpg';
+import merkatoDesktop from '../../assets/captures/merkato-desktop.jpg';
+import merkatoMobile from '../../assets/captures/merkato-mobile.jpg';
+
+interface Props {
+  variant: 'multitenant' | 'clinical' | 'ticketing' | 'marketplace';
+}
+
+const { variant } = Astro.props;
+
+const captures = {
+  ticketing: {
+    host: 'boraticketing.vercel.app',
+    desktop: boraDesktop,
+    mobile: boraMobile,
+    altDesktop: 'Bora Amusement Park booking site on a desktop browser: an aerial photograph of the park under the headline "Unleash the thrill", with a Buy Tickets button.',
+    altMobile: 'The same Bora booking site on a phone, with the park photograph, opening hours and a Buy Tickets button.',
+    caption: 'The public booking site, desktop and phone. The park photograph is the client’s own.',
+  },
+  marketplace: {
+    host: 'merkato88.com',
+    desktop: merkatoDesktop,
+    mobile: merkatoMobile,
+    altDesktop: 'Merkato marketplace home page on a desktop browser: the headline "Your Community, Your Marketplace" above a search bar with category, state and city filters.',
+    altMobile: 'Merkato on a phone: the Browse screen, a grid of photographed categories — rental, cars, jobs, services, food and drink, marketplace — above a bottom tab bar.',
+    caption: 'Home page and the category browser, on desktop and phone.',
+  },
+} as const;
+
+const capture = variant === 'ticketing' || variant === 'marketplace' ? captures[variant] : null;
+
+const illustrationCaption = {
+  multitenant:
+    'An order’s path: till, kitchen ticket, stock drawn down, cost report — while the branch phone queues sales offline. Drawn, not a screenshot.',
+  clinical:
+    'Front-desk queue, physicians’ schedule and device stock, drawn without patient data. Not a screenshot.',
+  ticketing: '',
+  marketplace: '',
+} as const;
+
+---
+
+<Plate
+  kind={capture ? 'capture' : 'illustration'}
+  source={capture ? `${capture.host} · Sep 2026` : undefined}
+  class="case-plate"
+>
+  <div class="devices">
+    <div class="dev-browser">
+      <div class="dev-bar" aria-hidden="true">
+        <span class="dev-dots"><i></i><i></i><i></i></span>
+        <span class="dev-url">{capture ? capture.host : variant === 'multitenant' ? 'pos · branch a' : 'clinic · front desk'}</span>
+      </div>
+      <div class="dev-screen dev-screen--wide">
+        {
+          capture ? (
+            <Picture
+              src={capture.desktop}
+              alt={capture.altDesktop}
+              formats={['avif', 'webp']}
+              widths={[480, 720, 960, 1280]}
+              sizes="(max-width: 700px) 86vw, (max-width: 1100px) 44vw, 470px"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : variant === 'multitenant' ? (
+            <svg class="ill" viewBox="0 0 320 200" role="img" aria-label="Illustration of a point-of-sale screen: a menu grid, an order ticket with a send-to-kitchen button, and a strip showing the order flowing to the kitchen, to stock and to the cost report.">
+              <rect width="320" height="200" class="f0" />
+              <rect width="320" height="18" class="f1" />
+              <line x1="0" y1="18" x2="320" y2="18" class="l" />
+              <rect x="8" y="6" width="18" height="6" class="fi" />
+              <rect x="34" y="7.5" width="22" height="3" class="fg" />
+              <rect x="62" y="7.5" width="22" height="3" class="fg" />
+              <rect x="150" y="4.5" width="84" height="9" class="f0 l" />
+              <circle cx="157" cy="9" r="2" class="fa" />
+              <text x="163" y="11.4" class="ill-micro">BRANCH A · SYNCED</text>
+
+              <!-- menu -->
+              <text x="8" y="31" class="ill-micro">MENU</text>
+              {[0, 1, 2, 3].map((i) => (
+                <rect x={36 + i * 38} y="25" width="34" height="8" class={i === 0 ? 'f0 sm' : 'f0 l'} />
+              ))}
+              {[0, 1, 2].flatMap((c) =>
+                [0, 1, 2].map((r) => (
+                  <g>
+                    <rect x={8 + c * 61} y={40 + r * 34} width="56" height="29" class={c === 1 && r === 0 ? 'f0 sm' : 'f1 l'} />
+                    <rect x={12 + c * 61} y={44 + r * 34} width="14" height="14" class="f2" />
+                    <rect x={30 + c * 61} y={46 + r * 34} width={[26, 20, 24][(c + r) % 3]} height="3" class="fg" />
+                    <rect x={30 + c * 61} y={53 + r * 34} width="12" height="3" class="fi" />
+                  </g>
+                ))
+              )}
+
+              <!-- order ticket -->
+              <rect x="196" y="25" width="116" height="117" class="f1 l" />
+              <text x="202" y="36" class="ill-micro">ORDER · TABLE 6</text>
+              {[46, 56, 66, 76].map((y, i) => (
+                <g>
+                  <rect x="202" y={y} width={[48, 40, 56, 36][i]} height="3" class="fg" />
+                  <rect x="290" y={y} width="16" height="3" class="fg" />
+                </g>
+              ))}
+              <line x1="202" y1="88" x2="306" y2="88" class="l dash" />
+              <rect x="202" y="95" width="26" height="4" class="fi" />
+              <rect x="280" y="95" width="26" height="4" class="fi" />
+              <rect x="202" y="120" width="104" height="15" class="fa" />
+              <text x="234" y="130" text-anchor="middle" class="ill-micro ill-on-accent">SEND TO KITCHEN</text>
+
+              <!-- flow strip -->
+              <rect x="0" y="150" width="320" height="50" class="f1" />
+              <line x1="0" y1="150" x2="320" y2="150" class="l" />
+              <path d="M36 170 H258" class="wire" />
+              <path d="M36 170 H258" class="flow" />
+              {['ORDER', 'KITCHEN', 'STOCK', 'COGS'].map((t, i) => (
+                <g>
+                  <rect x={30 + i * 74} y="164" width="12" height="12" class={i === 3 ? 'fm' : 'f0 k'} />
+                  <text x={36 + i * 74} y="190" text-anchor="middle" class="ill-micro">{t}</text>
+                </g>
+              ))}
+            </svg>
+          ) : (
+            <svg class="ill" viewBox="0 0 320 200" role="img" aria-label="Illustration of a clinic front-desk screen: a queue of appointments with statuses, and a schedule grid for three physicians. Names are shown as blank bars.">
+              <rect width="320" height="200" class="f0" />
+              <rect width="320" height="18" class="f1" />
+              <line x1="0" y1="18" x2="320" y2="18" class="l" />
+              <rect x="8" y="6" width="18" height="6" class="fi" />
+              <rect x="176" y="4.5" width="76" height="9" class="f0 l" />
+              <path d="M182 6.5 h5 v3 q0 3 -2.5 4 q-2.5 -1 -2.5 -4 z" class="f0 sm" />
+              <text x="191" y="11.4" class="ill-micro">ROLE · RECEPTION</text>
+
+              <rect x="0" y="18" width="40" height="182" class="f1" />
+              <line x1="40" y1="18" x2="40" y2="200" class="l" />
+              {[30, 46, 62, 78, 94].map((y, i) => (
+                <rect x="12" y={y} width="16" height="8" class={i === 1 ? 'fm' : 'fg'} />
+              ))}
+
+              <!-- queue -->
+              <text x="50" y="32" class="ill-micro">TODAY’S QUEUE</text>
+              {['08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30'].map((t, i) => (
+                <g>
+                  <line x1="50" y1={39 + i * 22} x2="176" y2={39 + i * 22} class="l" />
+                  <text x="50" y={52 + i * 22} class="ill-micro">{t}</text>
+                  <rect x="78" y={46 + i * 22} width={[46, 38, 52, 40, 44, 34, 48][i]} height="4" class="fg" />
+                  <rect x="78" y={53 + i * 22} width="24" height="2.5" class="fg" />
+                  <rect x="150" y={45 + i * 22} width="24" height="9" class={i < 2 ? 'fa' : i === 2 ? 'fm' : 'f0 l'} />
+                </g>
+              ))}
+
+              <!-- schedule -->
+              <text x="190" y="32" class="ill-micro">SCHEDULE</text>
+              {[0, 1, 2].map((c) => (
+                <rect x={190 + c * 42} y="38" width="36" height="5" class="fi" />
+              ))}
+              {[0, 1, 2, 3, 4, 5, 6].map((r) => (
+                <line x1="190" y1={50 + r * 21} x2="312" y2={50 + r * 21} class="l" />
+              ))}
+              {[
+                [0, 0, 2], [0, 3, 1], [0, 5, 2],
+                [1, 1, 2], [1, 4, 1],
+                [2, 0, 1], [2, 2, 3],
+              ].map(([c, r, h], i) => (
+                <rect x={191 + c! * 42} y={52 + r! * 21} width="34" height={h! * 21 - 4} class={i === 5 ? 'f0 sm' : 'f2'} />
+              ))}
+            </svg>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="dev-phone">
+      <div class="dev-screen dev-screen--tall">
+        {
+          capture ? (
+            <Picture
+              src={capture.mobile}
+              alt={capture.altMobile}
+              formats={['avif', 'webp']}
+              widths={[180, 280, 390]}
+              sizes="(max-width: 700px) 26vw, 140px"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : variant === 'multitenant' ? (
+            <svg class="ill" viewBox="0 0 130 282" role="img" aria-label="Illustration of the branch phone: a stock list with one item marked low, and a banner showing sales queued while offline.">
+              <rect width="130" height="282" class="f0" />
+              <text x="10" y="26" class="ill-micro">STOCK · BRANCH A</text>
+              {[40, 64, 88, 112, 136, 160].map((y, i) => (
+                <g>
+                  <rect x="10" y={y} width={[52, 40, 58, 46, 36, 50][i]} height="4" class="fg" />
+                  <rect x="10" y={y + 9} width="110" height="4" class="f2" />
+                  <rect x="10" y={y + 9} width={[88, 64, 18, 96, 70, 52][i]} height="4" class={i === 2 ? 'fm' : 'fi'} />
+                </g>
+              ))}
+              <text x="120" y="102" text-anchor="end" class="ill-micro ill-mark">LOW</text>
+              <rect x="8" y="232" width="114" height="36" class="f1 l" />
+              <path d="M18 250 a6 6 0 1 1 6 6" class="sm dash" />
+              <text x="32" y="247" class="ill-micro">OFFLINE</text>
+              <text x="32" y="258" class="ill-micro">3 SALES QUEUED</text>
+            </svg>
+          ) : (
+            <svg class="ill" viewBox="0 0 130 282" role="img" aria-label="Illustration of the device-stock phone screen: orthotic and implant devices, each linked to a procedure, above an audit-log banner.">
+              <rect width="130" height="282" class="f0" />
+              <text x="10" y="26" class="ill-micro">DEVICE STOCK</text>
+              {[40, 72, 104, 136, 168].map((y, i) => (
+                <g>
+                  <line x1="10" y1={y - 4} x2="120" y2={y - 4} class="l" />
+                  <rect x="10" y={y + 2} width="16" height="16" class="f1 l" />
+                  <path d={`M15 ${y + 14} L21 ${y + 6}`} class="k" />
+                  <rect x="32" y={y + 4} width={[50, 42, 56, 38, 46][i]} height="4" class="fg" />
+                  <rect x="32" y={y + 12} width="30" height="3" class="fg" />
+                  <path d={`M106 ${y + 10} l3 3 l6 -7`} class={i === 3 ? 'sm' : 'sa'} />
+                </g>
+              ))}
+              <rect x="8" y="232" width="114" height="36" class="f1 l" />
+              <path d="M17 244 h8 v5 q0 5 -4 7 q-4 -2 -4 -7 z" class="f0 sm" />
+              <text x="32" y="247" class="ill-micro">AUDIT LOG</text>
+              <text x="32" y="258" class="ill-micro">EVERY READ RECORDED</text>
+            </svg>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  <Fragment slot="caption">{capture ? capture.caption : illustrationCaption[variant]}</Fragment>
+</Plate>

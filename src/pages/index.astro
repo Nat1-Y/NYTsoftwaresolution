@@ -96,6 +96,7 @@ const caseStudies = (await getCollection('case-studies')).sort(
   import { initCommandPalette } from '../scripts/palette';
   import { initBlueprint } from '../scripts/blueprint';
   import { initHero } from '../scripts/hero';
+  import { initTour } from '../scripts/tour';
 
   // Tabs must be wired before the persona module aligns them.
   initCaseStudyTabs();
@@ -109,6 +110,7 @@ const caseStudies = (await getCollection('case-studies')).sort(
   initCommandPalette();
   initBlueprint();
   initHero();
+  initTour();
 
   // Readiness flag: lets the smoke test wait for handlers to be attached
   // instead of racing them, and gives us a hook for future instrumentation.

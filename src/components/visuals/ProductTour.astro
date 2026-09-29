@@ -1,0 +1,218 @@
+---
+/**
+ * NYT Cafe Manager — a tour of the product, in four drawn screens.
+ *
+ * There are no public screenshots of the product yet, so these are
+ * illustrations and say so. They depict only what the section beside them
+ * claims: the owner's dashboard with COGS and profit, the offline-capable
+ * POS, the kitchen display, and multi-branch sync with over-the-air updates.
+ * No figure in them is a real number — values are drawn as bars on purpose.
+ *
+ * Every screen shares one 480×300 stage, so switching never resizes the
+ * section. The tabs are a real tablist (src/scripts/tour.ts); with JavaScript
+ * off, the first screen shows and the others stay in the document.
+ */
+import Plate from './Plate.astro';
+
+const screens = [
+  { id: 'dashboard', tab: 'Dashboard', label: 'Owner’s dashboard: sales, COGS and margin across branches' },
+  { id: 'pos', tab: 'POS', label: 'Point of sale on a tablet, still taking orders while offline' },
+  { id: 'kitchen', tab: 'Kitchen', label: 'Kitchen display: open tickets by table, the oldest flagged' },
+  { id: 'branches', tab: 'Branches', label: 'Recipe costing on a phone; branches syncing and updating over the air' },
+];
+---
+
+<Plate kind="illustration" class="tour">
+  <div class="tour-tabs" role="tablist" aria-label="NYT Cafe Manager screens">
+    {
+      screens.map((s, i) => (
+        <button
+          class:list={['tour-tab', { active: i === 0 }]}
+          role="tab"
+          id={`tour-tab-${s.id}`}
+          aria-controls={`tour-panel-${s.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          data-tour-tab={i}
+        >
+          <span class="tour-tab-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          {s.tab}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="tour-stage" id="tour-stage">
+    <!-- 1 · dashboard on a laptop -->
+    <div class="tour-panel active" role="tabpanel" id="tour-panel-dashboard" aria-labelledby="tour-tab-dashboard" data-tour-panel="0">
+      <svg class="ill" viewBox="0 0 480 300" role="img" aria-label={`Illustration. ${screens[0]!.label}.`}>
+        <rect x="40" y="8" width="400" height="256" rx="7" class="f1 k" />
+        <rect x="50" y="18" width="380" height="236" class="f0 l" />
+        <path d="M8 264 H472 L458 280 H22 Z" class="f2 k" />
+        <path d="M206 264 h68 v3 q0 3 -3 3 h-62 q-3 0 -3 -3 z" class="f1 l" />
+
+        <rect x="50" y="18" width="380" height="20" class="f1" />
+        <line x1="50" y1="38" x2="430" y2="38" class="l" />
+        <rect x="58" y="25" width="22" height="6" class="fi" />
+        <text x="92" y="31" class="ill-small">OVERVIEW · ALL BRANCHES</text>
+        <rect x="378" y="23" width="44" height="10" class="f0 l" />
+        <text x="400" y="31" text-anchor="middle" class="ill-small">TODAY</text>
+
+        <rect x="50" y="38" width="56" height="216" class="f1" />
+        <line x1="106" y1="38" x2="106" y2="254" class="l" />
+        {[52, 70, 88, 106, 124, 142].map((y, i) => (
+          <rect x="60" y={y} width={[34, 28, 36, 30, 26, 32][i]} height="5" class={i === 0 ? 'fm' : 'fg'} />
+        ))}
+
+        {['GROSS SALES', 'COGS', 'NET MARGIN'].map((t, i) => (
+          <g>
+            <rect x={116 + i * 104} y="48" width="96" height="44" class="f0 l" />
+            <text x={124 + i * 104} y="62" class="ill-small">{t}</text>
+            <rect x={124 + i * 104} y="70" width={[58, 40, 48][i]} height="9" class="fi" />
+            <path d={`M${124 + i * 104} 86 l5 -4 l5 2 l6 -5`} class={i === 1 ? 'sm' : 'sa'} />
+          </g>
+        ))}
+
+        <rect x="116" y="100" width="200" height="146" class="f0 l" />
+        <text x="124" y="114" class="ill-small">SALES BY HOUR</text>
+        {[30, 44, 38, 62, 80, 70, 96, 88, 64, 52, 74, 104].map((h, i) => (
+          <rect x={126 + i * 15.5} y={236 - h} width="9" height={h} class={i === 11 ? 'fm' : 'fg'} />
+        ))}
+        <path d="M130 206 L146 200 L162 204 L177 190 L193 180 L208 186 L224 170 L239 174 L255 186 L270 192 L286 180 L301 166" class="sa" />
+
+        <rect x="324" y="100" width="96" height="146" class="f0 l" />
+        <text x="332" y="114" class="ill-small">BRANCHES</text>
+        {['A', 'B', 'C'].map((b, i) => (
+          <g>
+            <line x1="332" y1={124 + i * 38} x2="412" y2={124 + i * 38} class="l" />
+            <circle cx="336" cy={137 + i * 38} r="2.5" class={i === 2 ? 'fm' : 'fa'} />
+            <text x="344" y={140 + i * 38} class="ill-small">BRANCH {b}</text>
+            <rect x="332" y={148 + i * 38} width="80" height="4" class="f2" />
+            <rect x="332" y={148 + i * 38} width={[64, 48, 30][i]} height="4" class="fi" />
+          </g>
+        ))}
+      </svg>
+    </div>
+
+    <!-- 2 · POS on a tablet, offline -->
+    <div class="tour-panel" role="tabpanel" id="tour-panel-pos" aria-labelledby="tour-tab-pos" data-tour-panel="1">
+      <svg class="ill" viewBox="0 0 480 300" role="img" aria-label={`Illustration. ${screens[1]!.label}.`}>
+        <rect x="46" y="14" width="388" height="272" rx="16" class="f1 k" />
+        <rect x="62" y="30" width="356" height="240" rx="4" class="f0 l" />
+
+        <rect x="62" y="30" width="356" height="22" class="f1" />
+        <line x1="62" y1="52" x2="418" y2="52" class="l" />
+        <rect x="70" y="37" width="20" height="7" class="fi" />
+        <rect x="98" y="35" width="122" height="12" class="f0 sm" />
+        <path d="M110 41 a4 4 0 1 1 4 4" class="sm dash" />
+        <text x="122" y="44" class="ill-small ill-mark">OFFLINE · 4 QUEUED</text>
+
+        {[0, 1, 2, 3, 4].map((i) => (
+          <rect x={70 + i * 44} y="60" width="38" height="11" class={i === 1 ? 'f0 sm' : 'f0 l'} />
+        ))}
+        {[0, 1, 2, 3].flatMap((c) =>
+          [0, 1, 2].map((r) => (
+            <g>
+              <rect x={70 + c * 55} y={80 + r * 62} width="49" height="55" class={c === 2 && r === 0 ? 'f0 sm' : 'f1 l'} />
+              <rect x={76 + c * 55} y={86 + r * 62} width="37" height="24" class="f2" />
+              <rect x={76 + c * 55} y={116 + r * 62} width={[30, 24, 34][(c + r) % 3]} height="4" class="fg" />
+              <rect x={76 + c * 55} y={125 + r * 62} width="16" height="4" class="fi" />
+            </g>
+          ))
+        )}
+
+        <rect x="294" y="60" width="116" height="202" class="f1 l" />
+        <text x="302" y="74" class="ill-small">TICKET · TABLE 4</text>
+        {[86, 100, 114, 128, 142].map((y, i) => (
+          <g>
+            <rect x="302" y={y} width={[52, 40, 60, 34, 46][i]} height="4" class="fg" />
+            <rect x="386" y={y} width="16" height="4" class="fg" />
+          </g>
+        ))}
+        <line x1="302" y1="158" x2="402" y2="158" class="l dash" />
+        <rect x="302" y="166" width="30" height="6" class="fi" />
+        <rect x="370" y="166" width="32" height="6" class="fi" />
+        <rect x="302" y="234" width="100" height="20" class="fa" />
+        <text x="352" y="247" text-anchor="middle" class="ill-small ill-on-accent">CHARGE</text>
+        <text x="352" y="224" text-anchor="middle" class="ill-small">SAVED ON DEVICE</text>
+      </svg>
+    </div>
+
+    <!-- 3 · kitchen display -->
+    <div class="tour-panel" role="tabpanel" id="tour-panel-kitchen" aria-labelledby="tour-tab-kitchen" data-tour-panel="2">
+      <svg class="ill" viewBox="0 0 480 300" role="img" aria-label={`Illustration. ${screens[2]!.label}.`}>
+        <rect x="18" y="8" width="444" height="252" rx="5" class="f1 k" />
+        <rect x="28" y="18" width="424" height="232" class="f0 l" />
+        <rect x="222" y="260" width="36" height="20" class="f2 k" />
+        <rect x="170" y="280" width="140" height="8" rx="2" class="f1 k" />
+
+        <rect x="28" y="18" width="424" height="22" class="f1" />
+        <line x1="28" y1="40" x2="452" y2="40" class="l" />
+        <text x="38" y="33" class="ill-small">KITCHEN · BRANCH A</text>
+        <text x="442" y="33" text-anchor="end" class="ill-small">6 OPEN</text>
+
+        {[0, 1, 2, 3].map((c) => (
+          <g>
+            <rect x={38 + c * 104} y="50" width="96" height="190" class="f0 l" />
+            <rect x={38 + c * 104} y="50" width="96" height="20" class={c === 0 ? 'fm' : 'fi'} />
+            <text x={44 + c * 104} y="64" class="ill-small ill-on-ink">T{[7, 2, 11, 5][c]}</text>
+            <text x={128 + c * 104} y="64" text-anchor="end" class="ill-small ill-on-ink">{['14:20', '06:05', '03:40', '01:10'][c]}</text>
+            {[0, 1, 2, 3, 4].slice(0, [5, 3, 4, 2][c]).map((r) => (
+              <g>
+                <rect x={46 + c * 104} y={82 + r * 22} width="8" height="8" class={r === 0 && c === 1 ? 'fa' : 'f0 l'} />
+                <rect x={60 + c * 104} y={83 + r * 22} width={[52, 40, 60, 34, 46][r]} height="4" class="fg" />
+                <rect x={60 + c * 104} y={91 + r * 22} width="22" height="2.5" class="fg" />
+              </g>
+            ))}
+            <rect x={46 + c * 104} y="214" width="80" height="16" class="f0 k" />
+            <text x={86 + c * 104} y="225" text-anchor="middle" class="ill-small">BUMP</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+
+    <!-- 4 · recipe costing on a phone; branches syncing, OTA update -->
+    <div class="tour-panel" role="tabpanel" id="tour-panel-branches" aria-labelledby="tour-tab-branches" data-tour-panel="3">
+      <svg class="ill" viewBox="0 0 480 300" role="img" aria-label={`Illustration. ${screens[3]!.label}.`}>
+        <rect x="40" y="10" width="132" height="282" rx="16" class="f1 k" />
+        <rect x="50" y="24" width="112" height="254" rx="4" class="f0 l" />
+        <text x="58" y="42" class="ill-small">RECIPE COST</text>
+        <rect x="58" y="50" width="70" height="7" class="fi" />
+        {[70, 94, 118, 142, 166].map((y, i) => (
+          <g>
+            <rect x="58" y={y} width={[44, 36, 50, 30, 40][i]} height="4" class="fg" />
+            <rect x="58" y={y + 9} width="96" height="4" class="f2" />
+            <rect x="58" y={y + 9} width={[70, 34, 22, 52, 14][i]} height="4" class={i === 0 ? 'fm' : 'fi'} />
+          </g>
+        ))}
+        <line x1="58" y1="190" x2="154" y2="190" class="l dash" />
+        <text x="58" y="206" class="ill-small">MARGIN</text>
+        <rect x="118" y="199" width="36" height="8" class="fi" />
+        <rect x="58" y="238" width="96" height="26" class="f1 l" />
+        <text x="106" y="254" text-anchor="middle" class="ill-small">UPDATE PRICE</text>
+
+        <!-- sync diagram -->
+        <rect x="286" y="26" width="110" height="46" class="f0 k" />
+        <text x="341" y="45" text-anchor="middle" class="ill-small ill-strong">HEAD OFFICE</text>
+        <text x="341" y="59" text-anchor="middle" class="ill-small">tenant schema</text>
+        {[0, 1, 2].map((i) => (
+          <g>
+            <path d={`M341 72 V110 H${250 + i * 91} V190`} class="wire" />
+            <path d={`M${250 + i * 91} 190 V110 H341 V72`} class="flow" style={`animation-delay:${i * -1.1}s`} />
+            <rect x={214 + i * 91} y="190" width="72" height="54" class="f0 k" />
+            <text x={250 + i * 91} y="208" text-anchor="middle" class="ill-small ill-strong">BRANCH {['A', 'B', 'C'][i]}</text>
+            <circle cx={232 + i * 91} cy="226" r="3" class={i === 1 ? 'fm' : 'fa'} />
+            <text x={240 + i * 91} y="229" class="ill-small">{i === 1 ? 'syncing' : 'in sync'}</text>
+          </g>
+        ))}
+        <rect x="252" y="264" width="178" height="18" class="f0 sm" />
+        <text x="341" y="276" text-anchor="middle" class="ill-small ill-mark">UPDATE SHIPPED · NO DOWNTIME</text>
+      </svg>
+    </div>
+  </div>
+
+  <Fragment slot="caption">
+    Representative screens, drawn — not screenshots, and no real figures.
+    Request demo access to see the live product.
+  </Fragment>
+</Plate>

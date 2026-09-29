@@ -1,6 +1,7 @@
 ---
 import { site, formConfig } from '../data/site';
 import Icon from './Icon.astro';
+import ContactPlate from './visuals/ContactPlate.astro';
 
 const hasBackend = Boolean(formConfig.endpoint);
 ---
@@ -62,6 +63,8 @@ const hasBackend = Boolean(formConfig.endpoint);
             </a>
           </div>
         </div>
+
+        <ContactPlate />
       </div>
 
       <form

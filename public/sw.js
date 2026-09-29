@@ -9,11 +9,11 @@
  *   - everything else (cross-origin, POSTs): straight to the network
  */
 
-const VERSION = 'nyt-v2';
+const VERSION = 'nyt-v3';
 const SHELL_CACHE = `${VERSION}-shell`;
 const ASSET_CACHE = `${VERSION}-assets`;
 
-const SHELL = ['/', '/offline/', '/favicon.svg', '/manifest.webmanifest'];
+const SHELL = ['/', '/offline/', '/favicon.svg', '/manifest.webmanifest', '/tech-marks.svg'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -71,7 +71,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (/\.(?:css|js|woff2?|png|jpe?g|svg|webp|ico)$/.test(url.pathname)) {
+  if (/\.(?:css|js|woff2?|png|jpe?g|svg|webp|avif|ico)$/.test(url.pathname)) {
     event.respondWith(
       caches.open(ASSET_CACHE).then(async (cache) => {
         const cached = await cache.match(request);

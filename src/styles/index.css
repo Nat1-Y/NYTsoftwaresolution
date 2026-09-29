@@ -48,3 +48,7 @@
 
 /* Editorial layer II — the sections 46 did not reach. Must load after it. */
 @import './47-editorial-tail.css';
+
+/* Plates, captures and drawings — the image layer. Loads after the editorial
+   layers so it can re-set the hero visual and the flagship mockup. */
+@import './48-visuals.css';

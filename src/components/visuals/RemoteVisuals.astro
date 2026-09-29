@@ -1,0 +1,124 @@
+---
+/**
+ * Two plates for the remote-partner section.
+ *
+ * The overlap chart is arithmetic, not artwork: a 09:00–18:00 day in each of
+ * three example client cities, laid on Addis Ababa's clock, with the shared
+ * hours measured off. It is labelled as an example because the working day
+ * on both sides is agreed per engagement — the chart shows the shape of the
+ * overlap, not a promise of particular hours.
+ *
+ * The review vignette shows the other half of the pitch: the work happens in
+ * the client's own repository, through their review process.
+ */
+import Plate from './Plate.astro';
+
+const X0 = 124; // where hour 00:00 EAT sits
+const HW = 14.5; // width of one hour
+const hx = (h: number) => X0 + h * HW;
+
+const DAY = [9, 18] as const;
+const EAT = 3;
+
+const rows = [
+  { city: 'Addis Ababa', utc: 3, home: true },
+  { city: 'Dubai', utc: 4 },
+  { city: 'Berlin', utc: 1 },
+  { city: 'London', utc: 0 },
+].map((r, i) => {
+  // Their 09:00–18:00, expressed in Addis Ababa time.
+  const start = DAY[0] + (EAT - r.utc);
+  const end = DAY[1] + (EAT - r.utc);
+  const overlap = Math.max(0, Math.min(end, DAY[1]) - Math.max(start, DAY[0]));
+  return { ...r, start, end, overlap, y: 30 + i * 34 };
+});
+
+const summary = rows
+  .filter((r) => !r.home)
+  .map((r) => `${r.city} ${r.overlap} hours`)
+  .join(', ');
+---
+
+<div class="remote-plates">
+  <Plate kind="diagram" class="overlap-plate">
+    <svg
+      class="ill overlap-ill"
+      viewBox="0 0 480 176"
+      role="img"
+      aria-label={`Diagram: a 09:00 to 18:00 working day in three example cities laid against Addis Ababa. Hours shared with Addis Ababa: ${summary}.`}
+    >
+      <rect x={hx(DAY[0])} y="18" width={hx(DAY[1]) - hx(DAY[0])} height="140" class="f1" />
+      {[0, 6, 12, 18, 24].map((h) => (
+        <g>
+          <line x1={hx(h)} y1="18" x2={hx(h)} y2="158" class="l dash" />
+          <text x={hx(h)} y="172" text-anchor={h === 24 ? 'end' : 'middle'} class="ov-tick">{String(h).padStart(2, '0')}:00</text>
+        </g>
+      ))}
+      <text x="4" y="172" class="ov-tick">ADDIS ABABA TIME</text>
+
+      {rows.map((r) => (
+        <g>
+          <text x="4" y={r.y + 7} class="ov-city">{r.city}</text>
+          <text x="4" y={r.y + 19} class="ov-tick">
+            {`UTC+${r.utc} · ${r.home ? 'base' : `${r.overlap} h shared`}`}
+          </text>
+          <rect x={hx(r.start)} y={r.y} width={hx(r.end) - hx(r.start)} height="14" class={r.home ? 'fm' : 'f0 k'} />
+          {!r.home && (
+            <rect
+              x={hx(Math.max(r.start, DAY[0]))}
+              y={r.y}
+              width={hx(Math.min(r.end, DAY[1])) - hx(Math.max(r.start, DAY[0]))}
+              height="14"
+              class="fi ov-shared"
+            />
+          )}
+        </g>
+      ))}
+    </svg>
+    <Fragment slot="caption">
+      Example only: a 09:00–18:00 day in each city, standard time. The shared
+      window is agreed per engagement.
+    </Fragment>
+  </Plate>
+
+  <Plate kind="illustration" class="review-plate">
+    <svg
+      class="ill"
+      viewBox="0 0 240 150"
+      role="img"
+      aria-label="Illustration: a pull request in the client's repository — a diff with added and removed lines, a review comment, and an approval."
+    >
+      <rect x="4" y="4" width="232" height="142" class="f0 k" />
+      <rect x="4" y="4" width="232" height="18" class="f1" />
+      <line x1="4" y1="22" x2="236" y2="22" class="l" />
+      <circle cx="13" cy="9" r="2" class="k" />
+      <circle cx="13" cy="18" r="2" class="k" />
+      <circle cx="23" cy="9" r="2" class="fm" />
+      <path d="M13 11 v5 M23 11 q0 4 -8 6" class="k" />
+      <text x="34" y="16" class="ill-small">PULL REQUEST · YOUR REPOSITORY</text>
+
+      {[
+        ['', 60], ['-', 72], ['+', 80], ['+', 54], ['', 66], ['', 44],
+      ].map(([sign, w], i) => (
+        <g>
+          <rect x="4" y={30 + i * 12} width="150" height="12" class={sign === '+' ? 'ov-add' : sign === '-' ? 'ov-del' : 'fn'} />
+          <text x="14" y={39 + i * 12} class="ill-small">{sign || ' '}</text>
+          <rect x="26" y={34 + i * 12} width={w} height="3" class={sign ? 'fi' : 'fg'} />
+        </g>
+      ))}
+
+      <rect x="112" y="92" width="116" height="34" class="f1 k" />
+      <rect x="118" y="98" width="10" height="10" class="fm" />
+      <rect x="134" y="99" width="70" height="3" class="fg" />
+      <rect x="134" y="106" width="52" height="3" class="fg" />
+      <rect x="134" y="113" width="60" height="3" class="fg" />
+
+      <rect x="14" y="128" width="72" height="12" class="f0 sa" />
+      <path d="M21 134 l3 3 l6 -6" class="sa" />
+      <text x="35" y="137" class="ill-small">APPROVED</text>
+    </svg>
+    <Fragment slot="caption">
+      Our engineers work in your repository, through your review.
+    </Fragment>
+  </Plate>
+</div>
