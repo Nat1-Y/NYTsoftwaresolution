@@ -312,7 +312,7 @@ sells offline-first POS systems ought to survive a dropped connection itself.
 | Gate | Status |
 | --- | --- |
 | `astro check` | 0 errors |
-| `npm run smoke` | 61/61 interaction checks |
+| `npm run smoke` | 62/62 interaction checks |
 | `npm run a11y` | 0 serious/critical axe violations across 6 scenarios |
 | `npm run csp` | 0 violations under the production Content-Security-Policy |
 | JS shipped | ~30 kB (~12 kB gzipped), no runtime framework |

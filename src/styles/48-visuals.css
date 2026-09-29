@@ -158,8 +158,11 @@ body.mode-tech {
 }
 
 /* The provenance kicker: what this image is, before what it shows. */
+/* Allowed to shrink and wrap: with a host and a date after it, the kicker is
+   wider than a phone-width card, and `flex: none` pushed its end off the edge. */
 .plate-kind {
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
   font-family: var(--font-mono);
   font-size: 0.62rem;
   font-weight: 500;

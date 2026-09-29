@@ -642,6 +642,18 @@ try {
     `layout=${bpMobile.layout} overflows=${bpMobile.overflows}`
   );
 
+  // Card overflow is clipped, so a caption running off the edge never shows
+  // up as page overflow — measure each caption against its own plate.
+  const clippedCaptions = await m.evaluate(() =>
+    [...document.querySelectorAll('.plate')]
+      .filter((p) => p.offsetParent !== null)
+      .filter((p) => {
+        const edge = p.getBoundingClientRect().right + 0.5;
+        return [...p.querySelectorAll('.plate-cap *')].some((c) => c.getBoundingClientRect().right > edge);
+      }).length
+  );
+  check('plate captions fit their plates on a phone', clippedCaptions === 0, `${clippedCaptions} clipped`);
+
   await tap(m, '#mobile-nav-toggle');
   await new Promise((r) => setTimeout(r, 350));
 
