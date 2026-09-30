@@ -1,0 +1,132 @@
+---
+/**
+ * Privacy notice.
+ *
+ * Written from what this website actually does, checked against the code:
+ * the only thing that leaves the visitor's browser is the contact form
+ * (src/scripts/form.ts → api/contact.js); the chatbot answers locally; the
+ * site sets no cookies and loads no analytics, advertising or third-party
+ * scripts or fonts. If any of that changes, this page must change with it —
+ * see docs/claims-register.md.
+ *
+ * It describes practice; it does not claim compliance with any particular
+ * law. Have it reviewed before relying on it for that.
+ */
+import Page from '../layouts/Page.astro';
+import { site } from '../data/site';
+
+const updated = '30 September 2026';
+---
+
+<Page
+  title="Privacy notice"
+  description="What NYT Software Solutions collects through this website, why, who processes it, how long it is kept, and how to reach us about your data."
+  crumbs={[{ label: 'Privacy notice' }]}
+>
+  <article class="container legal">
+    <header class="legal-head">
+      <p class="page-kicker">Legal</p>
+      <h1 class="page-title">Privacy notice</h1>
+      <p class="legal-updated">Last updated {updated}</p>
+    </header>
+
+    <div class="legal-body">
+      <p class="legal-lead">
+        The short version: this site collects nothing about you unless you
+        write to us. It sets no cookies, runs no analytics and loads nothing
+        from other companies' servers. When you do write, we use what you send
+        to reply to you, and nothing else.
+      </p>
+
+      <h2>Who we are</h2>
+      <p>
+        This website is run by {site.legalName}, based in {site.locality},
+        {site.country}. For anything about your data, email
+        <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </p>
+
+      <h2>What we collect, and why</h2>
+
+      <h3>When you send the contact form</h3>
+      <p>
+        We receive your name or organisation, your email address, the interest
+        area you choose, the budget range and timeline if you give them, and
+        your message. We use them to reply to your enquiry and, if it becomes
+        a project, to discuss and scope it. You confirm you are happy for us to
+        contact you before the form is sent.
+      </p>
+      <p>
+        We also send you an automatic confirmation email containing a copy of
+        what you wrote, so you have a record of it.
+      </p>
+
+      <h3>When you visit any page</h3>
+      <p>
+        Like every website, ours receives technical information with each
+        request — your IP address, browser type and the page requested — which
+        our hosting provider uses to deliver the site and protect it from
+        abuse. To stop the contact form being flooded, the server remembers
+        the IP address of each submission for up to ten minutes, in memory
+        only, and then forgets it.
+      </p>
+
+      <h3>What stays in your browser</h3>
+      <ul>
+        <li>
+          <strong>Your view preference.</strong> If you switch between the
+          Business and Engineering views, your choice is saved in your
+          browser's local storage (<code>nyt-persona</code>) so the site
+          remembers it. It is never sent to us.
+        </li>
+        <li>
+          <strong>Your demo request.</strong> If you click "Request a demo" on
+          another page, the choice is kept in session storage just long enough
+          to pre-select it in the form, then deleted.
+        </li>
+        <li>
+          <strong>An offline copy.</strong> The site stores copies of its own
+          pages and files in your browser so it still opens without a
+          connection. They contain nothing about you.
+        </li>
+      </ul>
+      <p>
+        You can clear all of these at any time from your browser's settings.
+        The site uses no cookies, so there is nothing to consent to until you
+        choose to send the form.
+      </p>
+
+      <h2>Who else handles your data</h2>
+      <p>We use a small number of service providers to run the site and receive enquiries:</p>
+      <ul>
+        <li><strong>Vercel</strong> — hosts the website and the function that receives the contact form.</li>
+        <li><strong>Resend</strong> — delivers the enquiry to us and your confirmation copy to you.</li>
+        <li><strong>Google (Gmail)</strong> — hosts our business mailbox, where enquiries arrive.</li>
+      </ul>
+      <p>
+        These providers may process data outside Ethiopia. We do not sell your
+        data, share it for advertising, or pass it to anyone else unless the law
+        requires us to.
+      </p>
+
+      <h2>How long we keep it</h2>
+      <p>
+        We keep enquiries only for as long as we need them to reply and, if a
+        project follows, to carry it out. You can ask us to delete yours at any
+        time.
+      </p>
+
+      <h2>Your choices</h2>
+      <p>
+        You can ask us what we hold about you, ask us to correct it, or ask us
+        to delete it, by emailing <a href={`mailto:${site.email}`}>{site.email}</a>.
+        We will reply from that address.
+      </p>
+
+      <h2>Changes to this notice</h2>
+      <p>
+        If what the site collects changes, this page changes with it, and the
+        date at the top is updated.
+      </p>
+    </div>
+  </article>
+</Page>

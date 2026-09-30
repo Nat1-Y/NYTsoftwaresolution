@@ -2,11 +2,23 @@
 import { nav } from '../data/site';
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
+
+/*
+ * The nav points at sections of the home page. On the home page those are
+ * in-page anchors; anywhere else they must lead back to it, or every link on
+ * an inner page goes nowhere.
+ */
+const isHome = Astro.url.pathname === '/';
+const to = (hash: string) => (isHome ? hash : `/${hash}`);
 ---
 
 <header class="main-header">
   <div class="header-container">
-    <a href="#top" class="logo" aria-label="NYT Software Solutions — back to top">
+    <a
+      href={isHome ? '#top' : '/'}
+      class="logo"
+      aria-label={isHome ? 'NYT Software Solutions — back to top' : 'NYT Software Solutions — home'}
+    >
       <Logo size={30} />
       <span class="logo-text" aria-hidden="true">
         <span class="logo-text-main">NYT Software</span>
@@ -15,20 +27,25 @@ import Icon from './Icon.astro';
     </a>
 
     <nav class="nav-menu" aria-label="Primary">
-      {nav.map((item) => <a href={item.href} class="nav-link">{item.label}</a>)}
+      {nav.map((item) => <a href={to(item.href)} class="nav-link">{item.label}</a>)}
 
-      <button
-        type="button"
-        class="cmdk-trigger"
-        data-cmdk-open
-        aria-label="Open command palette (Control K)"
-      >
-        <Icon name="search" size={14} />
-        <span>Search</span>
-        <kbd class="cmdk-hint">Ctrl K</kbd>
-      </button>
+      {
+        /* The command palette lives on the home page only. */
+        isHome && (
+          <button
+            type="button"
+            class="cmdk-trigger"
+            data-cmdk-open
+            aria-label="Open command palette (Control K)"
+          >
+            <Icon name="search" size={14} />
+            <span>Search</span>
+            <kbd class="cmdk-hint">Ctrl K</kbd>
+          </button>
+        )
+      }
 
-      <a href="#contact" class="btn btn-primary header-cta">Let's Build</a>
+      <a href={to('#contact')} class="btn btn-primary header-cta">Let's Build</a>
     </nav>
 
     <button
@@ -49,11 +66,12 @@ import Icon from './Icon.astro';
   <nav aria-label="Mobile">
     {
       nav.map((item) => (
-        <a href={item.href} class="mobile-nav-link">
+        <a href={to(item.href)} class="mobile-nav-link">
           {item.label}
         </a>
       ))
     }
-    <a href="#contact" class="btn btn-primary mobile-cta mobile-nav-link">Let's Build</a>
+    <a href="/working-with-us/" class="mobile-nav-link">Working With Us</a>
+    <a href={to('#contact')} class="btn btn-primary mobile-cta mobile-nav-link">Let's Build</a>
   </nav>
 </div>

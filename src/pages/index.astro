@@ -52,8 +52,9 @@ const caseStudies = (await getCollection('case-studies')).sort(
           <div class="section-header">
             <h2 class="section-title">Case Studies</h2>
             <p class="section-subtitle">
-              Four systems running in production today. Every one has a live
-              link — open them and judge for yourself.
+              Four systems we designed and built. Each card says where the
+              system stands today and what you can open; the full case study
+              covers the problem, what we built and how.
             </p>
           </div>
 
@@ -97,6 +98,7 @@ const caseStudies = (await getCollection('case-studies')).sort(
   import { initBlueprint } from '../scripts/blueprint';
   import { initHero } from '../scripts/hero';
   import { initTour } from '../scripts/tour';
+  import { rememberSubject } from '../scripts/subject';
 
   // Tabs must be wired before the persona module aligns them.
   initCaseStudyTabs();
@@ -111,6 +113,7 @@ const caseStudies = (await getCollection('case-studies')).sort(
   initBlueprint();
   initHero();
   initTour();
+  rememberSubject();
 
   // Readiness flag: lets the smoke test wait for handlers to be attached
   // instead of racing them, and gives us a hook for future instrumentation.

@@ -1,0 +1,585 @@
+/* ==========================================================================
+   PAGES — company facts, case-card status, and every inner page: the case
+   studies, the product, working with us, and the legal pages.
+
+   Same vocabulary as the editorial layers. Written phone-first: the base
+   rules are the single-column layout, and wider screens add columns.
+   ========================================================================== */
+
+/* Links set inside a standfirst or note read as links, in the mark. */
+.section-subtitle a,
+.engagement-note a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--mark);
+}
+
+.section-subtitle a:hover,
+.engagement-note a:hover { color: var(--mark); }
+
+/* --------------------------------------------------------------------------
+   WHO WE ARE — company facts and (when filled in) the team
+   -------------------------------------------------------------------------- */
+.company-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0 1.5rem;
+  margin: 2.5rem 0 0;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.company-facts div {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.company-facts dt,
+.case-specs dt,
+.case-toc-title,
+.case-pager-dir,
+.module-tag {
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.company-facts dd {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.company-facts a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--mark);
+}
+
+.team { margin-top: 3rem; }
+.team-title { font-size: var(--step-1); margin: 0 0 1rem; }
+
+.team-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.team-member { padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+
+.team-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 600;
+}
+
+.team-role {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.team-type { color: var(--mark); }
+.team-summary { margin: 0.6rem 0 0; font-size: 0.88rem; color: var(--text-secondary); }
+.team-link { display: inline-block; margin-top: 0.5rem; font-size: 0.82rem; color: var(--text-primary); }
+
+/* --------------------------------------------------------------------------
+   CASE CARDS — status line and the link to the full study
+   -------------------------------------------------------------------------- */
+.project-deploy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin: -0.5rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* The state is a word beside a square — never colour alone. */
+.deploy-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-primary);
+}
+
+.deploy-state::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--text-muted);
+}
+
+[data-state='production'] .deploy-state::before { background: var(--success); }
+[data-state='delivered'] .deploy-state::before { background: var(--mark); }
+
+.project-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+  min-height: 44px;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.project-more:hover { color: var(--mark); }
+.project-more .arrow-icon { transition: transform 0.28s var(--ease-out); }
+.project-more:hover .arrow-icon { transform: translateX(4px); }
+
+/* --------------------------------------------------------------------------
+   FOOTER — four columns now
+   -------------------------------------------------------------------------- */
+.footer-right { grid-template-columns: repeat(4, minmax(120px, auto)); }
+
+@media (max-width: 1080px) {
+  .footer-container { grid-template-columns: minmax(0, 1fr); }
+  .footer-right { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); row-gap: 1.5rem; }
+  .footer-links:first-child { padding-left: 0; border-left: 0; }
+}
+
+/* A long address must wrap inside its column, never run into the next. */
+.footer-links a,
+.footer-links .footer-span { overflow-wrap: anywhere; }
+
+@media (max-width: 560px) {
+  .footer-right { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   INNER PAGES — the shared frame
+   -------------------------------------------------------------------------- */
+.inner-page {
+  padding-top: calc(var(--header-h) + 1.5rem);
+  padding-bottom: 4rem;
+}
+
+/* The home page's 5.5rem section rhythm is for its full-width bands. Inner
+   sections that set no spacing of their own opt out of it here; the rest
+   (.case-section, .wwu-block) already override it. */
+.product-tour-wrap,
+.product-modules { padding-top: 0; padding-bottom: 0; }
+
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0.6rem;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.crumbs li + li::before { content: '/'; margin-right: 0.6rem; color: var(--border-strong); }
+.crumbs a { display: inline-block; min-height: 24px; color: var(--text-secondary); text-decoration: none; }
+.crumbs a:hover { color: var(--mark); }
+.crumbs [aria-current] { color: var(--text-primary); }
+
+.case-head { padding-top: 2.5rem; padding-bottom: 2rem; }
+
+.page-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 0 0 1.1rem;
+  font-family: var(--font-mono);
+  font-size: var(--kicker-size);
+  font-weight: 500;
+  letter-spacing: var(--kicker-track);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.page-kicker::before { content: ''; width: 28px; height: 1px; background: var(--mark); flex: none; }
+.page-kicker-num { color: var(--mark); }
+
+.page-title {
+  font-size: var(--step-4);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.9rem;
+  max-width: 20ch;
+}
+
+.page-lead {
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  max-width: 50ch;
+  margin: 0;
+}
+
+.page-lead-italic {
+  font-family: var(--font-display);
+  font-variation-settings: var(--display-wonk);
+  font-style: italic;
+  color: var(--mark);
+}
+
+.case-deploy { margin: 1.25rem 0 0; }
+
+.case-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+
+.case-plate-wrap { margin-bottom: 3rem; }
+.case-plate-wrap .case-plate { max-width: 860px; }
+
+/* --- sections --------------------------------------------------------- */
+.case-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+
+.case-toc { border-top: 1px solid var(--rule-strong); padding-top: 0.9rem; }
+.case-toc-title { margin: 0 0 0.5rem; }
+.case-toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 1.1rem; }
+
+.case-toc a {
+  display: inline-block;
+  min-height: 32px;
+  padding: 0.3rem 0;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.case-toc a:hover { color: var(--mark); }
+
+.case-section {
+  padding: 1.75rem 0 2.25rem;
+  border-top: 1px solid var(--rule);
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+.case-section h2,
+.wwu-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: var(--step-2);
+  margin: 0 0 1rem;
+}
+
+.case-num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--mark);
+  font-variant-numeric: tabular-nums;
+}
+
+.case-prose {
+  max-width: 68ch;
+  font-size: var(--step-0);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.case-md p { margin: 0 0 1rem; }
+.case-md strong { color: var(--text-primary); }
+
+.case-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  max-width: 72ch;
+  border-top: 1px solid var(--rule);
+}
+
+.case-list li {
+  position: relative;
+  padding: 0.7rem 0 0.7rem 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.case-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.25rem;
+  width: 0.7rem;
+  height: 1px;
+  background: var(--mark);
+}
+
+.case-list strong { color: var(--text-primary); font-weight: 600; }
+
+.case-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+
+.case-stack li {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-primary);
+}
+
+.case-specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0 1.5rem;
+  margin: 0 0 1rem;
+  border-top: 1px solid var(--rule);
+  max-width: 900px;
+}
+
+.case-specs div { padding: 0.7rem 0; border-bottom: 1px solid var(--rule); }
+.case-specs dd { margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--text-primary); }
+
+.case-section .arch-figure { max-width: 860px; }
+
+.case-metric { margin: 0 0 0.75rem; }
+.case-metric .metric-val { font-size: clamp(2rem, 6vw, 3rem); }
+
+.case-source {
+  margin: 0 0 1.25rem;
+  max-width: 72ch;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.case-source strong { color: var(--text-secondary); font-weight: 500; }
+
+.case-quote {
+  margin: 1.75rem 0 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--mark);
+  max-width: 60ch;
+}
+
+.case-quote blockquote {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-variation-settings: var(--display-wonk);
+  font-size: var(--step-1);
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.case-quote figcaption { display: flex; flex-direction: column; font-size: 0.85rem; }
+
+.case-quote figcaption span {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* --- call to action and pager ------------------------------------------ */
+.case-cta,
+.product-demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule);
+}
+
+.case-cta { margin-top: 1rem; }
+.product-demo { margin-top: 3.5rem; }
+
+.case-cta-title { font-size: var(--step-2); margin: 0 0 0.4rem; }
+.case-cta p { margin: 0; color: var(--text-secondary); max-width: 56ch; }
+/* Underlined, so a link in running text is never told apart by colour alone. */
+.case-cta p a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--mark);
+}
+
+.case-pager { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2rem; }
+
+.case-pager-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.case-pager-next { text-align: right; }
+.case-pager-name { font-family: var(--font-display); font-size: var(--step-1); font-weight: 600; }
+.case-pager-link:hover .case-pager-name { color: var(--mark); }
+
+@media (min-width: 960px) {
+  .case-body { grid-template-columns: 200px minmax(0, 1fr); gap: 3.5rem; }
+  .case-toc { position: sticky; top: calc(var(--header-h) + 1.5rem); align-self: start; }
+  .case-toc ol { flex-direction: column; }
+}
+
+/* --------------------------------------------------------------------------
+   PRODUCT PAGE
+   -------------------------------------------------------------------------- */
+.product-intro { margin-top: 1.25rem; }
+.product-tour-wrap { margin-bottom: 4rem; max-width: 900px; }
+.product-modules .section-header { margin-bottom: 2rem; }
+
+.module-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-top: 1px solid var(--rule);
+}
+
+.module {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0 1rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+.module-num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--mark); padding-top: 0.35rem; }
+.module h3 { font-size: var(--step-1); margin: 0 0 0.5rem; }
+.module p { margin: 0 0 0.75rem; color: var(--text-secondary); max-width: 60ch; }
+
+@media (min-width: 900px) {
+  .module-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3rem; }
+}
+
+.product-demo p { margin: 0 0 0.6rem; color: var(--text-secondary); max-width: 58ch; }
+.product-demo .product-note { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+
+/* --------------------------------------------------------------------------
+   WORKING WITH US
+   -------------------------------------------------------------------------- */
+.wwu-block { padding-top: 2rem; padding-bottom: 2.5rem; border-top: 1px solid var(--rule); }
+
+.wwu-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem 3rem; }
+
+.wwu-stages { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+
+.wwu-stage {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 0 1rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* The process route line belongs to the home page's schedule, not here. */
+.wwu-stage .step-art::before { content: none; }
+.wwu-stage .step-art .glyph { background: none; }
+.wwu-stage h3 { font-size: var(--step-1); margin: 0 0 0.35rem; }
+.wwu-stage-num { font-family: var(--font-mono); font-size: 0.72rem; color: var(--mark); margin-right: 0.35rem; }
+.wwu-stage p { margin: 0; color: var(--text-secondary); max-width: 70ch; }
+
+.wwu-models { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 2.5rem; border-top: 1px solid var(--rule); }
+.wwu-model { padding: 1.5rem 0; border-bottom: 1px solid var(--rule); }
+.wwu-model h3 { font-size: var(--step-1); margin: 0 0 0.35rem; }
+.wwu-model > p:not(.engagement-for) { color: var(--text-secondary); font-size: 0.92rem; }
+
+.wwu-note { margin-top: 1.25rem; font-size: 0.88rem; }
+
+.wwu-remote { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 2.5rem; margin: 0; border-top: 1px solid var(--rule); }
+.wwu-remote div { padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+
+.wwu-remote dt {
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--mark);
+}
+
+.wwu-remote dd { margin: 0.35rem 0 0; color: var(--text-secondary); }
+
+@media (min-width: 760px) {
+  .wwu-remote { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 900px) {
+  .wwu-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+}
+
+@media (min-width: 960px) {
+  .wwu-models { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* --------------------------------------------------------------------------
+   LEGAL
+   -------------------------------------------------------------------------- */
+.legal { max-width: 760px; }
+.legal-head { padding: 2.5rem 0 1.5rem; border-bottom: 1px solid var(--rule); }
+.legal-updated { margin: 0; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+
+.legal-body { padding-top: 1.5rem; color: var(--text-secondary); line-height: 1.75; }
+.legal-lead { font-size: var(--step-1); line-height: 1.5; color: var(--text-primary); }
+.legal-body h2 { font-size: var(--step-2); margin: 2.25rem 0 0.75rem; color: var(--text-primary); }
+.legal-body h3 { font-size: var(--step-1); margin: 1.5rem 0 0.5rem; color: var(--text-primary); }
+.legal-body ul { padding-left: 1.2rem; }
+.legal-body li { margin-bottom: 0.5rem; }
+
+.legal-body a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--mark);
+}
+
+.legal-body code { font-family: var(--font-mono); font-size: 0.85em; }
+
+/* --------------------------------------------------------------------------
+   PHONES
+   -------------------------------------------------------------------------- */
+@media (max-width: 560px) {
+  .case-head { padding-top: 1.75rem; }
+
+  .case-actions .btn,
+  .case-cta .btn,
+  .product-demo .btn { width: 100%; justify-content: center; }
+
+  .case-pager { grid-template-columns: minmax(0, 1fr); }
+  .case-pager-next { text-align: left; }
+}
+
+/* The footer column headings are h2 now (a landmark's heading), set small. */
+.footer-links .footer-heading { font-size: 0.63rem; line-height: 1.4; margin-top: 0; }

@@ -44,14 +44,14 @@ const intents: Intent[] = [
     keywords: ['remote', 'international', 'global', 'timezone', 'abroad', 'overseas', 'outsource', 'offshore'],
     phrases: ['outside ethiopia', 'work with us', 'hire your team'],
     answer:
-      'Yes — remote work is a core part of what we do. 🌍\n\n✅ Fluent technical English\n✅ Meetings scheduled in **your** timezone\n✅ We work inside your repository and review process\n✅ Written weekly progress reports\n✅ Competitive rates against European and North American agencies\n\nWe are based in Addis Ababa (UTC+3), which overlaps comfortably with Europe, the Middle East and Africa, and covers mornings for the US East Coast.',
+      'Yes — remote work is a core part of what we do. 🌍\n\n✅ Fluent technical English\n✅ Meetings scheduled in **your** timezone\n✅ We work inside your repository and review process\n✅ Written weekly progress reports\n✅ A written estimate before any work starts\n\nWe are based in Addis Ababa (UTC+3), which overlaps comfortably with Europe, the Middle East and Africa. For the Americas we agree a shared window when the engagement starts.',
   },
   {
     id: 'portfolio',
     keywords: ['portfolio', 'case', 'example', 'sample', 'previous', 'past', 'clients', 'projects', 'built'],
     phrases: ['show me your work', 'what have you done', 'who have you worked'],
     answer:
-      "Four systems currently running in production:\n\n🍖 **Fikrekun Spagna** — restaurant and butchery POS with offline-first ordering and live stock\n🏥 **Saron Orthopedic Center** — clinical records, appointments and billing\n🎡 **Bora Amusement Park** — QR ticketing handling 5,000+ daily gate validations\n🛒 **Merkato88** — a marketplace with 150+ local merchants\n\nEach case-study card on this page has a **live link** you can open right now — and the Fikrekun one comes with demo credentials so you can log in and click around.",
+      "Four systems we designed and built:\n\n🍖 **Fikrekun Spagna** — restaurant and butchery POS with offline-first ordering and live stock\n🏥 **Saron Orthopedic Center** — clinical records, appointments and billing\n🎡 **Bora Amusement Park** — QR ticketing and gate validation\n🛒 **Merkato88** — a multi-vendor marketplace with a dashboard for every seller\n\nBora and Merkato88 have public sites you can open from their cards, and every card links to a full case study. A walkthrough of any of them can be arranged through the contact form.",
   },
   {
     id: 'ownership',

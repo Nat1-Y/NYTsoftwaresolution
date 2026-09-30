@@ -1,9 +1,8 @@
 ---
-import { site, formConfig } from '../data/site';
+import { site, formConfig, formOptions } from '../data/site';
 import Icon from './Icon.astro';
 import ContactPlate from './visuals/ContactPlate.astro';
 
-const hasBackend = Boolean(formConfig.endpoint);
 ---
 
 <section id="contact" class="contact-section" aria-labelledby="contact-title">
@@ -13,6 +12,7 @@ const hasBackend = Boolean(formConfig.endpoint);
       <p class="section-subtitle">
         A project in mind, a custom ERP to scope, or a remote engineering
         partnership to discuss? The first consultation is free.
+        <a href="/working-with-us/">What to include in your message</a>.
       </p>
     </div>
 
@@ -32,25 +32,41 @@ const hasBackend = Boolean(formConfig.endpoint);
           </div>
         </div>
 
+        {
+          /* Profiles appear only once they exist and are verified — see
+             `linkedin` and `phone` in src/data/site.ts. A placeholder row
+             reading "awaiting link" told visitors the company was unfinished. */
+          site.phone && (
+            <div class="contact-item">
+              <Icon name="chat" size={20} class="contact-icon" />
+              <div>
+                <span class="detail-label">Phone</span>
+                <a href={`tel:${site.phone.replace(/\s+/g, '')}`} class="detail-val">{site.phone}</a>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          site.linkedin && (
+            <div class="contact-item">
+              <Icon name="linkedin" size={20} class="contact-icon" />
+              <div>
+                <span class="detail-label">LinkedIn</span>
+                <a href={site.linkedin} target="_blank" rel="noopener noreferrer" class="detail-val">
+                  {site.name}
+                  <span class="sr-only">(opens in a new tab)</span>
+                </a>
+              </div>
+            </div>
+          )
+        }
+
         <div class="contact-item">
           <Icon name="globe" size={20} class="contact-icon" />
           <div>
-            <span class="detail-label">Website domain</span>
-            <div class="placeholder-container">
-              <span class="detail-val placeholder-val">www.nytsoftwaresolutions.com</span>
-              <span class="badge-placeholder">Available for domain linking</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="contact-item">
-          <Icon name="linkedin" size={20} class="contact-icon" />
-          <div>
-            <span class="detail-label">LinkedIn</span>
-            <div class="placeholder-container">
-              <span class="detail-val placeholder-val">{site.name}</span>
-              <span class="badge-placeholder">Awaiting corporate account link</span>
-            </div>
+            <span class="detail-label">Website</span>
+            <a href={site.url} class="detail-val">{new URL(site.url).host}</a>
           </div>
         </div>
 
@@ -72,9 +88,14 @@ const hasBackend = Boolean(formConfig.endpoint);
         id="contact-form"
         novalidate
         data-endpoint={formConfig.endpoint}
-        data-access-key={formConfig.accessKey}
         data-mailto={site.email}
       >
+        <p class="form-intro">
+          Fields marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span>
+          are required. Budget and timeline are optional, but they help us
+          reply with something useful.
+        </p>
+
         <div class="form-group">
           <label for="form-name">
             Full name / organisation<span class="required-mark" aria-hidden="true">*</span>
@@ -85,6 +106,7 @@ const hasBackend = Boolean(formConfig.endpoint);
             name="name"
             autocomplete="organization"
             placeholder="e.g. Spagna Restaurant, or Jane Doe"
+            maxlength="120"
             required
             aria-describedby="err-name"
           />
@@ -100,7 +122,9 @@ const hasBackend = Boolean(formConfig.endpoint);
             id="form-email"
             name="email"
             autocomplete="email"
+            inputmode="email"
             placeholder="email@example.com"
+            maxlength="254"
             required
             aria-describedby="err-email"
           />
@@ -110,12 +134,26 @@ const hasBackend = Boolean(formConfig.endpoint);
         <div class="form-group">
           <label for="form-subject">Interest area</label>
           <select id="form-subject" name="subject">
-            <option value="Custom ERP / SaaS platform">Custom ERP / SaaS platform</option>
-            <option value="Restaurant / POS system">Restaurant / POS system</option>
-            <option value="Remote developer partnership">Remote developer partnership</option>
-            <option value="Free consultation call">Free consultation call</option>
-            <option value="Other inquiry">Other inquiry</option>
+            {formOptions.subject.map((o) => <option value={o}>{o}</option>)}
           </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="form-budget">Budget range <span class="optional-mark">optional</span></label>
+            <select id="form-budget" name="budget">
+              <option value="">Prefer not to say</option>
+              {formOptions.budget.map((o) => <option value={o}>{o}</option>)}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="form-timeline">Timeline <span class="optional-mark">optional</span></label>
+            <select id="form-timeline" name="timeline">
+              <option value="">Not decided</option>
+              {formOptions.timeline.map((o) => <option value={o}>{o}</option>)}
+            </select>
+          </div>
         </div>
 
         <div class="form-group">
@@ -126,7 +164,8 @@ const hasBackend = Boolean(formConfig.endpoint);
             id="form-message"
             name="message"
             rows="5"
-            placeholder="Outline your scope, the features you need, or your timezone requirements…"
+            maxlength="5000"
+            placeholder="What should the system do, who will use it, and what do you use today? Mention your timezone if you are outside Ethiopia."
             required
             aria-describedby="err-message"></textarea>
           <span class="field-error" id="err-message" role="alert"></span>
@@ -139,12 +178,14 @@ const hasBackend = Boolean(formConfig.endpoint);
         </div>
 
         <label class="form-consent" for="form-consent">
-          <input type="checkbox" id="form-consent" name="consent" required />
+          <input type="checkbox" id="form-consent" name="consent" required aria-describedby="err-consent" />
           <span>
             I'm happy for NYT Software Solutions to contact me about this
-            enquiry. We don't share your details with anyone else.
+            enquiry. How we handle what you send is set out in our
+            <a href="/privacy/">privacy notice</a>.
           </span>
         </label>
+        <span class="field-error" id="err-consent" role="alert"></span>
 
         <button type="submit" class="btn btn-primary form-submit">
           <span class="submit-label">Send message</span>
@@ -157,24 +198,24 @@ const hasBackend = Boolean(formConfig.endpoint);
         -->
         <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
 
-        {
-          !hasBackend && (
-            <div class="form-fallback" id="form-fallback" hidden>
-              <strong>One more step.</strong> This site has no form server
-              connected yet, so we can't deliver the message for you — and we
-              won't pretend otherwise. Your details are ready to send:
-              <div class="form-fallback-actions">
-                <a class="btn btn-primary" id="fallback-mail" href={`mailto:${site.email}`}>
-                  Open in email app
-                </a>
-                <button type="button" class="btn btn-secondary" id="fallback-copy">
-                  Copy message
-                </button>
-              </div>
-            </div>
-          )
-        }
-      </form>
-    </div>
+        <!--
+          Shown when the website cannot deliver the message itself — the
+          function is not configured, or is unreachable. The visitor's details
+          are handed over as an email draft instead of being dropped.
+        -->
+        <div class="form-fallback" id="form-fallback" hidden>
+          <strong>One more step.</strong> We couldn't deliver this through the
+          website just now, and we won't pretend otherwise. Your details are
+          ready to send by email:
+          <div class="form-fallback-actions">
+            <a class="btn btn-primary" id="fallback-mail" href={`mailto:${site.email}`}>
+              Open in email app
+            </a>
+            <button type="button" class="btn btn-secondary" id="fallback-copy">
+              Copy message
+            </button>
+          </div>
+        </div>
+      </form>    </div>
   </div>
 </section>

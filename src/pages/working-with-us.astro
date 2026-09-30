@@ -1,0 +1,205 @@
+---
+/**
+ * How an engagement actually runs — for a client, often outside Ethiopia,
+ * deciding whether to write to us.
+ *
+ * Every commitment on this page is one the site already makes elsewhere (the
+ * FAQ, the engagement models, the process, the remote-services list); this
+ * page puts them in the order a client meets them. It deliberately does not
+ * promise response times, round-the-clock support, payment methods or
+ * delivery dates — those are agreed per engagement, and the page says so.
+ */
+import Page from '../layouts/Page.astro';
+import Icon from '../components/Icon.astro';
+import Glyph from '../components/visuals/Glyph.astro';
+import { engagements } from '../data/engagement';
+import { site } from '../data/site';
+import { summary } from '../lib/text';
+
+const toSend = [
+  'What the system has to do, in your own words — the problem, not the solution.',
+  'Who will use it, and roughly how many people or locations.',
+  'What you use today: spreadsheets, paper, or an existing system we would replace or connect to.',
+  'Anything it must connect to — accounting, payments, telecom, logistics.',
+  'Your timeline and budget range, if you have them. It is fine not to.',
+  'Your timezone, if you are outside Ethiopia.',
+];
+
+const stages = [
+  {
+    glyph: 'discover',
+    title: 'Discovery',
+    body: 'A free first consultation. We ask about your operations, the people involved and what you use today, and we tell you plainly if a different kind of engagement would suit you better.',
+  },
+  {
+    glyph: 'planning',
+    title: 'Estimate & scope',
+    body: 'You receive a written estimate — also free. Well-defined projects are quoted as a fixed price against milestones; ongoing work is billed monthly. Taking over an existing codebase starts with a short, paid audit and an honest assessment of what to keep.',
+  },
+  {
+    glyph: 'design',
+    title: 'Agreed milestones',
+    body: 'For a fixed-scope project you get a written scope and architecture document and a clickable prototype before development starts. Payment is staged against milestones you sign off.',
+  },
+  {
+    glyph: 'development',
+    title: 'Building, in the open',
+    body: 'Staged milestone demos, and written weekly progress reports. For a dedicated team, our engineers work in your repository, on your board, through your review process.',
+  },
+  {
+    glyph: 'qa',
+    title: 'Testing',
+    body: 'Transaction-lock validation, API contract testing and client-boundary checks before anything reaches your users.',
+  },
+  {
+    glyph: 'deployment',
+    title: 'Deployment & handover',
+    body: 'Deployed to a secure cloud platform with automated backups. On final payment you receive the full source code, its repository history, the deployment configuration and the documentation.',
+  },
+  {
+    glyph: 'support',
+    title: 'After launch',
+    body: 'Every project includes a warranty period in which defects are fixed at no cost. After that you can run the system in-house from the documentation, or keep us on a support retainer.',
+  },
+];
+
+const remote = [
+  { title: 'Language', body: 'All communication is in fluent technical English.' },
+  { title: 'Time zones', body: `We are in ${site.locality}, ${site.timezone}. That overlaps comfortably with Europe, the Middle East and Africa; for the Americas we agree a shared window at the start.` },
+  { title: 'Reporting', body: 'A written progress report every week, so you never have to ask where things stand.' },
+  { title: 'Your tools', body: 'We work inside your version control, CI and review process rather than asking you to adopt ours.' },
+];
+
+const notPromised = [
+  'Round-the-clock support — incident response times are agreed in a retainer, not assumed.',
+  'A delivery date before discovery — the written estimate comes first, then the dates.',
+  'A price from the Blueprint Studio — it sketches the shape of a project, never a quote.',
+  'Particular payment methods — how you pay is agreed in the contract for the engagement.',
+];
+
+const description =
+  'How a project with NYT Software Solutions runs, from the first consultation to support after launch: estimates, milestones, weekly reporting, remote collaboration and handover.';
+---
+
+<Page
+  title="Working with us — how an engagement runs"
+  description={summary(description)}
+  crumbs={[{ label: 'Working with us' }]}
+>
+  <header class="container case-head">
+    <p class="page-kicker">Working with us</p>
+    <h1 class="page-title">How an engagement runs</h1>
+    <p class="page-lead">
+      From the first message to support after launch — what happens, what you
+      receive, and what we need from you.
+    </p>
+    <div class="case-actions">
+      <a href="/#contact" class="btn btn-primary">
+        <span>Start with a free consultation</span>
+        <Icon name="arrow" size={18} class="arrow-icon" />
+      </a>
+      <a href="/#blueprint" class="btn btn-secondary">Sketch it in the Blueprint Studio</a>
+    </div>
+  </header>
+
+  <section class="container wwu-block" aria-labelledby="send-h">
+    <div class="wwu-grid">
+      <div>
+        <h2 id="send-h" class="wwu-title"><span class="case-num">01</span> What to send us</h2>
+        <p class="case-prose">
+          You do not need a specification. A few paragraphs covering these
+          points is enough for a useful first conversation.
+        </p>
+      </div>
+      <ul class="case-list wwu-checklist">
+        {toSend.map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="container wwu-block" aria-labelledby="stages-h">
+    <h2 id="stages-h" class="wwu-title"><span class="case-num">02</span> From first call to launch</h2>
+    <ol class="wwu-stages">
+      {
+        stages.map((s, i) => (
+          <li class="wwu-stage">
+            <span class="step-art"><Glyph name={s.glyph} size={40} /></span>
+            <div>
+              <h3>
+                <span class="wwu-stage-num">{String(i + 1).padStart(2, '0')}</span> {s.title}
+              </h3>
+              <p>{s.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="container wwu-block" aria-labelledby="models-h">
+    <h2 id="models-h" class="wwu-title"><span class="case-num">03</span> Three ways to engage</h2>
+    <div class="wwu-models">
+      {
+        engagements.map((e) => (
+          <div class="wwu-model">
+            <h3>{e.title}</h3>
+            <p class="engagement-for">{e.audience}</p>
+            <p>{e.description}</p>
+            <dl class="case-specs">
+              {e.meta.map((m) => (
+                <div>
+                  <dt>{m.label}</dt>
+                  <dd>{m.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))
+      }
+    </div>
+    <p class="case-prose wwu-note">
+      We do not publish price lists: a number without a scope behind it is
+      guesswork. The estimate that follows your consultation is written and
+      free.
+    </p>
+  </section>
+
+  <section class="container wwu-block" aria-labelledby="remote-h">
+    <h2 id="remote-h" class="wwu-title"><span class="case-num">04</span> Working remotely</h2>
+    <dl class="wwu-remote">
+      {
+        remote.map((r) => (
+          <div>
+            <dt>{r.title}</dt>
+            <dd>{r.body}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="container wwu-block" aria-labelledby="not-h">
+    <h2 id="not-h" class="wwu-title"><span class="case-num">05</span> What we do not promise</h2>
+    <p class="case-prose">
+      Some things are agreed per engagement rather than promised up front, so
+      that what we commit to in writing is what we can deliver.
+    </p>
+    <ul class="case-list">
+      {notPromised.map((t) => <li>{t}</li>)}
+    </ul>
+  </section>
+
+  <aside class="container case-cta" aria-label="Start a project">
+    <div>
+      <h2 class="case-cta-title">Ready when you are</h2>
+      <p>
+        Write to us through the form, or email
+        <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </p>
+    </div>
+    <a href="/#contact" class="btn btn-primary">
+      <span>Describe your project</span>
+      <Icon name="arrow" size={18} class="arrow-icon" />
+    </a>
+  </aside>
+</Page>

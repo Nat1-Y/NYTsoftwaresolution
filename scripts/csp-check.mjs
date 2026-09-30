@@ -17,10 +17,21 @@ const CHROME =
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
 // Read the policy straight from the deploy config so the two cannot drift.
+// Production is Vercel, so test the policy it actually serves — and fail if
+// the Netlify copy has drifted from it.
+const vercel = JSON.parse(await readFile('vercel.json', 'utf8'));
+const served = vercel.headers
+  .flatMap((h) => h.headers)
+  .find((h) => h.key === 'Content-Security-Policy')?.value;
 const toml = await readFile('netlify.toml', 'utf8');
 const match = toml.match(/Content-Security-Policy = "([^"]+)"/);
+if (!served) throw new Error('Could not find the CSP in vercel.json');
 if (!match) throw new Error('Could not find the CSP in netlify.toml');
-const CSP = match[1];
+if (match[1] !== served) {
+  console.error('FAIL — the CSP in netlify.toml differs from the one Vercel serves (vercel.json).');
+  process.exit(1);
+}
+const CSP = served;
 console.log('Policy under test:\n  ' + CSP.replace(/; /g, ';\n  ') + '\n');
 
 const browser = await puppeteer.launch({
@@ -100,12 +111,10 @@ try {
       displayLoaded: document.fonts.check('600 3rem Fraunces'),
       sansLoaded: document.fonts.check('400 1rem Archivo'),
       firaLoaded: document.fonts.check('400 1rem "Fira Code"'),
-      stylesheetPromoted: document.getElementById('font-css')?.rel,
     };
   });
 
   console.log('Fonts:');
-  console.log('  link rel after promotion :', fonts.stylesheetPromoted);
   console.log('  Fraunces loaded          :', fonts.displayLoaded);
   console.log('  Archivo loaded           :', fonts.sansLoaded);
   console.log('  Fira Code loaded         :', fonts.firaLoaded);

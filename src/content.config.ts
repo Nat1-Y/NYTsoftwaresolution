@@ -14,13 +14,39 @@ const caseStudies = defineCollection({
     category: z.string(),
     tagline: z.string(),
 
-    liveUrl: z.string().url(),
+    /**
+     * A public link a visitor can open. Omit it when there is none that works
+     * — a dead link on a card whose argument is "open it and judge" does more
+     * harm than no link.
+     */
+    liveUrl: z.string().url().optional(),
     liveLabel: z.string().default('Live System'),
 
-    /** Public demo login, if the client has approved one. */
-    demo: z
-      .object({ email: z.string(), password: z.string() })
-      .optional(),
+    /**
+     * Where the system stands, stated plainly and dated. `checked` is when the
+     * public link (or its absence) was last verified.
+     *
+     *   production — running for the client, verified reachable
+     *   delivered  — built and handed over; not publicly verifiable now
+     *   prototype  — a demonstration or pilot, not a production deployment
+     */
+    deployment: z.object({
+      state: z.enum(['production', 'delivered', 'prototype']),
+      checked: z.string(),
+      note: z.string().optional(),
+    }),
+
+    /*
+     * Public demo logins were removed on purpose: a credential printed on a
+     * public page is a credential for anyone. Demos are arranged on request,
+     * against an isolated environment — see README → "Demos".
+     */
+
+    /** Case-study page sections. Written from what was actually delivered. */
+    overview: z.string(),
+    challenge: z.string(),
+    solution: z.array(z.string()).min(1),
+    stack: z.array(z.string()).min(1),
 
     /** Small status pill shown beside the CTA. */
     status: z

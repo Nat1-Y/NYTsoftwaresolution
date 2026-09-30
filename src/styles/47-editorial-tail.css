@@ -1511,7 +1511,7 @@
 
 .footer-links:last-child { padding-right: 0; }
 
-.footer-links h4 {
+.footer-links .footer-heading {
   font-family: var(--font-mono);
   font-size: 0.63rem;
   font-weight: 400;

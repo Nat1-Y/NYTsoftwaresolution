@@ -29,10 +29,11 @@ const browser = await puppeteer.launch({
 
 let totalViolations = 0;
 
-async function audit(label, setup, viewport = { width: 1440, height: 900 }) {
+async function audit(label, setup, viewport = { width: 1440, height: 900 }, { path = '/', persona } = {}) {
   const page = await browser.newPage();
   await page.setViewport(viewport);
-  await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+  if (persona) await page.evaluateOnNewDocument((p) => localStorage.setItem('nyt-persona', p), persona);
+  await page.goto(BASE + path, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('html[data-ready="true"]', { timeout: 20000 });
   // Skip the intro splash rather than waiting it out on every audit.
   await page.keyboard.press('Escape');
@@ -131,6 +132,15 @@ try {
     },
     { width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 }
   );
+
+  /* Inner pages, on a phone and on a desktop. */
+  const phone = { width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 };
+  for (const path of ['/work/fikrekun-spagna/', '/work/saron-orthopedic/', '/work/bora-ticketing/', '/work/merkato88/', '/products/cafe-manager/', '/working-with-us/', '/privacy/', '/terms/', '/404']) {
+    await audit(`${path} (phone)`, null, phone, { path });
+  }
+  await audit('/work/merkato88/ (desktop)', null, undefined, { path: '/work/merkato88/' });
+  await audit('/products/cafe-manager/ — engineering persona', null, undefined, { path: '/products/cafe-manager/', persona: 'tech' });
+  await audit('/working-with-us/ — engineering persona', null, phone, { path: '/working-with-us/', persona: 'tech' });
 } finally {
   await browser.close();
 }

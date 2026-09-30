@@ -7,7 +7,7 @@
 import { services, benefits } from '../data/services';
 import { techFilters, techStack } from '../data/tech';
 import { process, remoteServices, remoteReasons } from '../data/process';
-import { personaCopy, trustSignals } from '../data/site';
+import { personaCopy, trustSignals, site, team } from '../data/site';
 import Icon from './Icon.astro';
 import ProductTour from './visuals/ProductTour.astro';
 import ServiceVignette from './visuals/ServiceVignette.astro';
@@ -31,8 +31,9 @@ const techGroups = techFilters
     <div class="section-header">
       <h2 class="section-title">Who We Are</h2>
       <p class="section-subtitle">
-        NYT Software Solutions is a digital engineering firm specialising in
-        high-availability systems.
+        We design and build custom business software — point of sale, clinic
+        and hospital systems, marketplaces, ERPs and mobile apps — for
+        organisations in Ethiopia and abroad.
       </p>
     </div>
 
@@ -55,6 +56,40 @@ const techGroups = techFilters
         </p>
       </div>
     </div>
+
+    <dl class="company-facts" aria-label="Company facts">
+      <div><dt>Company</dt><dd>{site.legalName}</dd></div>
+      <div><dt>Founded</dt><dd>{site.founded}</dd></div>
+      <div><dt>Based in</dt><dd>{site.locality}, {site.country} · {site.timezone}</dd></div>
+      <div><dt>Works with</dt><dd>Clients in Ethiopia and remotely worldwide</dd></div>
+      <div><dt>Email</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>
+      <div><dt>Code</dt><dd><a href={site.github} target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a></dd></div>
+    </dl>
+
+    {
+      team.length > 0 && (
+        <div class="team">
+          <h3 class="team-title">The team</h3>
+          <ul class="team-list">
+            {team.map((m) => (
+              <li class="team-member">
+                <p class="team-name">{m.name}</p>
+                <p class="team-role">
+                  {m.role}
+                  {m.type !== 'employee' && <span class="team-type"> · {m.type}</span>}
+                </p>
+                {m.summary && <p class="team-summary">{m.summary}</p>}
+                {m.linkedin && (
+                  <a href={m.linkedin} target="_blank" rel="noopener noreferrer" class="team-link">
+                    LinkedIn<span class="sr-only"> profile of {m.name} (opens in a new tab)</span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
 
     <ul class="trust-bar">
       {
@@ -149,7 +184,8 @@ const techGroups = techFilters
           </div>
 
           <div class="flagship-actions">
-            <a href="#contact" class="btn btn-primary">Request Demo Access</a>
+            <a href="#contact" class="btn btn-primary" data-subject="NYT Cafe Manager demo">Request Demo Access</a>
+            <a href="/products/cafe-manager/" class="btn btn-secondary">Explore the product</a>
           </div>
         </div>
 

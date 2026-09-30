@@ -1,0 +1,92 @@
+---
+/**
+ * Terms of use for the website itself — not for client engagements, which
+ * are governed by the written agreement signed for each one.
+ *
+ * Deliberately short and plain. It names no governing law or jurisdiction
+ * because none has been supplied; have it reviewed and complete that before
+ * relying on it (docs/claims-register.md → "Owner actions").
+ */
+import Page from '../layouts/Page.astro';
+import { site } from '../data/site';
+
+const updated = '30 September 2026';
+---
+
+<Page
+  title="Terms of use"
+  description="The terms for using the NYT Software Solutions website: what its content is and is not, links to client systems, trademarks, and acceptable use."
+  crumbs={[{ label: 'Terms of use' }]}
+>
+  <article class="container legal">
+    <header class="legal-head">
+      <p class="page-kicker">Legal</p>
+      <h1 class="page-title">Terms of use</h1>
+      <p class="legal-updated">Last updated {updated}</p>
+    </header>
+
+    <div class="legal-body">
+      <p class="legal-lead">
+        These terms cover your use of this website. They do not cover software
+        projects: every engagement with {site.legalName} is governed by the
+        written agreement signed for it.
+      </p>
+
+      <h2>What this site is</h2>
+      <p>
+        The site describes {site.name}, its services and its past work. It is
+        information, not an offer. Nothing on it — including engagement
+        descriptions, typical timelines and the Blueprint Studio — is a quote,
+        a price or a commitment to deliver anything by a particular date. The
+        Blueprint Studio produces an indicative shape and calendar from a few
+        answers; real scope, cost and dates are set in a written estimate and
+        agreement.
+      </p>
+
+      <h2>Case studies and client systems</h2>
+      <p>
+        Case studies describe systems we designed and built for our clients.
+        The systems, their names and their content belong to those clients.
+        Links to live client systems are provided so you can see the work; we
+        do not control those sites, and their own terms apply there. Figures
+        in case studies are attributed to their source on the page.
+      </p>
+
+      <h2>Trademarks</h2>
+      <p>
+        Technology names and logos shown on this site belong to their owners
+        and are used only to name the tools we work with. Their use does not
+        imply endorsement or partnership.
+      </p>
+
+      <h2>Our content</h2>
+      <p>
+        Text, drawings and code on this site are © {site.legalName} unless
+        stated otherwise. You are welcome to link to any page. Please ask before
+        reusing content elsewhere.
+      </p>
+
+      <h2>Using the site fairly</h2>
+      <p>
+        Please do not use the contact form to send spam or unlawful content, or
+        try to disrupt, overload or gain unauthorised access to the site or the
+        systems behind it. If you believe you have found a security issue,
+        email <a href={`mailto:${site.email}`}>{site.email}</a> and we will look
+        into it.
+      </p>
+
+      <h2>No warranty</h2>
+      <p>
+        We work to keep the site accurate and available, but it is provided as
+        it is, and to the extent the law allows we are not liable for losses
+        arising from relying on it.
+      </p>
+
+      <h2>Changes and contact</h2>
+      <p>
+        We may update these terms; the date at the top shows when they last
+        changed. Questions to <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </p>
+    </div>
+  </article>
+</Page>

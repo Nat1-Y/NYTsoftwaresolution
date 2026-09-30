@@ -31,6 +31,10 @@ The choice is stored in `localStorage` and applied by an inline script in
 
 ---
 
+Inner pages: a full case study per project (`/work/…`), the NYT Cafe Manager
+product page, "Working with us" for clients abroad, and the privacy notice and
+terms of use.
+
 ## Journey through the page
 
 1. **Header** — fixed nav, plus a ⌘K / Ctrl+K command palette for keyboard users.
@@ -39,10 +43,12 @@ The choice is stored in `localStorage` and applied by an inline script in
 4. **Who We Are** — positioning, plus a trust bar (encryption, code ownership,
    warranty, timezone overlap, documentation).
 5. **What We Do** — four service pillars and a benefits grid.
-6. **Case Studies** — four production systems. Each card has a live link, and
-   tabs for *Business Impact* (headline metric with its source) and *Technical
-   Depth* (specs, narrative, and an inline SVG architecture diagram).
-7. **Flagship** — NYT Cafe Manager with a CSS-rendered dashboard mockup.
+6. **Case Studies** — four systems, each with its deployment state and the
+   date it was checked, a live link where one works, and tabs for *Business
+   Impact* (headline metric with its source) and *Technical Depth* (specs,
+   narrative, architecture diagram). Each links to a full case-study page.
+7. **Flagship** — NYT Cafe Manager with a drawn product tour, and a link to its
+   own product page.
 8. **Tech Ecosystem** — 22 technologies, filterable by category.
 9. **Process** — seven steps from discovery to support.
 10. **Remote Partner Services** — the pitch for international clients.
@@ -53,7 +59,7 @@ The choice is stored in `localStorage` and applied by an inline script in
     drops straight into the contact form.
 13. **Testimonials** — auto-rotating carousel that pauses on hover and focus.
 14. **FAQ** — eight straight answers; also feeds Google's FAQ rich result.
-15. **Contact** — details panel plus a validating form.
+15. **Contact** — details panel plus a form that posts to `/api/contact`.
 16. **Chat assistant** — answers common questions from a scored intent matcher.
 
 ---
@@ -62,10 +68,10 @@ The choice is stored in `localStorage` and applied by an inline script in
 
 ### The contact form will not lie
 
-If no form backend is configured, the form does **not** claim to have sent
-anything. It validates the input, then offers a pre-filled email draft and a
-copy-to-clipboard button. Once an endpoint is set in `src/data/site.ts` it
-posts for real — and a failed request is reported as a failure.
+The form posts to the site's own function, which reports success only when the
+email provider accepts the message. If the function is not configured, is
+unreachable, or the provider refuses, the form says so and offers a pre-filled
+email draft and a copy-to-clipboard button instead.
 
 This replaced a `setTimeout` that always displayed "your request has been
 received" while sending nothing anywhere.

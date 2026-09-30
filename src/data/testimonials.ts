@@ -10,6 +10,11 @@ export interface Testimonial {
   person?: { name: string; role: string };
   /** The case study this quote is about — its file name in src/content/case-studies. */
   caseStudy?: string;
+  /**
+   * Set to keep a quote off the page until the client re-confirms it. The
+   * wording of a quote is the client's, so it is held rather than edited.
+   */
+  hold?: string;
 }
 
 export const testimonials: Testimonial[] = [
@@ -44,5 +49,6 @@ export const testimonials: Testimonial[] = [
     org: 'Merkato88 Marketplace',
     context: 'Multi-Vendor E-Commerce Platform',
     caseStudy: 'merkato88',
+    hold: 'The quote cites 150+ merchants; merkato88.com listed 50+ active sellers on 29 Sep 2026. Re-confirm the wording with the client before publishing.',
   },
 ];

@@ -38,6 +38,15 @@ import { site } from '../data/site';
   <Footer />
 </Base>
 
+<script>
+  // The header's menu needs its script here too — without it the 404 page
+  // rendered a hamburger that never opened.
+  import { initSiteChrome } from '../scripts/main';
+
+  initSiteChrome();
+  document.documentElement.dataset.ready = 'true';
+</script>
+
 <style>
   .error-page {
     min-height: 70vh;

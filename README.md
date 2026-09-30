@@ -13,16 +13,18 @@ static site with no runtime framework, and works offline.
 
 ---
 
-## ⚠️ Read this first: the contact form is not connected
+## ⚠️ Read this first: two things only the company can finish
 
-The form **does not send email yet**, and it deliberately does not pretend to.
-Until you add an endpoint it validates the input and then hands the visitor a
-pre-filled email draft, telling them plainly that it could not deliver the
-message itself.
-
-**This is the single highest-value thing to fix.** See
-[Wiring up the contact form](#wiring-up-the-contact-form) — it takes about ten
-minutes.
+1. **Switch on email delivery.** The contact form posts to the site's own
+   function (`api/contact.js`), which delivers through
+   [Resend](https://resend.com). Until its keys are set in Vercel, the form
+   says it could not send and hands the visitor a pre-filled email draft — it
+   never claims a delivery that did not happen. See
+   [Contact form](#contact-form).
+2. **Work through [docs/claims-register.md](docs/claims-register.md)** — every
+   figure on the site, where it comes from, what still needs confirming, and
+   the owner actions (rotating a published demo password, testimonial
+   permissions, the LinkedIn page, legal review).
 
 ---
 
@@ -39,11 +41,15 @@ npm run dev          # http://localhost:4321
 | `npm run build` | Static build into `dist/` |
 | `npm run preview` | Serve the built `dist/` locally |
 | `npm run check` | TypeScript + Astro diagnostics |
+| `npm test` | Contact endpoint unit tests (no network, no real email) |
+| `npm run e2e:form` | The contact form end to end in a browser, against a fake email provider (needs `build`) |
 | `npm run smoke` | Browser interaction tests (needs `preview` running) |
-| `npm run a11y` | axe-core accessibility audit (needs `preview` running) |
+| `npm run a11y` | axe-core accessibility audit, home and every inner page (needs `preview`) |
 | `npm run csp` | Loads the site under the production CSP and reports violations |
+| `npm run links` | Checks every internal link and anchor in `dist/`; add `-- --external` to fetch outbound links too |
 | `npm run og` | Regenerate the social card and app icons |
 | `npm run captures` | Re-shoot the live client screenshots (see [Images](#images)) |
+| `npm run fonts` | Re-download the self-hosted font subsets |
 
 `smoke` and `a11y` drive your installed Chrome. If it lives somewhere unusual,
 set `CHROME_PATH`.
@@ -52,42 +58,60 @@ set `CHROME_PATH`.
 # terminal 1
 npm run build && npm run preview
 # terminal 2
+npm test && npm run e2e:form && npm run links
 npm run smoke && npm run a11y && npm run csp
 ```
 
 ---
 
-## Wiring up the contact form
+## Contact form
 
-Pick any service that accepts a JSON `POST` — [Web3Forms](https://web3forms.com)
-is free and needs no account for basic use.
+The form posts JSON to `/api/contact` — a Vercel function in
+[`api/contact.js`](api/contact.js), with its logic in
+[`api/_lib/enquiry.js`](api/_lib/enquiry.js). It:
 
-1. Get an access key (Web3Forms emails you one).
-2. Open [`src/data/site.ts`](src/data/site.ts) and fill in `formConfig`:
+- validates and cleans every field on the server (lengths, email shape, options
+  from a fixed list, no line breaks in single-line fields);
+- rejects bots — a hidden honeypot field, a minimum time to fill the form, an
+  origin check, a 20 kB body cap — and rate-limits each IP to five enquiries per
+  ten minutes (in memory, per function instance: it stops one client flooding
+  the form, not a distributed attack);
+- sends the enquiry to the company with **Reply-To** set to the visitor, then a
+  confirmation copy to the visitor;
+- reports success **only** when Resend accepts the enquiry and returns a
+  message id. A refused or failed send is reported as a failure, and the visitor
+  gets a pre-filled email draft instead.
 
-   ```ts
-   export const formConfig = {
-     endpoint: 'https://api.web3forms.com/submit',
-     accessKey: 'your-access-key-here',
-   } as const;
-   ```
+The API key lives only in Vercel's environment variables — never in the page.
 
-3. **Allow the origin in your Content-Security-Policy**, or the browser will
-   block the request. In `netlify.toml` / `vercel.json`, change:
+### Switching it on
 
-   ```
-   connect-src 'self'
-   ```
-   to
-   ```
-   connect-src 'self' https://api.web3forms.com
-   ```
+1. Create a [Resend](https://resend.com) account and an API key.
+2. In Resend, verify the domain you will send from (it gives you DNS records to
+   add to `nytsoftwaresolution.pro.et`).
+3. In Vercel → Project → Settings → Environment Variables, set (see
+   [`.env.example`](.env.example)):
 
-4. Rebuild and send yourself a test message.
+   | Variable | Value |
+   | --- | --- |
+   | `RESEND_API_KEY` | the key from step 1 |
+   | `CONTACT_FROM` | `NYT Software Solutions <hello@nytsoftwaresolution.pro.et>` |
+   | `CONTACT_TO` | optional — defaults to the company Gmail address |
 
-Once `endpoint` is set, the fallback panel disappears and the form posts for
-real. A failed request reports the failure — it never claims success it did not
-get.
+4. Redeploy, send yourself a test enquiry, and check both emails arrive.
+
+No CSP change is needed: the form posts to the site's own origin.
+
+**Testing it.** `npm test` covers every server path with a fake provider;
+`npm run e2e:form` fills the real form in a browser against the real handler
+and a fake provider, and checks that the page claims delivery only when the
+provider accepts. Neither sends real mail — step 4 above is the only check of
+the live provider.
+
+**If you move off Vercel,** `api/contact.js` exports a standard
+`Request → Response` handler (`handleContact`); wrap it in the new host's
+function format. `netlify.toml` is kept in step with Vercel's headers, but
+Netlify would need that wrapper.
 
 ---
 
@@ -108,13 +132,25 @@ Almost nothing needs a code change.
 | FAQ (also feeds Google's FAQ rich result) | [`src/data/faq.ts`](src/data/faq.ts) |
 | Testimonials | [`src/data/testimonials.ts`](src/data/testimonials.ts) |
 | Chatbot answers | [`src/scripts/chatbot.ts`](src/scripts/chatbot.ts) |
+| LinkedIn, phone, team members (hidden until set) | [`src/data/site.ts`](src/data/site.ts) |
+| NYT Cafe Manager page | [`src/pages/products/cafe-manager.astro`](src/pages/products/cafe-manager.astro) |
+| How we work (for international clients) | [`src/pages/working-with-us.astro`](src/pages/working-with-us.astro) |
+| Privacy notice, terms of use | [`src/pages/privacy.astro`](src/pages/privacy.astro), [`src/pages/terms.astro`](src/pages/terms.astro) |
 
 ### Adding a case study
 
 Drop a new `.md` file into `src/content/case-studies/`. The schema in
 [`src/content.config.ts`](src/content.config.ts) is enforced at build time, so a
 missing field fails the build rather than shipping a broken card. The new entry
-automatically appears in the grid **and** in the ⌘K command palette.
+automatically appears in the grid, in the ⌘K command palette, **and** as its own
+page at `/work/<file-name>/` with seven sections: overview, challenge, what was
+built, technology, architecture, results and status.
+
+Every study states its `deployment` — `production`, `delivered` or
+`prototype` — and the date that was last checked. Give it a `liveUrl` only
+if the link works; there is no demo-credential field, on purpose. Demos are
+arranged on request, against an isolated environment (see the owner actions in
+[docs/claims-register.md](docs/claims-register.md)).
 
 Every metric has an optional `source` field. Use it. An unattributed "85%" reads
 as marketing; "reported by the client after the first quarter" reads as fact.
@@ -309,16 +345,65 @@ sells offline-first POS systems ought to survive a dropped connection itself.
 
 ## Quality gates
 
-| Gate | Status |
+| Gate | Result (30 Sep 2026) |
 | --- | --- |
-| `astro check` | 0 errors |
-| `npm run smoke` | 62/62 interaction checks |
-| `npm run a11y` | 0 serious/critical axe violations across 6 scenarios |
-| `npm run csp` | 0 violations under the production Content-Security-Policy |
-| JS shipped | ~30 kB (~12 kB gzipped), no runtime framework |
+| `astro check` | 0 errors, 0 warnings, 0 hints |
+| `npm test` | 16/16 contact-endpoint tests |
+| `npm run e2e:form` | 13/13 — delivery, provider refusal, not configured |
+| `npm run smoke` | 71/71 interaction checks, home and inner pages |
+| `npm run a11y` | 0 serious/critical axe violations across 18 page states |
+| `npm run csp` | 0 violations under the production policy |
+| `npm run links -- --external` | 507 internal links, 4 outbound — none broken |
+| JS shipped | ~50 kB (~19 kB gzipped) across all pages, no runtime framework |
 
-The a11y audit covers both personas, the chat assistant, the command palette
-and mobile with the menu open — the states where ARIA problems usually hide.
+The a11y audit covers both personas, the chat assistant, the command palette,
+mobile with the menu open, and every inner page on a phone.
+
+### Performance
+
+Measured with Lighthouse 12 (mobile profile, simulated slow 4G, median of three
+runs, both builds served locally so the network is the same):
+
+| | Before | After |
+| --- | --- | --- |
+| Performance score | 69 | 80 |
+| Total blocking time | 556 ms | 0 ms |
+| Requests on load | 21 | 16 |
+| Third-party requests | 14 | 0 |
+| Accessibility / best practices / SEO | 100 / 100 / 100 | 100 / 100 / 100 |
+
+Simulated first paint was 1.5–5.8 s before (it depended on Google's font
+servers) and a steady ~3.1 s after; the observed, unthrottled first paint is
+~1.3 s in both. The remaining gap to a faster first paint is the display font
+itself (~66 kB, preloaded).
+
+---
+
+## Security
+
+- **Headers** — HSTS, CSP, `X-Frame-Options`, `nosniff`, `Referrer-Policy`
+  and `Permissions-Policy`, served from [`vercel.json`](vercel.json)
+  (verified on the live site). The CSP allows nothing but the site's own origin:
+  fonts are self-hosted, and the form posts to `/api/contact`.
+  `npm run csp` fails if the Netlify copy of the policy drifts from Vercel's.
+- **Secrets** — the only secret is the email API key, held in Vercel's
+  environment. Nothing secret is in the page, the repository or `site.ts`.
+- **Input** — the contact endpoint validates, cleans and escapes everything; see
+  [Contact form](#contact-form).
+- **Demos** — no credentials are published anywhere. A public demo login was
+  removed; rotate that password wherever it existed (see the claims register).
+- **Disclosure** — [`/.well-known/security.txt`](public/.well-known/security.txt)
+  gives researchers a contact.
+- **Dependencies** — `npm audit fix` applied. Three findings remain, all fixed
+  only by a major Astro upgrade (5 → 7): Astro's own advisories need untrusted
+  input at render time, server rendering or server islands, none of which this
+  static build has; its AVIF issue needs a crafted image, and the pipeline only
+  processes the site's own four screenshots at build time; the esbuild issue
+  affects the local dev server only. Still worth upgrading.
+
+Not covered: there is no server-side logging or alerting beyond Vercel's
+function logs (which record delivery failures by status only, never the
+visitor's details), and the rate limit is per function instance.
 
 ---
 
@@ -343,14 +428,16 @@ included, both with security headers (HSTS, CSP, `X-Frame-Options`,
 
 ---
 
-## Live production case studies
+## Case studies
 
-| System | Live | What it does |
-| --- | --- | --- |
-| Fikrekun Spagna | [Open](https://fikrekunspagna22a.vanguardxie.com/login) | Multi-tenant restaurant & butchery POS with offline-first ordering. Demo: `guest@nyt.com` / `guest123` |
-| Saron Orthopedic Center | [Open](https://api.saronorthopediccenter.com) | Clinical records, appointments and billing with role-gated access |
-| Bora Amusement Park | [Open](https://boraticketing.vercel.app/) | QR ticketing, 5,000+ daily gate validations |
-| Merkato88 | [Open](https://merkato88.com/) | Multi-vendor marketplace, 150+ local merchants |
+Status as checked on 29 Sep 2026.
+
+| System | State | Public link | What it does |
+| --- | --- | --- | --- |
+| Fikrekun Spagna | Delivered | none — the earlier demo domain no longer resolves | Multi-tenant restaurant & butchery POS with offline-first ordering |
+| Saron Orthopedic Center | In production | [Staff sign-in](https://api.saronorthopediccenter.com) | Clinical records, appointments and billing with role-gated access |
+| Bora Amusement Park | In production | [Open](https://boraticketing.vercel.app/) | QR ticketing and gate validation |
+| Merkato88 | In production | [Open](https://merkato88.com/) | Multi-vendor marketplace; its home page lists 50+ active sellers |
 
 ---
 

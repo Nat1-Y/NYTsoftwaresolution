@@ -1,0 +1,81 @@
+---
+/**
+ * Inner pages: a case study, the product page, how we work, the legal pages.
+ *
+ * Same head, header and footer as the home page, without its splash, persona
+ * switch or command palette. The breadcrumb doubles as BreadcrumbList
+ * structured data, so search results can show where a page sits.
+ */
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** The trail after "Home", e.g. [{ label: 'Case studies', href: '/#projects' }, { label: 'Merkato88' }]. */
+  crumbs: { label: string; href?: string }[];
+  /** Extra JSON-LD objects for this page. */
+  schema?: Record<string, unknown>[];
+}
+
+const { title, description, crumbs, schema = [] } = Astro.props;
+
+const origin = Astro.site ?? new URL(site.url);
+const trail = [{ label: 'Home', href: '/' }, ...crumbs];
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: trail.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: new URL(c.href ?? Astro.url.pathname, origin).href,
+  })),
+};
+---
+
+<Base title={`${title} | ${site.name}`} description={description} schema={[breadcrumbSchema, ...schema]}>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <span id="top"></span>
+  <Header />
+
+  <main id="main" tabindex="-1" class="inner-page">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          {
+            trail.map((c, i) => (
+              <li>
+                {i < trail.length - 1 && c.href ? (
+                  <a href={c.href}>{c.label}</a>
+                ) : (
+                  <span aria-current="page">{c.label}</span>
+                )}
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+    </div>
+
+    <slot />
+  </main>
+
+  <Footer />
+
+  <aside class="page-tools" aria-label="Page tools">
+    <button class="scroll-top-btn" id="scroll-top-btn" aria-label="Scroll back to top">
+      <Icon name="chevronUp" size={22} />
+    </button>
+  </aside>
+</Base>
+
+<script>
+  import { initSiteChrome } from '../scripts/main';
+
+  initSiteChrome();
+  document.documentElement.dataset.ready = 'true';
+</script>

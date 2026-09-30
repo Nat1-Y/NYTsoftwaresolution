@@ -1,0 +1,10 @@
+The fonts in this folder are self-hosted subsets, downloaded from Google Fonts
+by scripts/fonts.mjs, and are licensed under the SIL Open Font License 1.1
+(https://openfontlicense.org):
+
+  Fraunces              — Copyright The Fraunces Project Authors
+  Archivo               — Copyright The Archivo Project Authors
+  Fira Code             — Copyright The Fira Code Project Authors
+  Noto Serif Ethiopic   — Copyright Google LLC
+
+They are used unmodified, except for subsetting by the distributor.

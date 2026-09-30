@@ -20,6 +20,8 @@ import HeroPlate from './visuals/HeroPlate.astro';
 const systems = (await getCollection('case-studies')).sort(
   (a, b) => a.data.order - b.data.order
 );
+// Counted from each case study's verified deployment state, not assumed.
+const inProduction = systems.filter((s) => s.data.deployment.state === 'production').length;
 ---
 
 <section class="hero-section">
@@ -83,7 +85,7 @@ const systems = (await getCollection('case-studies')).sort(
           <span class="console-path">nyt — production</span>
           <span class="console-live">
             <i class="console-live-dot"></i>
-            {systems.length} systems live
+            {inProduction} in production
           </span>
         </div>
 
@@ -149,8 +151,8 @@ const systems = (await getCollection('case-studies')).sort(
         <span class="plate-kind">Illustration</span>
         <span>
           The drawing shows the kinds of system we build; the readout in front
-          of it is real — four systems in production today. Open any of them
-          from <a href="#projects">Case Studies</a>.
+          of it is real — the specs of the four systems in our
+          <a href="#projects">case studies</a>.
         </span>
       </p>
     </div>

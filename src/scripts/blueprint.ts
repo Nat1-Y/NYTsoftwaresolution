@@ -436,8 +436,8 @@ function composeBrief(selection: Selection, plan: Plan): string {
 /** Closest existing option on the contact form. */
 function subjectFor(systemId: string): string {
   if (systemId === 'pos') return 'Restaurant / POS system';
-  if (systemId === 'erp' || systemId === 'saas' || systemId === 'marketplace')
-    return 'Custom ERP / SaaS platform';
+  if (systemId === 'marketplace') return 'E-commerce / marketplace';
+  if (systemId === 'erp' || systemId === 'saas') return 'Custom ERP / SaaS platform';
   return 'Other inquiry';
 }
 

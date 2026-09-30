@@ -1,5 +1,8 @@
 ---
-import { testimonials } from '../data/testimonials';
+import { testimonials as all } from '../data/testimonials';
+
+// Quotes on hold (see the `hold` field) stay out of the page until re-confirmed.
+const testimonials = all.filter((t) => !t.hold);
 import Icon from './Icon.astro';
 ---
 
@@ -34,9 +37,6 @@ import Icon from './Icon.astro';
               aria-hidden={i === 0 ? 'false' : 'true'}
             >
               <figure class="testimonial-card glass">
-                <div class="testi-stars" role="img" aria-label="Rated 5 out of 5">
-                  <span aria-hidden="true">★★★★★</span>
-                </div>
                 <blockquote class="testi-quote">{t.quote}</blockquote>
                 <figcaption class="testi-author">
                   <div class="testi-avatar" aria-hidden="true">

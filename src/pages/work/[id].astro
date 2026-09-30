@@ -1,0 +1,219 @@
+---
+/**
+ * A full case study, one page per file in src/content/case-studies.
+ *
+ * Every project gets the same seven sections, in the order a client reads
+ * them: what it is, the problem, what was built, the technology, how it fits
+ * together, the results, and where it stands today. Nothing on this page is
+ * written here — it is all read from the case study's own file, so the card
+ * on the home page and this page cannot disagree.
+ */
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Page from '../../layouts/Page.astro';
+import CasePlate from '../../components/visuals/CasePlate.astro';
+import ArchDiagram from '../../components/ArchDiagram.astro';
+import Icon from '../../components/Icon.astro';
+import { testimonials } from '../../data/testimonials';
+import { deploymentLabel } from '../../lib/deployment';
+import { summary } from '../../lib/text';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('case-studies')).sort((a, b) => a.data.order - b.data.order);
+  return all.map((study, i) => ({
+    params: { id: study.id },
+    props: {
+      study,
+      prev: all[(i - 1 + all.length) % all.length]!,
+      next: all[(i + 1) % all.length]!,
+    },
+  }));
+}
+
+interface Props {
+  study: CollectionEntry<'case-studies'>;
+  prev: CollectionEntry<'case-studies'>;
+  next: CollectionEntry<'case-studies'>;
+}
+
+const { study, prev, next } = Astro.props;
+const d = study.data;
+const { Content } = await render(study);
+const quote = testimonials.find((t) => t.caseStudy === study.id && !t.hold);
+const num = String(d.order).padStart(2, '0');
+
+const sections = ['Overview', 'The challenge', 'What we built', 'Technology', 'How it fits together', 'Results', 'Status'];
+---
+
+<Page
+  title={`${d.name} — case study`}
+  description={summary(`${d.tagline}. ${d.overview}`)}
+  crumbs={[{ label: 'Case studies', href: '/#projects' }, { label: d.name }]}
+>
+  <article class="case-page">
+    <header class="container case-head">
+      <p class="page-kicker">
+        <span class="page-kicker-num">{num}</span>
+        {d.category}
+      </p>
+      <h1 class="page-title">{d.name}</h1>
+      <p class="page-lead">{d.tagline}</p>
+
+      <p class="project-deploy case-deploy" data-state={d.deployment.state}>
+        <span class="deploy-state">{deploymentLabel[d.deployment.state]}</span>
+        <span class="deploy-checked">checked {d.deployment.checked}</span>
+      </p>
+
+      <div class="case-actions">
+        {
+          d.liveUrl && (
+            <a href={d.liveUrl} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+              <Icon name="external" size={16} />
+              <span>{d.liveLabel}</span>
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          )
+        }
+        <a href="/#contact" class="btn btn-primary">
+          <span>Discuss a similar project</span>
+          <Icon name="arrow" size={18} class="arrow-icon" />
+        </a>
+      </div>
+    </header>
+
+    <div class="container case-plate-wrap">
+      <CasePlate variant={d.tech.diagram} />
+    </div>
+
+    <div class="container case-body">
+      <nav class="case-toc" aria-label="On this page">
+        <p class="case-toc-title">On this page</p>
+        <ol>
+          {sections.map((s, i) => <li><a href={`#s${i + 1}`}>{s}</a></li>)}
+        </ol>
+      </nav>
+
+      <div class="case-sections">
+        <section class="case-section" id="s1" aria-labelledby="s1-h">
+          <h2 id="s1-h"><span class="case-num">01</span> Overview</h2>
+          <p class="case-prose">{d.overview}</p>
+        </section>
+
+        <section class="case-section" id="s2" aria-labelledby="s2-h">
+          <h2 id="s2-h"><span class="case-num">02</span> The challenge</h2>
+          <p class="case-prose">{d.challenge}</p>
+        </section>
+
+        <section class="case-section" id="s3" aria-labelledby="s3-h">
+          <h2 id="s3-h"><span class="case-num">03</span> What we built</h2>
+          <ul class="case-list">
+            {d.solution.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        <section class="case-section" id="s4" aria-labelledby="s4-h">
+          <h2 id="s4-h"><span class="case-num">04</span> Technology</h2>
+          <ul class="case-stack" aria-label="Technologies used">
+            {d.stack.map((t) => <li>{t}</li>)}
+          </ul>
+          <dl class="case-specs">
+            {
+              d.tech.specs.map((s) => (
+                <div>
+                  <dt>{s.label}</dt>
+                  <dd>{s.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </section>
+
+        <section class="case-section" id="s5" aria-labelledby="s5-h">
+          <h2 id="s5-h"><span class="case-num">05</span> How it fits together</h2>
+          <p class="case-prose">{d.tech.narrative}</p>
+          <div class="case-prose case-md"><Content /></div>
+          <ArchDiagram variant={d.tech.diagram} project={d.name} />
+        </section>
+
+        <section class="case-section" id="s6" aria-labelledby="s6-h">
+          <h2 id="s6-h"><span class="case-num">06</span> Results</h2>
+          <div class="metric-highlight case-metric">
+            <span class="metric-val">{d.business.metric.value}</span>
+            <span class="metric-desc">{d.business.metric.description}</span>
+          </div>
+          <p class="case-source">
+            <strong>How it was measured:</strong>
+            {d.business.metric.source ?? 'Not yet documented — see the claims register.'}
+          </p>
+          <ul class="case-list">
+            {
+              d.business.bullets.map((b) => (
+                <li>
+                  <strong>{b.title}.</strong> {b.text}
+                </li>
+              ))
+            }
+          </ul>
+          {
+            quote && (
+              <figure class="case-quote">
+                <blockquote>{quote.quote}</blockquote>
+                <figcaption>
+                  <strong>{quote.person?.name ?? quote.org}</strong>
+                  <span>{quote.person ? `${quote.person.role}, ${quote.org}` : quote.context}</span>
+                </figcaption>
+              </figure>
+            )
+          }
+        </section>
+
+        <section class="case-section" id="s7" aria-labelledby="s7-h">
+          <h2 id="s7-h"><span class="case-num">07</span> Status</h2>
+          <dl class="case-specs">
+            <div>
+              <dt>Deployment</dt>
+              <dd>{deploymentLabel[d.deployment.state]}</dd>
+            </div>
+            <div>
+              <dt>Last checked</dt>
+              <dd>{d.deployment.checked}</dd>
+            </div>
+            {
+              d.status && (
+                <div>
+                  <dt>{d.status.label}</dt>
+                  <dd>{d.status.value}</dd>
+                </div>
+              )
+            }
+          </dl>
+          {d.deployment.note && <p class="case-prose">{d.deployment.note}</p>}
+        </section>
+      </div>
+    </div>
+
+    <aside class="container case-cta" aria-label="Start a project">
+      <div>
+        <h2 class="case-cta-title">Facing a similar problem?</h2>
+        <p>
+          Tell us what the system has to do. The first consultation is free, and
+          you get a written estimate before any work starts.
+        </p>
+      </div>
+      <a href="/#contact" class="btn btn-primary">
+        <span>Start a conversation</span>
+        <Icon name="arrow" size={18} class="arrow-icon" />
+      </a>
+    </aside>
+
+    <nav class="container case-pager" aria-label="More case studies">
+      <a href={`/work/${prev.id}/`} class="case-pager-link">
+        <span class="case-pager-dir">Previous</span>
+        <span class="case-pager-name">{prev.data.name}</span>
+      </a>
+      <a href={`/work/${next.id}/`} class="case-pager-link case-pager-next">
+        <span class="case-pager-dir">Next</span>
+        <span class="case-pager-name">{next.data.name}</span>
+      </a>
+    </nav>
+  </article>
+</Page>

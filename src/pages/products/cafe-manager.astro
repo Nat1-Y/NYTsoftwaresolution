@@ -1,0 +1,158 @@
+---
+/**
+ * NYT Cafe Manager — the product page.
+ *
+ * Built only from what the home page already claims for the product: the six
+ * listed capabilities, real-time kitchen tracking and dynamic recipe costing.
+ * No integrations, prices, customer counts or performance figures appear
+ * here, because none have been supplied — add them to `modules` below when
+ * they are real. The screens are drawings, and the page says so.
+ */
+import Page from '../../layouts/Page.astro';
+import ProductTour from '../../components/visuals/ProductTour.astro';
+import Icon from '../../components/Icon.astro';
+import { site } from '../../data/site';
+import { summary } from '../../lib/text';
+
+const modules = [
+  {
+    id: 'pos',
+    title: 'Point of sale that keeps working offline',
+    body:
+      'Orders are taken on the till whether or not the connection is up. Each sale is saved on the device first and synchronised when the link returns, so a dropped connection does not stop service.',
+    tag: 'Offline POS resiliency',
+  },
+  {
+    id: 'kitchen',
+    title: 'Kitchen display',
+    body:
+      'Orders go from the till straight to a screen in the kitchen, so the kitchen sees what to prepare as it is ordered, and the front of house can track each order as the kitchen works through it.',
+    tag: 'Kitchen display (KDS)',
+  },
+  {
+    id: 'costing',
+    title: 'Recipe costing, COGS and profit',
+    body:
+      'Recipes are costed from the ingredients they use, so the cost of goods sold and the margin on what you sell are reported as you trade rather than worked out at the end of the month.',
+    tag: 'COGS & profit reports',
+  },
+  {
+    id: 'branches',
+    title: 'Several branches, one view',
+    body:
+      'Branches stay in sync with each other, so an owner with several locations can follow all of them from one place.',
+    tag: 'Multi-branch sync',
+  },
+  {
+    id: 'tenancy',
+    title: 'Your data, kept apart',
+    body:
+      'Every business on the platform has its own isolated database schema. One customer’s data cannot be read across that boundary.',
+    tag: 'Multi-tenant schema',
+  },
+  {
+    id: 'updates',
+    title: 'Updates without closing',
+    body:
+      'New versions are delivered over the air, in the background, so an update never means shutting the tills.',
+    tag: 'OTA software delivery',
+  },
+];
+
+const description =
+  'NYT Cafe Manager is a cloud-based platform for running restaurant and café branches: an offline-capable point of sale, a kitchen display, recipe costing with COGS and profit reports, and multi-branch sync.';
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'NYT Cafe Manager',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  description,
+  publisher: { '@id': `${site.url}/#organization` },
+  featureList: modules.map((m) => m.tag),
+};
+---
+
+<Page
+  title="NYT Cafe Manager — restaurant & café management platform"
+  description={summary(description)}
+  crumbs={[{ label: 'NYT Cafe Manager' }]}
+  schema={[productSchema]}
+>
+  <header class="container case-head product-head">
+    <p class="page-kicker">Flagship platform</p>
+    <h1 class="page-title">NYT Cafe Manager</h1>
+    <p class="page-lead page-lead-italic">
+      The enterprise SaaS built for modern hospitality businesses.
+    </p>
+    <p class="case-prose product-intro">
+      A cloud-native, multi-tenant platform for running restaurant branches:
+      real-time kitchen tracking, an offline-capable point of sale, dynamic
+      recipe costing, and updates that ship in the background without
+      downtime.
+    </p>
+    <div class="case-actions">
+      <a href="/#contact" class="btn btn-primary" data-subject="NYT Cafe Manager demo">
+        <span>Request a demo</span>
+        <Icon name="arrow" size={18} class="arrow-icon" />
+      </a>
+      <a href="#modules" class="btn btn-secondary">What it does</a>
+    </div>
+  </header>
+
+  <section class="container product-tour-wrap" aria-labelledby="tour-h">
+    <h2 id="tour-h" class="sr-only">A tour of the product</h2>
+    <ProductTour />
+  </section>
+
+  <section class="container product-modules" id="modules" aria-labelledby="modules-h">
+    <div class="section-header">
+      <h2 class="section-title" id="modules-h">What it does</h2>
+      <p class="section-subtitle">
+        Six parts, one system — from the till to the owner's report.
+      </p>
+    </div>
+
+    <ol class="module-list">
+      {
+        modules.map((m, i) => (
+          <li class="module" id={`module-${m.id}`}>
+            <span class="module-num">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{m.title}</h3>
+              <p>{m.body}</p>
+              <span class="module-tag">{m.tag}</span>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="container product-demo" aria-labelledby="demo-h">
+    <div>
+      <h2 id="demo-h" class="case-cta-title">See it with your own menu</h2>
+      <p>
+        Demos are arranged on request. Tell us how many branches you run and
+        what you use today, and we will walk you through it.
+      </p>
+      <p class="product-note">
+        The screens above are drawings of the product's modules, not
+        screenshots, and carry no real figures.
+      </p>
+    </div>
+    <a href="/#contact" class="btn btn-primary" data-subject="NYT Cafe Manager demo">
+      <span>Request a demo</span>
+      <Icon name="arrow" size={18} class="arrow-icon" />
+    </a>
+  </section>
+</Page>
+
+<script>
+  import { initTour } from '../../scripts/tour';
+  import { rememberSubject } from '../../scripts/subject';
+
+  initTour();
+  rememberSubject();
+</script>

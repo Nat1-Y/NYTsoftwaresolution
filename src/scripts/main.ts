@@ -305,14 +305,24 @@ function initScrollableDiagrams(): void {
   sync();
 }
 
-export function initMain(): void {
-  initLoader();
-  initScrollableDiagrams();
-  initReveals();
-  initCounters();
-  initNavHighlight();
+/**
+ * What every page needs: the mobile menu, the scroll affordances, the offline
+ * banner and the service worker. Inner pages call this on its own — the 404
+ * page used to render the header without it, so its menu never opened.
+ */
+export function initSiteChrome(): void {
   initMobileNav();
   initScrollAffordances();
   initConnectivityBanner();
   initServiceWorker();
+  initScrollableDiagrams();
+}
+
+/** The home page: the site chrome plus the page's own behaviour. */
+export function initMain(): void {
+  initLoader();
+  initReveals();
+  initCounters();
+  initNavHighlight();
+  initSiteChrome();
 }

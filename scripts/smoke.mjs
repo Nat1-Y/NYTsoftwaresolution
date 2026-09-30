@@ -557,21 +557,16 @@ try {
     await rmLoader.emulateMediaFeatures([
       { name: 'prefers-reduced-motion', value: 'reduce' },
     ]);
-    const t0 = Date.now();
+    // The splash must already be gone the moment the page's scripts have
+    // run — not after the page finishes loading, and not after any hold.
+    // (Comparing against minMs stopped meaning anything once minMs was 0.)
     await rmLoader.goto(BASE, { waitUntil: 'domcontentloaded' });
-    await rmLoader.waitForFunction(
-      () => {
-        const l = document.getElementById('page-loader');
-        return !l || l.classList.contains('hidden');
-      },
-      { timeout: 20000, polling: 50 }
-    );
-    const rmHeld = Date.now() - t0;
-    check(
-      'reduced motion skips the splash entirely',
-      rmHeld < LOADER.minMs,
-      `${rmHeld}ms`
-    );
+    await rmLoader.waitForSelector('html[data-ready="true"]', { timeout: 20000 });
+    const dismissedOnReady = await rmLoader.evaluate(() => {
+      const l = document.getElementById('page-loader');
+      return !l || l.classList.contains('hidden');
+    });
+    check('reduced motion skips the splash entirely', dismissedOnReady);
     await rmLoader.close();
   }
 
@@ -698,6 +693,59 @@ try {
   });
   check('reduced motion: nothing left invisible', rmState.hidden === 0, `${rmState.hidden} hidden`);
   check('reduced motion: counters show final value', /\d/.test(rmState.statText), rmState.statText);
+
+  /* ============================== INNER PAGES ============================= */
+  console.log('\nInner pages');
+  const ip = await browser.newPage();
+  await ip.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true });
+
+  // Home: every card links to its full study; no credentials anywhere.
+  await open(ip, BASE);
+  const home = await ip.evaluate(() => ({
+    cardLinks: [...document.querySelectorAll('.project-card .project-more')].map((a) => a.getAttribute('href')),
+    creds: /guest123|guest@nyt\.com/.test(document.documentElement.innerHTML),
+    deadLink: /vanguardxie\.com/.test(document.documentElement.innerHTML),
+  }));
+  check('every case card links to its case-study page',
+    home.cardLinks.length === 4 && home.cardLinks.every((h) => /^\/work\/[a-z0-9-]+\/$/.test(h)),
+    home.cardLinks.join(' '));
+  check('no demo credentials are published', !home.creds);
+  check('no link to the dead demo domain', !home.deadLink);
+
+  // A case-study page: the menu works and leads back to the home page.
+  await open(ip, `${BASE}/work/merkato88/`);
+  const cs = await ip.evaluate(() => ({
+    h1: document.querySelector('h1')?.textContent?.trim(),
+    sections: document.querySelectorAll('.case-section').length,
+    navHref: document.querySelector('.mobile-nav-link')?.getAttribute('href'),
+    crumbs: document.querySelectorAll('.crumbs li').length,
+  }));
+  check('case-study page renders its seven sections', cs.sections === 7 && cs.h1 === 'Merkato88 Marketplace', `${cs.sections} sections`);
+  check('inner-page nav points back to the home page', cs.navHref === '/#about', cs.navHref);
+  check('inner page has a breadcrumb', cs.crumbs === 3);
+  await tap(ip, '#mobile-nav-toggle');
+  await new Promise((r) => setTimeout(r, 400));
+  check('inner-page mobile menu opens',
+    (await ip.$eval('#mobile-nav-toggle', (el) => el.getAttribute('aria-expanded'))) === 'true');
+
+  // The product page hands its interest area to the form.
+  await open(ip, `${BASE}/products/cafe-manager/`);
+  await Promise.all([
+    ip.waitForNavigation({ waitUntil: 'load' }),
+    ip.$eval('.case-actions [data-subject]', (el) => el.click()),
+  ]);
+  await ip.waitForSelector('html[data-ready="true"]');
+  await ip.keyboard.press('Escape');
+  await new Promise((r) => setTimeout(r, 600));
+  check('"Request a demo" arrives with the right interest area',
+    (await ip.$eval('#form-subject', (el) => el.value)) === 'NYT Cafe Manager demo');
+
+  // The 404 page's menu used to be dead.
+  await ip.goto(`${BASE}/404`, { waitUntil: 'load' });
+  await ip.$eval('#mobile-nav-toggle', (el) => el.click());
+  await new Promise((r) => setTimeout(r, 400));
+  check('404 page mobile menu opens',
+    (await ip.$eval('#mobile-nav-toggle', (el) => el.getAttribute('aria-expanded'))) === 'true');
 } finally {
   await browser.close();
 }
