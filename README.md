@@ -394,12 +394,8 @@ itself (~66 kB, preloaded).
   removed; rotate that password wherever it existed (see the claims register).
 - **Disclosure** — [`/.well-known/security.txt`](public/.well-known/security.txt)
   gives researchers a contact.
-- **Dependencies** — `npm audit fix` applied. Three findings remain, all fixed
-  only by a major Astro upgrade (5 → 7): Astro's own advisories need untrusted
-  input at render time, server rendering or server islands, none of which this
-  static build has; its AVIF issue needs a crafted image, and the pipeline only
-  processes the site's own four screenshots at build time; the esbuild issue
-  affects the local dev server only. Still worth upgrading.
+- **Dependencies** — upgraded to Astro 7; `npm audit` reports 0
+  vulnerabilities (30 Sep 2026). Re-run it before each release.
 
 Not covered: there is no server-side logging or alerting beyond Vercel's
 function logs (which record delivery failures by status only, never the

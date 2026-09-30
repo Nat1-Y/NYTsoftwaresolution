@@ -100,6 +100,3 @@ What only the company can do to finish this work, most important first.
    it exists.
 8. **Consider an address on the company domain** (e.g. `hello@nytsoftwaresolution.pro.et`)
    instead of Gmail — it is the first thing an international client checks.
-9. **Upgrade Astro** to a current major version. The remaining `npm audit`
-   findings all need it. They are not exploitable in this static build (see
-   README → "Security"), but they should not be left indefinitely.
