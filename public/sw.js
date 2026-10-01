@@ -9,7 +9,7 @@
  *   - everything else (cross-origin, POSTs): straight to the network
  */
 
-const VERSION = 'nyt-v5';
+const VERSION = 'nyt-v6';
 const SHELL_CACHE = `${VERSION}-shell`;
 const ASSET_CACHE = `${VERSION}-assets`;
 
