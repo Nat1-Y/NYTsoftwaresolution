@@ -153,6 +153,27 @@ const defaultSystem = systemTypes.find((s) => s.id === 'pos') ?? systemTypes[0]!
         </fieldset>
 
         <button type="button" class="bp-reset" id="bp-reset">Start over</button>
+
+        <!--
+          Phones only. The plan is a screen or two below the questions, so this
+          keeps the estimate in view while the answers change it. It sticks to
+          the bottom of the viewport only while the questions are on screen,
+          and is not a live region — the tiles in the plan already announce.
+        -->
+        <div class="bp-dock" id="bp-dock">
+          <span class="bp-dock-stat">
+            <span class="bp-dock-val" id="bp-dock-weeks">—</span>
+            <span class="bp-dock-label">weeks</span>
+          </span>
+          <span class="bp-dock-stat">
+            <span class="bp-dock-val" id="bp-dock-components">—</span>
+            <span class="bp-dock-label">components</span>
+          </span>
+          <a href="#bp-result" class="bp-dock-link">
+            See plan
+            <Icon name="chevronDown" size={18} />
+          </a>
+        </div>
       </form>
 
       <!-- -------------------------------------------------------- output -- -->

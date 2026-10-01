@@ -14,6 +14,14 @@ import ContactPlate from './visuals/ContactPlate.astro';
         partnership to discuss? The first consultation is free.
         <a href="/working-with-us/">What to include in your message</a>.
       </p>
+      <a class="contact-quick" href={`mailto:${site.email}`}>
+        <span class="contact-quick-icon" aria-hidden="true"><Icon name="mail" size={18} /></span>
+        <span class="contact-quick-text">
+          <span class="contact-quick-label">Prefer email?</span>
+          <span class="contact-quick-val">{site.email}</span>
+        </span>
+        <Icon name="arrow" size={18} class="arrow-icon" />
+      </a>
     </div>
 
     <div class="contact-grid">
@@ -105,6 +113,8 @@ import ContactPlate from './visuals/ContactPlate.astro';
             id="form-name"
             name="name"
             autocomplete="organization"
+            autocapitalize="words"
+            enterkeyhint="next"
             placeholder="e.g. Spagna Restaurant, or Jane Doe"
             maxlength="120"
             required
@@ -123,6 +133,9 @@ import ContactPlate from './visuals/ContactPlate.astro';
             name="email"
             autocomplete="email"
             inputmode="email"
+            autocapitalize="off"
+            spellcheck="false"
+            enterkeyhint="next"
             placeholder="email@example.com"
             maxlength="254"
             required

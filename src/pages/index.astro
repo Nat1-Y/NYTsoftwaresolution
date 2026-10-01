@@ -16,7 +16,6 @@ import Footer from '../components/Footer.astro';
 import Chatbot from '../components/Chatbot.astro';
 import CommandPalette from '../components/CommandPalette.astro';
 import Icon from '../components/Icon.astro';
-import Logo from '../components/Logo.astro';
 
 const caseStudies = (await getCollection('case-studies')).sort(
   (a, b) => a.data.order - b.data.order
@@ -27,14 +26,6 @@ const caseStudies = (await getCollection('case-studies')).sort(
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <div class="scroll-progress" aria-hidden="true"></div>
-
-  <div class="page-loader" id="page-loader" role="presentation" aria-hidden="true">
-    <div class="loader-logo">
-      <Logo variant="full" size={54} />
-    </div>
-    <div class="loader-bar"><div class="loader-fill"></div></div>
-    <p class="loader-skip">Click or press any key to skip</p>
-  </div>
 
 
   <span id="top"></span>

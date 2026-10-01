@@ -1,0 +1,405 @@
+/* ==========================================================================
+   VISUALS — plates, captures, drawings, diagrams
+
+   Two kinds of image, never allowed to be confused:
+     · captures — genuine screenshots of live client systems, in a plain
+       device frame, labelled "Live capture" with the host they came from;
+     · drawings — original line illustrations, labelled "Illustration" or
+       "Diagram". On this ground they read as holographic schematics: glass
+       faces, light-line strokes, and the signal colours for the one thing
+       in each drawing that matters.
+
+   Every drawing reads its colours from tokens, so the persona switch re-tunes
+   the whole set without a second copy of any artwork.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   THE VOCABULARY — short class names; they repeat thousands of times in the
+   inline drawings and every byte ships in the HTML.
+
+     k   outline stroke (ink)        l   secondary stroke (rule)
+     f0  lit face                    f1  tint face          f2  shade face
+     fg  placeholder text bar        fi  ink fill
+     fm  signal fill                 fa  accent fill
+     sm  signal stroke               sa  accent stroke
+   -------------------------------------------------------------------------- */
+.ill {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ill .k,
+.ill .l,
+.ill .sm,
+.ill .sa,
+.ill .wire,
+.ill .flow {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ill .k { stroke: var(--ill-ink); stroke-width: 1.1; }
+.ill .l { stroke: var(--ill-line); stroke-width: 1; }
+.ill .sm { stroke: var(--mark); stroke-width: 1.5; }
+.ill .sa { stroke: var(--accent); stroke-width: 1.5; }
+
+/* A fill class on the same element as a stroke class wins the fill. */
+.ill .f0 { fill: var(--ill-paper); }
+.ill .f1 { fill: var(--ill-tint); }
+.ill .f2 { fill: var(--ill-shade); }
+.ill .fg { fill: var(--ill-line); }
+.ill .fi { fill: var(--ill-ink); }
+.ill .fm { fill: var(--mark); }
+.ill .fa { fill: var(--accent); }
+.ill .fn { fill: none; }
+
+.ill .dash { stroke-dasharray: 3 3; }
+
+.ill text {
+  font-family: var(--font-mono);
+  fill: var(--text-secondary);
+}
+
+.ill .ill-label { font-size: 11px; letter-spacing: 0.04em; fill: var(--text-secondary); }
+.ill .ill-tag { font-size: 9px; fill: var(--text-muted); }
+.ill .ill-head { font-family: var(--font-sans); font-weight: 600; fill: var(--text-primary); }
+.ill .ill-grid path { stroke: var(--ill-grid); }
+
+/* Micro type inside drawn screens: texture, not copy — captions carry meaning. */
+.ill .ill-micro { font-size: 6.5px; letter-spacing: 0.08em; fill: var(--text-muted); }
+.ill .ill-small { font-size: 8.5px; letter-spacing: 0.07em; fill: var(--text-muted); }
+.ill text.ill-strong { fill: var(--text-primary); font-weight: 500; }
+.ill text.ill-on-ink { fill: var(--ill-paper); }
+.ill text.ill-on-accent { fill: var(--on-accent); }
+.ill text.ill-mark,
+.ill tspan.ill-mark { fill: var(--mark); }
+
+/* Data in motion: a short pulse of signal travelling a wire. */
+.ill .wire { stroke: var(--ill-line); stroke-width: 1.4; }
+
+.ill .flow {
+  stroke: var(--mark);
+  stroke-width: 2.2;
+  stroke-dasharray: 7 90;
+  animation: ill-flow 3.2s linear infinite;
+}
+
+@keyframes ill-flow {
+  from { stroke-dashoffset: 97; }
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ill .flow { animation: none; stroke-dasharray: 7 12; opacity: 0.55; }
+}
+
+/* ------------------------------------------------------------ the plate -- */
+.plate { margin: 0; min-width: 0; }
+.plate-art { position: relative; }
+
+.plate-cap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.6rem;
+  align-items: baseline;
+  margin-top: 0.75rem;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* The provenance kicker: what this image is, before what it shows. Allowed to
+   shrink and wrap — with a host and date it is wider than a phone card. */
+.plate-kind {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mark);
+}
+
+.plate-source {
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+.plate-text:empty { display: none; }
+
+.plate--capture .plate-kind::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+  vertical-align: 0.1em;
+}
+
+/* ------------------------------------------------------------ the hero -- */
+.hero-plate .plate-art { aspect-ratio: 518 / 386; }
+.hero-plate .plate-cap { display: none; }
+
+@media (max-width: 620px) {
+  .hero-ill .ill-callouts { display: none; }
+}
+
+/* -------------------------------------------------------- device frames -- */
+.devices {
+  position: relative;
+  /* The phone hangs off the browser's lower-right corner; this reserves the
+     room it hangs into, so nothing below the plate is overlapped. */
+  padding: 0 12% 11% 0;
+}
+
+.dev-browser {
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--surface-2);
+  box-shadow: 0 20px 50px -24px rgba(0, 0, 0, 0.9);
+}
+
+.dev-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 24px;
+  padding: 0 0.6rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-3);
+}
+
+.dev-dots { display: inline-flex; gap: 4px; flex: none; }
+
+.dev-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-hover);
+}
+
+.dev-url {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 72%;
+  padding: 0 0.55rem;
+  overflow: hidden;
+  border-radius: var(--r-pill);
+  background: var(--surface-inset);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 15px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+}
+
+/* The screen reserves its shape before the image arrives — a lazy capture
+   never shifts the card; the tint behind it is the fallback if it fails. */
+.dev-screen {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-inset);
+}
+
+.dev-screen--wide { aspect-ratio: 16 / 10; }
+.dev-screen--tall { aspect-ratio: 390 / 844; }
+
+.dev-screen picture { display: block; height: 100%; }
+
+.dev-screen img,
+.dev-screen > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.dev-phone {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 25%;
+  padding: 4px;
+  border: 1px solid var(--border-hover);
+  border-radius: 16px;
+  background: #0d1320;
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+.dev-phone .dev-screen { border-radius: 12px; }
+
+/* ------------------------------------------------------------ the tour -- */
+.tour-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3px;
+  margin-bottom: 0.85rem;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+}
+
+.tour-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0.35rem 0.3rem;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-muted);
+  transition: background-color var(--t-fast), color var(--t-fast);
+}
+
+.tour-tab:hover { color: var(--text-primary); }
+
+.tour-tab.active {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.tour-tab-num { display: none; font-family: var(--font-mono); font-size: 0.68rem; }
+
+/* All four screens share one cell, so a switch never moves anything below. */
+.tour-stage {
+  display: grid;
+  aspect-ratio: 480 / 300;
+  touch-action: pan-y;
+}
+
+.tour-panel {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
+  transform: scale(0.985);
+}
+
+.tour-panel.active { opacity: 1; transform: none; }
+
+/* `hidden` would drop the outgoing screen mid-fade; keep it painted for the
+   transition and let the attribute do its real job — leaving the a11y tree. */
+.tour-panel[hidden] { display: block; visibility: hidden; }
+.tour-panel.active[hidden] { visibility: visible; }
+
+.flagship-visual .plate-cap { margin-top: 0.6rem; }
+
+@media (min-width: 560px) {
+  .tour-tab-num { display: inline; }
+  .tour-tab { font-size: 0.8rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-panel { transition: none; transform: none; }
+}
+
+/* --------------------------------------------------------- the glyphs -- */
+.bp-card-icon .glyph { display: block; }
+
+/* ------------------------------------------------------- remote plates -- */
+.ill .ov-city { font-family: var(--font-sans); font-size: 11.5px; font-weight: 600; fill: var(--text-primary); }
+.ill .ov-tick { font-size: 8.5px; letter-spacing: 0.06em; fill: var(--text-muted); }
+.ill .ov-shared { opacity: 0.9; }
+.ill .ov-add { fill: rgba(var(--accent-rgb), 0.14); }
+.ill .ov-del { fill: rgba(var(--mark-rgb), 0.14); }
+
+/* ------------------------------------------------------- contact plate -- */
+.contact-plate {
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-inset);
+}
+
+.contact-plate .ill { max-width: 380px; }
+
+/* ------------------------------------------------ architecture diagrams -- */
+.arch-figure {
+  margin: 1rem 0 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background:
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px,
+    var(--surface-inset);
+}
+
+.arch-scroll {
+  overflow-x: auto;
+  padding: 1rem 0.85rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hover) transparent;
+  overscroll-behavior-x: contain;
+}
+
+.arch-svg {
+  display: block;
+  /* Wide enough to stay legible; below this the region scrolls instead of
+     shrinking labels past readability. */
+  min-width: 400px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.arch-node { fill: var(--surface-2); stroke: var(--border-hover); stroke-width: 1; }
+.arch-node-accent { fill: rgba(var(--accent-rgb), 0.12); stroke: var(--accent); stroke-width: 1.2; }
+.arch-label { fill: var(--text-primary); font-family: var(--font-sans); font-size: 11px; font-weight: 600; }
+.arch-sub { fill: var(--text-muted); font-family: var(--font-mono); font-size: 8.5px; }
+.arch-edge { stroke: var(--text-muted); stroke-width: 1.2; fill: none; opacity: 0.5; }
+.arch-edge-accent { stroke: var(--accent); stroke-width: 1.5; fill: none; opacity: 0.9; }
+.arch-edge-dashed { stroke-dasharray: 4 3; }
+.arch-edge-label { fill: var(--text-muted); font-family: var(--font-mono); font-size: 8px; }
+.arch-arrow { fill: var(--text-muted); opacity: 0.5; }
+.arch-arrow-accent { fill: var(--accent); opacity: 0.9; }
+
+.arch-pulse {
+  fill: var(--accent);
+  animation: arch-flow 3s linear infinite;
+  offset-rotate: 0deg;
+}
+
+@keyframes arch-flow {
+  from { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  to { offset-distance: 100%; opacity: 0; }
+}
+
+.arch-caption {
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.arch-caption strong { color: var(--text-secondary); }
+
+/* The scroll affordance: a fade on the trailing edge while there is more. */
+.arch-scroll[tabindex='0'] {
+  mask-image: linear-gradient(90deg, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent);
+}

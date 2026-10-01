@@ -14,6 +14,21 @@ export const $$ = <T extends Element = HTMLElement>(
 export const prefersReducedMotion = (): boolean =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/**
+ * Sections below the first screen are `content-visibility: auto` (see
+ * styles/layout.css): unseen ones are sized by estimate. Any jump to an
+ * in-page target must first render them at their real height, or the scroll
+ * is computed from the estimates and lands short. Call this before scrolling
+ * programmatically; in-page links are handled for you (scripts/main.ts).
+ * One-way and idempotent — after the first jump the page simply stays laid out.
+ */
+export function renderAllSections(): void {
+  const root = document.documentElement;
+  if (root.classList.contains('cv-full')) return;
+  root.classList.add('cv-full');
+  void root.offsetHeight; // lay out now, so the next scroll measures real heights
+}
+
 /** localStorage that never throws in private mode or a sandboxed frame. */
 export const storage = {
   get(key: string): string | null {

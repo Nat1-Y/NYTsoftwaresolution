@@ -59,6 +59,28 @@ export function initTour(): void {
     show(index);
   });
 
+  /*
+   * On a touchscreen the screens can be swiped as well as tapped. Only a
+   * clearly horizontal gesture counts, so a vertical scroll that starts on the
+   * stage still scrolls the page (the stage is `touch-action: pan-y`).
+   */
+  const stage = $<HTMLElement>('.tour-stage', root);
+  let start: { x: number; y: number } | null = null;
+  stage?.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse') start = { x: e.clientX, y: e.clientY };
+  });
+  stage?.addEventListener('pointercancel', () => (start = null));
+  stage?.addEventListener('pointerup', (e) => {
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    start = null;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    stopped = true;
+    stop();
+    show((current + (dx < 0 ? 1 : -1) + tabs.length) % tabs.length);
+  });
+
   if (stopped || !('IntersectionObserver' in window)) return;
 
   new IntersectionObserver(

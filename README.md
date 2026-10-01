@@ -200,26 +200,12 @@ Design language taken from the mark: hard corners rather than pills, the
 downward triangle reused as a motif, and letter-spaced uppercase labels
 flanked by rules.
 
-### The intro splash
+### No intro splash
 
-The loader is a **deliberate hold**, not a measurement of load time — the site
-itself is interactive in well under a second. Timings live in
-[`src/data/site.ts`](src/data/site.ts):
-
-```ts
-export const loader = {
-  minMs: 5000,   // stay up at least this long, even when ready sooner
-  maxMs: 7000,   // hard ceiling — a stalled asset can never strand a visitor
-};
-```
-
-The progress bar is driven from `minMs`, so it tracks the real wait instead of
-filling early and sitting at 100%. Any click or keypress skips the remainder,
-and `prefers-reduced-motion` bypasses it entirely.
-
-> **Worth knowing:** a multi-second gate in front of the content is a
-> well-documented driver of bounce rate, and this is a lead-generation page.
-> Set `minMs: 0` to show the page as soon as it is ready.
+The site used to open behind a branded loader. It was removed in the v5
+redesign: measured on a throttled phone (slow 4G, 4× CPU), it covered an
+already-rendered page until ~6.6–7.5 s, because it could only lift once the
+page script had run. The first screen now paints as soon as it is ready.
 
 ### The persona switcher
 

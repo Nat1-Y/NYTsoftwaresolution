@@ -1,0 +1,168 @@
+/* ==========================================================================
+   LAYOUT — container, section rhythm, section headers, the glass card
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+main > section,
+main > .sections > section {
+  position: relative;
+  padding-block: var(--section-pad);
+}
+
+/*
+ * Every section sits below the first screen (the hero is not a <section>), so
+ * the browser may skip laying out and painting each one until it nears the
+ * viewport. The home page carries ~3,300 elements, half of them inline
+ * drawings; on a slow phone this is the difference that matters. `auto` in
+ * the intrinsic size remembers each section's real height once seen, so the
+ * scrollbar settles instead of jumping.
+ *
+ * A jump to an in-page target switches this off first (html.cv-full, set by
+ * scripts/dom.ts renderAllSections and the head script for #hash arrivals):
+ * scrolling by estimated heights lands thousands of pixels short.
+ */
+@supports (content-visibility: auto) {
+  html:not(.cv-full) main > section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1400px;
+  }
+}
+
+/* A hairline of light between sections, brightest in the middle. */
+main > section + section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--gutter);
+  right: var(--gutter);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+
+/* ------------------------------------------------------- section header -- */
+/*
+ * Sections number themselves: a decimal and its Ge'ez counterpart in a small
+ * instrument label, then the headline and a standfirst. No markup needs to
+ * know its own position.
+ */
+main { counter-reset: sec; }
+
+.section-header {
+  counter-increment: sec;
+  display: grid;
+  gap: 0.9rem;
+  max-width: 44rem;
+  margin: 0 0 clamp(2rem, 1.5rem + 2vw, 3.25rem);
+}
+
+.section-header::before {
+  content: counter(sec, decimal-leading-zero) '  ·  ' counter(sec, geez);
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.7rem 0.3rem 0.65rem;
+  border: 1px solid rgba(var(--mark-rgb), 0.28);
+  border-radius: var(--r-pill);
+  background: rgba(var(--mark-rgb), 0.07);
+  font-family: var(--font-mono), var(--font-geez);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  white-space: pre;
+  color: var(--mark);
+}
+
+/* A section that sets its own eyebrow (Blueprint) folds the number into it. */
+.section-header:has(.section-eyebrow)::before { display: none; }
+
+.section-eyebrow {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid rgba(var(--mark-rgb), 0.28);
+  border-radius: var(--r-pill);
+  background: rgba(var(--mark-rgb), 0.07);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mark);
+}
+
+.section-title {
+  font-size: var(--step-3);
+  font-weight: 720;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.section-subtitle,
+.lead-text {
+  max-width: 38rem;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* ------------------------------------------------------------ the card -- */
+/*
+ * Lit glass: a translucent panel with a 1px border whose top edge catches
+ * light. `.glass` is the name the markup already uses everywhere.
+ */
+.glass,
+.card {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0) 40%),
+    var(--glass);
+  box-shadow: var(--shadow-md);
+}
+
+@media (hover: hover) {
+  .glass { transition: border-color var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out); }
+}
+
+/* Featured panels get a gradient hairline instead of a heavier shadow. */
+.glow-edge {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(140deg, rgba(var(--accent-rgb), 0.7), rgba(var(--accent-2-rgb), 0.25) 40%, var(--border) 70%) border-box;
+}
+
+/* A small list tick used across sections. */
+.tick {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(var(--mark-rgb), 0.12);
+  color: var(--mark);
+}
+
+/* Chip / tag. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: var(--step--1);
+  color: var(--text-secondary);
+}

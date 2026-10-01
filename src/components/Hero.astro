@@ -34,8 +34,8 @@ const inProduction = systems.filter((s) => s.data.deployment.state === 'producti
       </p>
 
       <h1 class="hero-title">
-        Enterprise-Grade Engineering.<br />
-        <span class="gradient-text">Local Operational Excellence.</span>
+        <span class="hero-title-line">Enterprise-Grade Engineering.</span>
+        <span class="hero-title-line gradient-text">Local Operational Excellence.</span>
       </h1>
 
       <p class="hero-lead" id="hero-subtitle">{personaCopy.business.heroSubtitle}</p>
@@ -147,11 +147,22 @@ const inProduction = systems.filter((s) => s.data.deployment.state === 'producti
         </div>
       </div>
 
-      <p class="hero-figure-note">
+      <!--
+        On a phone the drawing is left out to keep the first screens short, so
+        the note there only describes what is actually shown: the readout.
+      -->
+      <p class="hero-figure-note hero-note-wide">
         <span class="plate-kind">Illustration</span>
         <span>
           The drawing shows the kinds of system we build; the readout in front
           of it is real — the specs of the four systems in our
+          <a href="#projects">case studies</a>.
+        </span>
+      </p>
+      <p class="hero-figure-note hero-note-narrow">
+        <span class="plate-kind">Readout</span>
+        <span>
+          Real specs and results of the four systems in our
           <a href="#projects">case studies</a>.
         </span>
       </p>

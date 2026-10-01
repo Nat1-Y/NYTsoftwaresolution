@@ -1,6 +1,10 @@
 ---
 import { engagements } from '../data/engagement';
 import EngagementDiagram from './visuals/EngagementDiagram.astro';
+import Icon from './Icon.astro';
+
+// Every model carries the same meta rows, in the same order.
+const metaLabels = engagements[0]?.meta.map((m) => m.label) ?? [];
 ---
 
 <section id="engagement" class="engagement-section" aria-labelledby="engagement-title">
@@ -11,6 +15,45 @@ import EngagementDiagram from './visuals/EngagementDiagram.astro';
         Three ways to engage us. Pick the one that matches where your project
         is today — we will tell you honestly if a different one fits better.
       </p>
+    </div>
+
+    <!--
+      On a phone the three cards stack, so the differences between them would
+      be three screens apart. This table puts them side by side first; the
+      cards below then carry the detail. On wider screens the cards sit side by
+      side themselves, so the table steps aside and the cards show their own
+      rows — the facts are never announced twice.
+    -->
+    <div class="engagement-compare">
+      <table>
+        <caption class="sr-only">The three engagement models compared</caption>
+        <thead>
+          <tr>
+            <td></td>
+            {
+              engagements.map((e) => (
+                <th scope="col" class:list={[e.featured && 'is-featured']}>
+                  {e.short}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            metaLabels.map((label) => (
+              <tr>
+                <th scope="row">{label}</th>
+                {engagements.map((e) => (
+                  <td class:list={[e.featured && 'is-featured']}>
+                    {e.meta.find((m) => m.label === label)?.value}
+                  </td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
     </div>
 
     <div class="engagement-grid">
@@ -38,8 +81,8 @@ import EngagementDiagram from './visuals/EngagementDiagram.astro';
             <ul class="engagement-includes">
               {e.includes.map((i) => (
                 <li>
-                  <span aria-hidden="true">✓</span>
-                  {i}
+                  <Icon name="check" size={15} class="engagement-tick" />
+                  <span>{i}</span>
                 </li>
               ))}
             </ul>

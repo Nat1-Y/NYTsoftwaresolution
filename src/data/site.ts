@@ -66,35 +66,15 @@ export const formOptions = {
   timeline: ['As soon as possible', 'Within 1–3 months', 'Within 3–6 months', 'Flexible / exploring'],
 } as const;
 
-/**
- * Intro splash timing.
- *
- * `minMs` is a deliberate hold — the loader stays up at least this long even
- * when the page is ready sooner. `maxMs` is a hard ceiling so a slow asset can
- * never strand a visitor on the splash.
- *
- * Note this is an intentional delay, not a measurement of load time: the site
- * itself is ready in well under a second. Longer holds increase bounce rate,
- * so treat these numbers as a branding choice with a real conversion cost.
- * Set `minMs: 0` to show the page as soon as it is ready.
- *
- * Set to 0 in Sep 2026: a five-second hold in front of a lead-generation page
- * cost every visitor five seconds before they saw anything. The splash now
- * covers only real loading, and never for more than 2.5 seconds.
- */
-export const loader = {
-  minMs: 0,
-  maxMs: 2500,
-} as const;
-
+/** `hint` is the one-line description the phone menu shows under each label. */
 export const nav = [
-  { href: '#about', label: 'Who We Are' },
-  { href: '#services', label: 'What We Do' },
-  { href: '#projects', label: 'Case Studies' },
-  { href: '#flagship', label: 'Flagship' },
-  { href: '#ecosystem', label: 'Tech Ecosystem' },
-  { href: '#engagement', label: 'Engagement' },
-  { href: '#blueprint', label: 'Blueprint' },
+  { href: '#about', label: 'Who We Are', icon: 'globe', hint: 'Company, facts & guarantees' },
+  { href: '#services', label: 'What We Do', icon: 'layers', hint: 'ERP, POS, healthcare, commerce' },
+  { href: '#projects', label: 'Case Studies', icon: 'briefcase', hint: 'Four systems we built' },
+  { href: '#flagship', label: 'Flagship', icon: 'pos', hint: 'NYT Cafe Manager' },
+  { href: '#ecosystem', label: 'Tech Ecosystem', icon: 'code', hint: 'The stack we work in' },
+  { href: '#engagement', label: 'Engagement', icon: 'clock', hint: 'Three ways to work together' },
+  { href: '#blueprint', label: 'Blueprint', icon: 'sparkle', hint: 'Scope your build in 30 seconds' },
 ] as const;
 
 /**

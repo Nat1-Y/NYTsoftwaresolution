@@ -1,72 +1,31 @@
 /**
- * Page-level behaviour: loader, reveals, counters, nav state, scroll affordances.
+ * Page-level behaviour: reveals, counters, nav state, scroll affordances.
+ *
+ * There is deliberately no intro splash. Measured on a throttled phone (slow
+ * 4G, 4x CPU), the old one covered an already-rendered page until ~6.6-7.5s,
+ * because it could only lift once this script had run.
  */
-import { $, $$, prefersReducedMotion, rafThrottle } from './dom';
-import { loader as loaderConfig } from '../data/site';
+import { $, $$, prefersReducedMotion, rafThrottle, renderAllSections } from './dom';
 
-/* ---------------------------------------------------------------- loader -- */
+/* ------------------------------------------------------- in-page jumps --- */
 /**
- * Intro splash.
- *
- * Held for a configured minimum (see `loader` in src/data/site.ts) so the
- * brand animation gets its moment, then dismissed as soon as the page is
- * ready. A hard ceiling guarantees nobody is ever stuck behind it.
- *
- * Any click or keypress skips the remainder — a visitor who wants the content
- * should never be made to wait for an animation, and it doubles as the escape
- * hatch for anyone tabbing straight into the page.
+ * Any link to a target on this page renders the lazily-sized sections first
+ * (see renderAllSections), in the capture phase so it runs before the
+ * browser's own scroll. Covers the nav, the phone menu, hero buttons, footer
+ * links and "See the system" — every `#hash` and `/#hash` link on the home
+ * page — without each one having to know.
  */
-function initLoader(): void {
-  const loader = $('#page-loader');
-  if (!loader) return;
-
-  const minMs = Math.max(0, loaderConfig.minMs);
-  const maxMs = Math.max(minMs, loaderConfig.maxMs);
-  const startedAt = performance.now();
-
-  let dismissed = false;
-
-  const dismiss = () => {
-    if (dismissed) return;
-    dismissed = true;
-    loader.classList.add('hidden');
-    document.removeEventListener('keydown', onSkip);
-    loader.removeEventListener('click', onSkip);
-    window.setTimeout(() => loader.remove(), 600);
-  };
-
-  function onSkip() {
-    dismiss();
-  }
-
-  /** Dismiss once the page is ready AND the minimum hold has elapsed. */
-  const dismissWhenReady = () => {
-    const elapsed = performance.now() - startedAt;
-    window.setTimeout(dismiss, Math.max(0, minMs - elapsed));
-  };
-
-  if (document.readyState === 'complete') dismissWhenReady();
-  else window.addEventListener('load', dismissWhenReady, { once: true });
-
-  // Ceiling: a stalled asset must not extend the splash indefinitely.
-  window.setTimeout(dismiss, maxMs);
-
-  // Let people opt out of the wait.
-  document.addEventListener('keydown', onSkip);
-  loader.addEventListener('click', onSkip);
-
-  // Someone who has asked for reduced motion should not sit through a
-  // decorative animation at all.
-  if (prefersReducedMotion()) dismiss();
-
-  // Drive the progress bar over the real hold, so it does not fill early and
-  // then sit at 100% looking stuck.
-  loader.style.setProperty('--loader-duration', `${minMs}ms`);
-
-  // Reveal the skip hint once the splash has clearly outstayed a normal load.
-  window.setTimeout(() => {
-    if (!dismissed) loader.classList.add('show-skip');
-  }, Math.min(1800, minMs));
+function initInPageJumps(): void {
+  document.addEventListener(
+    'click',
+    (e) => {
+      const link = (e.target as Element | null)?.closest?.('a[href*="#"]');
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const url = new URL(link.href);
+      if (url.pathname === location.pathname && url.hash.length > 1) renderAllSections();
+    },
+    true
+  );
 }
 
 /* --------------------------------------------------------------- reveals -- */
@@ -151,7 +110,8 @@ function initCounters(): void {
 
 /* ------------------------------------------------------------- nav state -- */
 function initNavHighlight(): void {
-  const links = $$<HTMLAnchorElement>('.nav-link');
+  // Desktop links and the phone menu's section links share one scroll-spy.
+  const links = $$<HTMLAnchorElement>('.nav-link, .mobile-nav-list .mobile-nav-link');
   const sections = $$('main section[id]');
   if (!links.length || !sections.length || !('IntersectionObserver' in window)) return;
 
@@ -174,38 +134,61 @@ function initNavHighlight(): void {
 }
 
 /* ------------------------------------------------------------ mobile nav -- */
+/**
+ * The phone menu is a full-screen sheet, so while it is open it behaves like a
+ * modal: the page behind stops scrolling and leaves the tab order (`inert`),
+ * focus moves into the sheet, and closing it hands focus back to the toggle.
+ * The header stays live so the toggle itself can close the sheet.
+ */
 function initMobileNav(): void {
   const toggle = $<HTMLButtonElement>('#mobile-nav-toggle');
   const menu = $('#mobile-nav-menu');
   if (!toggle || !menu) return;
 
-  const bars = $$<HTMLElement>('.bar', toggle);
+  // Everything that is not the header or the menu is "behind" the sheet.
+  const behind = () =>
+    [...document.body.children].filter(
+      (el): el is HTMLElement =>
+        el instanceof HTMLElement &&
+        el !== menu &&
+        !el.classList.contains('main-header') &&
+        el.tagName !== 'SCRIPT'
+    );
 
-  const setOpen = (open: boolean) => {
+  const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+
+  const setOpen = (open: boolean, { restoreFocus = false } = {}) => {
+    if (open === isOpen()) return;
     menu.classList.toggle('active', open);
+    menu.inert = !open;
+    document.documentElement.classList.toggle('nav-open', open);
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+    behind().forEach((el) => (el.inert = open));
 
-    if (bars.length === 3) {
-      bars[0]!.style.transform = open ? 'rotate(45deg) translate(5px, 5px)' : '';
-      bars[1]!.style.opacity = open ? '0' : '1';
-      bars[2]!.style.transform = open ? 'rotate(-45deg) translate(6px, -6px)' : '';
+    if (open) {
+      // Land on the current section if the scroll-spy knows it, else the first.
+      const target =
+        $<HTMLElement>('.mobile-nav-link[aria-current="true"]', menu) ??
+        $<HTMLElement>('.mobile-nav-link', menu);
+      window.setTimeout(() => target?.focus({ preventScroll: true }), 60);
+    } else if (restoreFocus) {
+      toggle.focus();
     }
   };
 
-  toggle.addEventListener('click', () =>
-    setOpen(toggle.getAttribute('aria-expanded') !== 'true')
-  );
+  toggle.addEventListener('click', () => setOpen(!isOpen()));
 
-  $$('.mobile-nav-link', menu).forEach((link) =>
-    link.addEventListener('click', () => setOpen(false))
-  );
+  $$('a', menu).forEach((link) => link.addEventListener('click', () => setOpen(false)));
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menu.classList.contains('active')) {
-      setOpen(false);
-      toggle.focus();
-    }
+    if (e.key === 'Escape' && isOpen()) setOpen(false, { restoreFocus: true });
+  });
+
+  // Rotating to a width where the desktop nav shows closes the sheet.
+  const desktop = window.matchMedia('(min-width: 1200px)');
+  desktop.addEventListener('change', (e) => {
+    if (e.matches) setOpen(false);
   });
 }
 
@@ -311,6 +294,7 @@ function initScrollableDiagrams(): void {
  * page used to render the header without it, so its menu never opened.
  */
 export function initSiteChrome(): void {
+  initInPageJumps();
   initMobileNav();
   initScrollAffordances();
   initConnectivityBanner();
@@ -320,7 +304,6 @@ export function initSiteChrome(): void {
 
 /** The home page: the site chrome plus the page's own behaviour. */
 export function initMain(): void {
-  initLoader();
   initReveals();
   initCounters();
   initNavHighlight();

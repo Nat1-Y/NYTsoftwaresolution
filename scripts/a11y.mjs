@@ -35,13 +35,6 @@ async function audit(label, setup, viewport = { width: 1440, height: 900 }, { pa
   if (persona) await page.evaluateOnNewDocument((p) => localStorage.setItem('nyt-persona', p), persona);
   await page.goto(BASE + path, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('html[data-ready="true"]', { timeout: 20000 });
-  // Skip the intro splash rather than waiting it out on every audit.
-  await page.keyboard.press('Escape');
-  await page.waitForFunction(() => {
-    const l = document.getElementById('page-loader');
-    return !l || l.classList.contains('hidden');
-  }, { timeout: 20000 });
-
   // Walk the page so every IntersectionObserver fires, then wait for the
   // reveal transitions to finish. Sampling mid-fade reports the transient
   // opacity as a contrast failure.

@@ -257,6 +257,8 @@ export function initChatbot(): void {
   const setOpen = (next: boolean) => {
     open = next;
     windowEl.classList.toggle('open', next);
+    // On a phone the chat is a full-screen sheet; the page behind holds still.
+    document.documentElement.classList.toggle('chat-open', next);
     toggle.setAttribute('aria-expanded', String(next));
     toggle.setAttribute('aria-label', next ? 'Close chat assistant' : 'Open chat assistant');
     if (openIcon) openIcon.style.display = next ? 'none' : 'flex';

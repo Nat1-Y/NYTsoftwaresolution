@@ -39,6 +39,7 @@ const techGroups = techFilters
 
     <div class="about-grid">
       <div class="about-info-card glass">
+        <span class="about-icon" aria-hidden="true"><Icon name="briefcase" size={20} /></span>
         <h3>Enterprise Focus</h3>
         <p>
           We partner with retail networks, healthcare providers, hospitality
@@ -48,6 +49,7 @@ const techGroups = techFilters
         </p>
       </div>
       <div class="about-info-card glass">
+        <span class="about-icon" aria-hidden="true"><Icon name="code" size={20} /></span>
         <h3>Engineering DNA</h3>
         <p>
           Clean schema separation, offline-first client replication, optimised
@@ -116,33 +118,43 @@ const techGroups = techFilters
 
     <div class="services-grid">
       {
-        services.map((service) => (
-          <div class="service-card glass">
+        services.map((service, i) => (
+          <article class="service-card glass">
+            <div class="service-head">
+              <span class="service-icon" aria-hidden="true">
+                <Icon name={service.icon} size={20} />
+              </span>
+              <h3>{service.title}</h3>
+              <span class="service-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            </div>
             <div class="service-art">
               <ServiceVignette name={service.icon} label={service.art} />
             </div>
-            <h3>{service.title}</h3>
             <ul class="service-list">
               {service.items.map((item) => (
-                <li>{item}</li>
+                <li>
+                  <Icon name="check" size={14} class="service-tick" />
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
-          </div>
+          </article>
         ))
       }
     </div>
 
     <div class="benefits-container">
       <h3 class="benefits-title">Why Business Partners Trust NYT</h3>
-      <div class="benefits-grid">
+      <ul class="benefits-grid">
         {
           benefits.map((b) => (
-            <div class="benefit-tag">
-              <span aria-hidden="true">✓</span> {b}
-            </div>
+            <li class="benefit-tag">
+              <Icon name="check" size={14} />
+              {b}
+            </li>
           ))
         }
-      </div>
+      </ul>
     </div>
   </div>
 </section>
@@ -152,45 +164,63 @@ const techGroups = techFilters
 <!-- ================= Flagship ================= -->
 <section id="flagship" class="flagship-section">
   <div class="container">
+    <!--
+      Three blocks, so a phone can show the product right under its name
+      (head → screens → detail) while a wide screen sets the screens beside
+      the text.
+    -->
     <div class="flagship-card glass">
-      <p class="flagship-badge">FLAGSHIP PLATFORM</p>
       <div class="flagship-grid">
-        <div class="flagship-content">
+        <div class="flagship-head">
+          <p class="flagship-badge">
+            <Icon name="sparkle" size={14} />
+            Flagship platform
+          </p>
           <h2>NYT Cafe Manager</h2>
           <p class="flagship-tagline">
             The enterprise SaaS built for modern hospitality businesses.
           </p>
+        </div>
+
+        <div class="flagship-visual">
+          <ProductTour />
+        </div>
+
+        <div class="flagship-content">
           <p class="flagship-desc">
             A cloud-native, multi-tenant platform for running restaurant
             branches: real-time kitchen tracking, offline-capable POS, dynamic
             recipe costing and background updates that ship without downtime.
           </p>
 
-          <div class="flagship-features-grid">
+          <ul class="flagship-features-grid">
             {
               [
-                'Multi-tenant schema',
-                'Kitchen display (KDS)',
-                'Offline POS resiliency',
-                'OTA software delivery',
-                'COGS & profit reports',
-                'Multi-branch sync',
-              ].map((f) => (
-                <div class="f-item">
-                  <span aria-hidden="true">✓</span> {f}
-                </div>
+                ['pos', 'Offline POS resiliency', 'Keeps selling when the internet drops'],
+                ['chat', 'Kitchen display (KDS)', 'Orders reach a kitchen screen in real time'],
+                ['chart', 'COGS & profit reports', 'Know the margin on every dish'],
+                ['layers', 'Multi-branch sync', 'Every branch, one live picture'],
+                ['shield', 'Multi-tenant schema', 'Each business’s data kept apart'],
+                ['sparkle', 'OTA software delivery', 'Updates arrive without downtime'],
+              ].map(([icon, title, plain]) => (
+                <li class="f-item">
+                  <span class="f-icon" aria-hidden="true"><Icon name={icon!} size={18} /></span>
+                  <span class="f-text">
+                    <span class="f-title">{title}</span>
+                    <span class="f-plain">{plain}</span>
+                  </span>
+                </li>
               ))
             }
-          </div>
+          </ul>
 
           <div class="flagship-actions">
-            <a href="#contact" class="btn btn-primary" data-subject="NYT Cafe Manager demo">Request Demo Access</a>
+            <a href="#contact" class="btn btn-primary" data-subject="NYT Cafe Manager demo">
+              <span>Request Demo Access</span>
+              <Icon name="arrow" size={18} class="arrow-icon" />
+            </a>
             <a href="/products/cafe-manager/" class="btn btn-secondary">Explore the product</a>
           </div>
-        </div>
-
-        <div class="flagship-visual">
-          <ProductTour />
         </div>
       </div>
     </div>
@@ -276,8 +306,11 @@ const techGroups = techFilters
         process.map((p) => (
           <li class="timeline-step" data-step={p.step}>
             <span class="step-art"><Glyph name={p.glyph} size={44} /></span>
-            <h3>{p.title}</h3>
-            <p>{p.text}</p>
+            <div class="step-body">
+              <span class="step-num">Step {p.step}</span>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </div>
           </li>
         ))
       }
@@ -290,6 +323,10 @@ const techGroups = techFilters
   <div class="container">
     <div class="remote-box glass">
       <div class="remote-header">
+        <p class="section-eyebrow">
+          <Icon name="globe" size={14} />
+          Remote partnership
+        </p>
         <h2 class="section-title" id="remote-title">
           Remote Development Partner Services
         </h2>
@@ -308,7 +345,8 @@ const techGroups = techFilters
             {
               remoteServices.map((s) => (
                 <li>
-                  <span aria-hidden="true">➔</span> {s}
+                  <Icon name="chevronRight" size={16} class="remote-tick" />
+                  <span>{s}</span>
                 </li>
               ))
             }
@@ -321,7 +359,8 @@ const techGroups = techFilters
             {
               remoteReasons.map((r) => (
                 <li>
-                  <span aria-hidden="true">➔</span> {r}
+                  <Icon name="check" size={16} class="remote-tick" />
+                  <span>{r}</span>
                 </li>
               ))
             }

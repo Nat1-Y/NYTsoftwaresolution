@@ -9,7 +9,7 @@
  *
  * The estimator never prints a price. See src/data/blueprint.ts.
  */
-import { $, $$, prefersReducedMotion } from './dom';
+import { $, $$, prefersReducedMotion, renderAllSections } from './dom';
 import { toast } from './toast';
 import {
   alwaysIncluded,
@@ -452,6 +452,8 @@ export function initBlueprint(): void {
   const teamEl = $('#bp-team');
   const componentsEl = $('#bp-components');
   const firstShipEl = $('#bp-firstship');
+  const dockWeeksEl = $('#bp-dock-weeks');
+  const dockComponentsEl = $('#bp-dock-components');
   const titleEl = $('#bp-title');
   const phasesEl = $('#bp-phases');
   const includedEl = $('#bp-included');
@@ -469,6 +471,8 @@ export function initBlueprint(): void {
     if (teamEl) teamEl.textContent = selection.pace.team;
     if (componentsEl) componentsEl.textContent = String(plan.nodes.length);
     if (firstShipEl) firstShipEl.textContent = `Week ${plan.firstShip}`;
+    if (dockWeeksEl) dockWeeksEl.textContent = `${plan.low}–${plan.high}`;
+    if (dockComponentsEl) dockComponentsEl.textContent = String(plan.nodes.length);
 
     if (phasesEl) {
       phasesEl.textContent = '';
@@ -576,6 +580,7 @@ export function initBlueprint(): void {
     message.value = composeBrief(current.selection, current.plan);
     if (subject) subject.value = subjectFor(current.selection.system.id);
 
+    renderAllSections();
     contact.scrollIntoView({
       behavior: prefersReducedMotion() ? 'auto' : 'smooth',
       block: 'start',

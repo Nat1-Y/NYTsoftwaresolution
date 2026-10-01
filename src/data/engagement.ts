@@ -1,5 +1,7 @@
 export interface Engagement {
   title: string;
+  /** Column heading in the phone comparison table. */
+  short: string;
   audience: string;
   description: string;
   featured?: boolean;
@@ -17,6 +19,7 @@ export interface Engagement {
 export const engagements: Engagement[] = [
   {
     title: 'Fixed-Scope Project',
+    short: 'Fixed scope',
     art: 'fixed',
     audience: 'For a defined system with clear requirements',
     description:
@@ -37,6 +40,7 @@ export const engagements: Engagement[] = [
   },
   {
     title: 'Dedicated Engineering Team',
+    short: 'Dedicated team',
     art: 'team',
     audience: 'For companies scaling technical capacity',
     description:
@@ -58,6 +62,7 @@ export const engagements: Engagement[] = [
   },
   {
     title: 'Platform & Support Retainer',
+    short: 'Retainer',
     art: 'retainer',
     audience: 'For systems already running in production',
     description:

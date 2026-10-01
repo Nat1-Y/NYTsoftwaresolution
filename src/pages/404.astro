@@ -47,29 +47,3 @@ import { site } from '../data/site';
   document.documentElement.dataset.ready = 'true';
 </script>
 
-<style>
-  .error-page {
-    min-height: 70vh;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    padding-top: calc(var(--header-h) + 4rem);
-  }
-
-  .error-code {
-    font-family: var(--font-mono);
-    font-size: clamp(5rem, 18vw, 10rem);
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 1rem;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .error-page .hero-actions {
-    justify-content: center;
-    margin-top: 2.5rem;
-  }
-</style>

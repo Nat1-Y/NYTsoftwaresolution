@@ -1,61 +1,30 @@
 /* ==========================================================================
-   NYT SOFTWARE SOLUTIONS — STYLE ENTRY POINT
-   Import order is load-bearing: tokens → base → layout → components →
-   responsive → v2 additions. Do not reorder without checking the cascade.
+   NYT SOFTWARE SOLUTIONS — STYLE ENTRY POINT  (v5 · "Signal")
+
+   One layer per concern, written phone-first: every file sets the 360–430px
+   layout first and widens it with min-width queries. Nothing restates
+   anything above it — if a rule needs changing, change it where it lives.
+
+     tokens     colour, type, space, motion, the persona themes
+     base       reset, atmosphere, type, buttons, fields, focus, preferences
+     layout     container, section rhythm, section headers, the glass card
+     chrome     logo, header, phone menu, footer, floating tools
+     hero       persona switch, headline, proof numbers, systems readout
+     sections   every home-page section, top to bottom
+     visuals    drawings, captures, device frames, tour, diagrams
+     blueprint  Blueprint Studio
+     overlays   chat assistant, command palette
+     pages      case studies, product, working with us, legal, errors
    ========================================================================== */
 
 @import './fonts.css';
-@import './00-tokens.css';
-@import './01-base.css';
-@import './10-layout.css';
-
-/* Core sections (original cascade order preserved) */
-@import './21-header.css';
-@import './22-persona.css';
-@import './23-hero.css';
-@import './24-about.css';
-@import './25-services.css';
-@import './26-case-studies.css';
-@import './27-flagship.css';
-@import './28-ecosystem.css';
-@import './29-process.css';
-@import './30-remote.css';
-@import './31-contact.css';
-@import './32-footer.css';
-@import './50-responsive.css';
-
-/* Enhancement layer */
-@import './33-loader.css';
-@import './34-scroll-top.css';
-@import './35-testimonials.css';
-@import './36-chatbot.css';
-
-/* v2 components */
-@import './37-scroll-progress.css';
-@import './38-command-palette.css';
-@import './39-faq.css';
-@import './40-engagement.css';
-@import './41-arch-diagram.css';
-@import './42-extras.css';
-@import './43-brand.css';
-@import './44-blueprint.css';
-@import './51-responsive-extra.css';
-
-/* Hero v2 — loaded last so it wins the cascade over the original hero rules */
-@import './45-hero.css';
-
-/* Editorial layer — restates the primitives. Must load last. */
-@import './46-editorial.css';
-
-/* Editorial layer II — the sections 46 did not reach. Must load after it. */
-@import './47-editorial-tail.css';
-
-/* Plates, captures and drawings — the image layer. Loads after the editorial
-   layers so it can re-set the hero visual and the flagship mockup. */
-@import './48-visuals.css';
-
-/* The contact flow, inner pages and client-readiness sections. */
-@import './49-site.css';
-
-/* Company facts, case-card status and the inner pages. */
-@import './52-pages.css';
+@import './tokens.css';
+@import './base.css';
+@import './layout.css';
+@import './chrome.css';
+@import './hero.css';
+@import './sections.css';
+@import './visuals.css';
+@import './blueprint.css';
+@import './overlays.css';
+@import './pages.css';

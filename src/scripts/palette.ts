@@ -3,7 +3,7 @@
  * Navigation, the live project links, and the page's own actions — reachable
  * from the keyboard without touching the mouse.
  */
-import { $, $$, trapFocus, prefersReducedMotion } from './dom';
+import { $, $$, trapFocus, prefersReducedMotion, renderAllSections } from './dom';
 
 interface Command {
   id: string;
@@ -26,6 +26,7 @@ const ICONS: Record<string, string> = {
 function goTo(hash: string): void {
   const target = document.querySelector(hash);
   if (!target) return;
+  renderAllSections();
   target.scrollIntoView({
     behavior: prefersReducedMotion() ? 'auto' : 'smooth',
     block: 'start',
@@ -292,6 +293,9 @@ export function initCommandPalette(): void {
   palette.addEventListener('mousedown', (e) => {
     if (e.target === palette) close();
   });
+
+  // Touchscreens have no Escape key; the sheet carries its own close button.
+  $$('[data-cmdk-close]', palette).forEach((btn) => btn.addEventListener('click', () => close()));
 
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {

@@ -1,0 +1,488 @@
+/* ==========================================================================
+   OVERLAYS — the chat assistant and the command palette
+
+   On a phone both open as full-screen sheets: a floating 360px panel on a
+   390px screen is a panel you cannot type into comfortably.
+   ========================================================================== */
+
+/* ------------------------------------------------------------- chatbot -- */
+.chatbot-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.chatbot-toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 14px 34px -10px var(--accent-glow), 0 8px 20px -8px rgba(0, 0, 0, 0.7);
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-med);
+}
+
+.chatbot-toggle:hover { transform: translateY(-2px); }
+.chatbot-toggle:active { transform: scale(0.94); }
+
+.chatbot-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatbot-notif {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+.chatbot-notif.hidden { display: none; }
+
+.chatbot-window {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(24px);
+  transition: transform 0.35s var(--ease-out), opacity 0.25s ease, visibility 0s linear 0.35s;
+}
+
+.chatbot-window.open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: transform 0.35s var(--ease-out), opacity 0.25s ease, visibility 0s;
+}
+
+@media (max-width: 559px) {
+  .chat-open,
+  .chat-open body { overflow: hidden; }
+}
+
+.chatbot-header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.8rem;
+  padding: calc(0.8rem + env(safe-area-inset-top)) 1rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+  background: radial-gradient(80% 140% at 0% 0%, rgba(var(--accent-rgb), 0.16), transparent 70%), var(--surface);
+}
+
+.chatbot-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.chatbot-header-info { display: grid; flex: 1; min-width: 0; }
+.chatbot-header-info strong { font-size: 0.98rem; font-weight: 700; }
+
+.chatbot-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.chatbot-minimize {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.chatbot-minimize:hover { border-color: var(--border-hover); }
+
+.chatbot-messages {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-height: 0;
+  padding: 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hover) transparent;
+}
+
+.chat-message {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  max-width: 88%;
+  animation: fade-up 0.3s var(--ease-out);
+}
+
+.chat-message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+.msg-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--surface-3);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.chat-message.bot .msg-avatar { background: rgba(var(--accent-rgb), 0.18); color: var(--accent-strong); }
+
+.msg-bubble {
+  padding: 0.7rem 0.9rem;
+  border-radius: 16px;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.chat-message.bot .msg-bubble {
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+.chat-message.user .msg-bubble {
+  border-bottom-right-radius: 6px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.msg-bubble a { color: var(--accent-strong); text-decoration: underline; text-underline-offset: 2px; }
+.chat-message.user .msg-bubble a { color: inherit; }
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  border-bottom-left-radius: 6px;
+  background: var(--surface-2);
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: none; opacity: 0.45; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.chatbot-suggestions {
+  display: flex;
+  flex: none;
+  gap: 0.45rem;
+  padding: 0.25rem 1rem 0.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chatbot-suggestions::-webkit-scrollbar { display: none; }
+
+.suggest-btn {
+  flex: none;
+  min-height: 40px;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  font-size: 0.84rem;
+  font-weight: 560;
+  white-space: nowrap;
+  color: var(--accent-strong);
+}
+
+.suggest-btn:hover { background: rgba(var(--accent-rgb), 0.2); }
+
+.chatbot-input-area {
+  display: flex;
+  flex: none;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.chatbot-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.chatbot-input::placeholder { color: var(--text-muted); }
+
+.chatbot-input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.18);
+}
+
+.chatbot-send {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.chatbot-send:active { transform: scale(0.94); }
+
+/* From a large phone up, the chat is a panel above its button. */
+@media (min-width: 560px) {
+  .chatbot-window {
+    position: absolute;
+    inset: auto 0 calc(100% + 0.75rem) auto;
+    width: 380px;
+    height: min(560px, calc(100vh - 8rem));
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(12px) scale(0.97);
+    transform-origin: bottom right;
+  }
+
+  .chatbot-header { padding-top: 0.8rem; }
+}
+
+/* ----------------------------------------------------- command palette -- */
+.command-palette {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: max(0.75rem, env(safe-area-inset-top)) 0.75rem 0.75rem;
+  background: var(--overlay);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+}
+
+.command-palette.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease, visibility 0s;
+}
+
+.cmdk-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  max-height: min(70vh, 560px);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.5);
+  transform: translateY(-8px) scale(0.98);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.command-palette.open .cmdk-panel { transform: none; }
+
+.cmdk-search {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.cmdk-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.cmdk-input:focus { outline: none; }
+.cmdk-input::placeholder { color: var(--text-muted); }
+
+.cmdk-hint,
+.cmdk-footer kbd {
+  padding: 0.12rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.cmdk-close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  margin-right: -0.35rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+}
+
+.cmdk-close:hover { color: var(--text-primary); }
+
+@media (hover: hover) and (pointer: fine) {
+  .cmdk-close { display: none; }
+}
+
+.cmdk-results {
+  flex: 1;
+  padding: 0.4rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cmdk-group-label {
+  padding: 0.7rem 0.7rem 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cmdk-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--r-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.cmdk-item[aria-selected='true'] {
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--text-primary);
+}
+
+.cmdk-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text-secondary);
+}
+
+.cmdk-item[aria-selected='true'] .cmdk-icon { border-color: rgba(var(--accent-rgb), 0.45); color: var(--accent-strong); }
+
+.cmdk-item { width: 100%; text-align: left; }
+
+/* The label/description wrapper built by scripts/palette.ts. */
+.cmdk-item > span:last-child {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.cmdk-label { font-size: 0.94rem; font-weight: 560; color: var(--text-primary); }
+.cmdk-desc { margin-left: auto; font-size: 0.78rem; color: var(--text-muted); text-align: right; }
+
+.cmdk-empty {
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.cmdk-footer {
+  display: none;
+  gap: 1.25rem;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.cmdk-footer kbd { margin-right: 0.2rem; }
+
+/* Keyboard hints only where there is a keyboard. */
+@media (hover: hover) and (pointer: fine) {
+  .cmdk-footer { display: flex; }
+}
+
+@media (max-width: 559px) {
+  .cmdk-desc { display: none; }
+  .cmdk-search .cmdk-hint { display: none; }
+}
+
+@media (min-width: 720px) {
+  .command-palette { padding-top: 14vh; }
+}

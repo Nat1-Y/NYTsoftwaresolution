@@ -1,0 +1,393 @@
+/* ==========================================================================
+   BASE — reset, atmosphere, type, primitives (buttons, fields, focus)
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  /* The one place anchor jumps clear the fixed header. Targets add only their
+     own breathing room (scroll-margin) — the two stack, so neither may repeat
+     the header height. Sections bring their own top padding. */
+  scroll-padding-top: var(--header-h);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+  /* Stops the page rubber-banding sideways on iOS if anything ever overflows. */
+  overflow-x: clip;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
+/*
+ * The atmosphere: two soft light sources and a faint measuring grid, pinned to
+ * the viewport so they cost one paint, not one per section. Purely decorative.
+ */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+body::before {
+  background:
+    radial-gradient(60% 45% at 85% -5%, var(--aura-1), transparent 70%),
+    radial-gradient(55% 40% at -10% 35%, var(--aura-2), transparent 70%),
+    var(--bg);
+  transition: background 0.6s var(--ease-out);
+}
+
+body::after {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  mask-image: radial-gradient(120% 70% at 50% 0%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(120% 70% at 50% 0%, #000 20%, transparent 75%);
+}
+
+[id].anchor-target {
+  scroll-margin-top: 1rem;
+}
+
+/* ------------------------------------------------------------------ type -- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+h1, h2 { font-stretch: var(--display-stretch); }
+
+p { text-wrap: pretty; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--t-fast) var(--ease-out), background-color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out);
+}
+
+/* Links inside running text are always identifiable without colour alone. */
+.text-link,
+.section-subtitle a,
+.engagement-note a,
+.form-consent a,
+.case-prose a,
+.legal-body a,
+.faq-a a {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(var(--accent-rgb), 0.45);
+}
+
+.text-link:hover,
+.section-subtitle a:hover,
+.engagement-note a:hover,
+.form-consent a:hover,
+.case-prose a:hover,
+.legal-body a:hover,
+.faq-a a:hover { text-decoration-color: currentColor; }
+
+ul, ol { list-style: none; }
+
+img, svg, video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* No UA chrome on buttons: in a dark colour-scheme the default is a grey
+   #6b6b6b slab with an outset border. Every button styles itself. */
+button {
+  border: 0;
+  background: none;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+}
+
+strong { font-weight: 650; }
+
+::selection {
+  background: rgba(var(--accent-rgb), 0.32);
+  color: #fff;
+}
+
+/* Mono kicker — the one label style used for every eyebrow and spec key. */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--kicker-size);
+  font-weight: 500;
+  letter-spacing: var(--kicker-track);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--accent-strong);
+}
+
+/* ----------------------------------------------------------------- focus -- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-xs);
+}
+
+:focus:not(:focus-visible) { outline: none; }
+
+/* ----------------------------------------------------------- utilities -- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 50%;
+  z-index: 10000;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--r-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 650;
+  transform: translate(-50%, -160%);
+  transition: transform var(--t-med) var(--ease-out);
+}
+
+.skip-link:focus-visible { transform: translate(-50%, 0); }
+
+/* [hidden] must win over component display rules — it is how JS removes an
+   element from layout and the accessibility tree. The product tour keeps its
+   outgoing screen painted for the cross-fade (see visuals.css). */
+[hidden]:not(.tour-panel) { display: none !important; }
+
+/* --------------------------------------------------------------- buttons -- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: var(--tap);
+  padding: 0.75rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  font-weight: 620;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  isolation: isolate;
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-med) var(--ease-out),
+    background-color var(--t-med) var(--ease-out), border-color var(--t-med) var(--ease-out),
+    color var(--t-fast) var(--ease-out);
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.btn svg { flex: none; }
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset, 0 10px 30px -10px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  background: var(--btn-bg-hover);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 14px 38px -10px var(--accent-glow);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-hover);
+}
+
+.btn .arrow-icon { transition: transform var(--t-med) var(--ease-out); }
+.btn:hover .arrow-icon { transform: translateX(3px); }
+
+.btn[disabled] { cursor: progress; opacity: 0.7; }
+
+/* ---------------------------------------------------------------- fields -- */
+input[type='text'],
+input[type='email'],
+input[type='tel'],
+input[type='search'],
+select,
+textarea {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  /* 16px minimum: anything smaller makes iOS Safari zoom the page on focus. */
+  font-size: 1rem;
+  line-height: 1.45;
+  transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out),
+    background-color var(--t-fast) var(--ease-out);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+textarea { min-height: 8.5rem; resize: vertical; }
+
+select {
+  padding-right: 2.6rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23aab5cb' d='M7.41 8.58 12 13.17l4.59-4.59L18 10l-6 6-6-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 20px;
+  cursor: pointer;
+}
+
+select option { background: var(--surface-2); color: var(--text-primary); }
+
+input::placeholder,
+textarea::placeholder { color: var(--text-muted); opacity: 1; }
+
+input:hover,
+select:hover,
+textarea:hover { border-color: var(--border-hover); }
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  background-color: var(--surface);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.18);
+}
+
+[aria-invalid='true'] {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 4px rgba(255, 123, 134, 0.14) !important;
+}
+
+/* ---------------------------------------------------------------- reveal -- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------ user preferences -- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --text-secondary: #d2d9e8;
+    --text-muted: #b3bdd1;
+    --border: rgba(200, 215, 245, 0.35);
+    --border-strong: rgba(200, 215, 245, 0.5);
+  }
+}
+
+@media (forced-colors: active) {
+  .glass,
+  .btn,
+  .card { border: 1px solid CanvasText; }
+  body::before,
+  body::after { display: none; }
+}
+
+@media print {
+  .main-header,
+  .mobile-nav-menu,
+  .persona-section,
+  .page-tools,
+  .scroll-progress,
+  .command-palette,
+  .testi-controls,
+  .bp-dock,
+  .contact-form { display: none !important; }
+
+  body::before,
+  body::after { display: none; }
+  body, html { background: #fff; color: #000; }
+  * { color: #000 !important; background: none !important; box-shadow: none !important; }
+  .card-tab-content { display: block !important; }
+}

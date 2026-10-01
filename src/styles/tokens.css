@@ -1,0 +1,177 @@
+/* ==========================================================================
+   NYT SOFTWARE SOLUTIONS — DESIGN TOKENS  (v5 · "Signal")
+
+   The page is a control room at night: a deep ink ground, surfaces that sit
+   on it like lit glass, hairline borders, and colour used as signal rather
+   than decoration. Blue→violet marks the things you can act on; aurora teal
+   marks the things that are live. Everything else is greyscale.
+
+   Designed on a 360–430px phone first. Sizes are fluid (clamp) so the same
+   values carry up to desktop without a breakpoint for every step.
+
+   The persona switch re-tunes the signal, not the building:
+     Business Operations → blue/violet actions, soft aurora glow
+     Engineering & Tech  → terminal mint, a blueprint grid on the ground
+   ========================================================================== */
+
+@counter-style geez {
+  system: fixed 1;
+  symbols: "፩" "፪" "፫" "፬" "፭" "፮" "፯" "፰" "፱" "፲" "፲፩" "፲፪";
+  fallback: decimal;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* --- Type ------------------------------------------------------------
+     One variable family on two axes. Display type uses the expanded
+     widths — wide, engineered letterforms that read as "instrument" —
+     while body copy stays at normal width for comfortable reading. */
+  --font-sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-geez: 'Noto Sans Ethiopic', 'Nyala', 'Abyssinica SIL', 'Kefa', sans-serif;
+  --display-stretch: 116%;
+
+  /* Fluid scale. Minimums are tuned for a 360px phone. */
+  --step--2: 0.72rem;
+  --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.875rem);
+  --step-0: clamp(0.97rem, 0.94rem + 0.15vw, 1.0625rem);
+  --step-1: clamp(1.125rem, 1.06rem + 0.3vw, 1.3rem);
+  --step-2: clamp(1.3rem, 1.18rem + 0.6vw, 1.7rem);
+  --step-3: clamp(1.7rem, 1.4rem + 1.5vw, 2.7rem);
+  --step-4: clamp(2.05rem, 1.5rem + 2.9vw, 4.3rem);
+
+  --kicker-size: 0.7rem;
+  --kicker-track: 0.16em;
+
+  /* --- Layout ---------------------------------------------------------- */
+  --header-h: 60px;
+  --container-max: 1200px;
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2rem);
+  --section-pad: clamp(4rem, 3rem + 5vw, 7.5rem);
+
+  /* --- Radius — soft machined corners --------------------------------- */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* --- Motion ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --t-fast: 0.16s;
+  --t-med: 0.28s;
+  --t-slow: 0.5s;
+  --transition-smooth: all var(--t-med) var(--ease-out);
+  --transition-fast: all var(--t-fast) var(--ease-out);
+
+  /* --- Touch ---------------------------------------------------------- */
+  --tap: 48px;
+
+  /* --- Ground ---------------------------------------------------------- */
+  --bg: #05070d;
+  --bg-alt: #080b14;
+  --bg-deep: #03040a;
+
+  --surface: #0b101b;
+  --surface-2: #101727;
+  --surface-3: #161f33;
+  --surface-inset: #070a12;
+  --glass: rgba(16, 23, 39, 0.62);
+  --glass-strong: rgba(11, 16, 27, 0.86);
+  --surface-translucent: var(--glass-strong);
+
+  --border: rgba(148, 170, 220, 0.12);
+  --border-strong: rgba(148, 170, 220, 0.2);
+  --border-hover: rgba(148, 170, 220, 0.34);
+  --rule: rgba(148, 170, 220, 0.1);
+  --rule-strong: rgba(238, 242, 250, 0.5);
+
+  /* Text. Every value clears 4.5:1 on --surface-3, the lightest ground. */
+  --text-primary: #eef2fa;
+  --text-secondary: #aab5cb;
+  --text-muted: #8591aa;
+  --text-on-deep: #eef2fa;
+  --text-on-deep-muted: #8591aa;
+
+  /* --- Signal: business (default) ------------------------------------- */
+  --accent: #6f98ff;
+  --accent-rgb: 111, 152, 255;
+  --accent-strong: #a3bdff;
+  --accent-soft: rgba(111, 152, 255, 0.12);
+  --accent-2: #a18bff;
+  --accent-2-rgb: 161, 139, 255;
+  --accent-glow: rgba(96, 120, 255, 0.35);
+
+  /* The primary action. White on this gradient clears 4.8:1 at both ends. */
+  --btn-bg: linear-gradient(120deg, #3a66f0 0%, #5a55f0 55%, #6a4df0 100%);
+  --btn-bg-hover: linear-gradient(120deg, #4471f7 0%, #6560f7 55%, #7657f7 100%);
+  --btn-fg: #ffffff;
+  --on-accent: #ffffff;
+  --accent-gradient: linear-gradient(100deg, #8fb0ff 0%, #b69cff 60%, #6ee7d4 100%);
+
+  /* Live / status. Also the old "mark" — numerals, rules, emphasis. */
+  --signal: #54e3c6;
+  --signal-rgb: 84, 227, 198;
+  --mark: var(--signal);
+  --mark-rgb: var(--signal-rgb);
+  --mark-soft: rgba(84, 227, 198, 0.12);
+
+  --success: #4ade9b;
+  --danger: #ff7b86;
+  --warning: #f5b85a;
+  --star: #f5b85a;
+
+  --overlay: rgba(2, 4, 10, 0.72);
+  --header-bg: rgba(5, 7, 13, 0.72);
+
+  --shadow-sm: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-md: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 12px 32px -12px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 30px 80px -20px rgba(0, 0, 0, 0.85);
+  --shadow-glow: 0 10px 40px -12px var(--accent-glow);
+
+  /* The page atmosphere: two soft light sources, fixed to the viewport. */
+  --aura-1: rgba(70, 100, 255, 0.2);
+  --aura-2: rgba(84, 227, 198, 0.1);
+  --grid-line: rgba(148, 170, 220, 0.045);
+  --grid-size: 44px;
+
+  /* Drawings (src/components/visuals). Holographic line-work on glass. */
+  --ill-ink: rgba(214, 226, 250, 0.78);
+  --ill-line: rgba(148, 170, 220, 0.3);
+  --ill-paper: #141d31;
+  --ill-tint: #0f1628;
+  --ill-shade: #0a0f1d;
+  --ill-grid: rgba(148, 170, 220, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   ENGINEERING — terminal mint, blueprint grid
+   -------------------------------------------------------------------------- */
+:root.mode-tech {
+  --accent: #4fe0c0;
+  --accent-rgb: 79, 224, 192;
+  --accent-strong: #9af2de;
+  --accent-soft: rgba(79, 224, 192, 0.12);
+  --accent-2: #6fb6ff;
+  --accent-2-rgb: 111, 182, 255;
+  --accent-glow: rgba(79, 224, 192, 0.3);
+
+  /* Dark ink on bright mint: 11:1. */
+  --btn-bg: linear-gradient(120deg, #4fe0c0 0%, #62d0f0 100%);
+  --btn-bg-hover: linear-gradient(120deg, #6ff0d2 0%, #7fdcf7 100%);
+  --btn-fg: #03130f;
+  --on-accent: #03130f;
+  --accent-gradient: linear-gradient(100deg, #7ef2d8 0%, #7fc4ff 100%);
+
+  --signal: #f5b85a;
+  --signal-rgb: 245, 184, 90;
+  --mark-soft: rgba(245, 184, 90, 0.12);
+
+  --aura-1: rgba(40, 200, 170, 0.14);
+  --aura-2: rgba(80, 150, 255, 0.12);
+  --grid-line: rgba(111, 182, 255, 0.075);
+}
