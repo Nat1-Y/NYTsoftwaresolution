@@ -76,7 +76,9 @@ const qr = [
 // `to` is where the leader ends; `ty` places the text above (-) or below (+).
 const callouts = [
   { at: p(110, 20, 126), to: [-4, -61], ty: 4, anchor: 'end', text: 'Application tier' },
-  { at: p(236, 40, 34), to: [170, 30], ty: -7, anchor: 'middle', text: 'Tenant schemas' },
+  // Set up and to the right, clear of the rack's right edge (x ≈ 130) even at
+  // the larger label size phones use.
+  { at: p(236, 40, 34), to: [204, -6], ty: -7, anchor: 'middle', text: 'Tenant schemas' },
   { at: p(36, 186, 62), to: [-129, 4], ty: -7, anchor: 'middle', text: 'POS · offline-first' },
   { at: p(120, 206, 0), to: [-74, 262], ty: 14, anchor: 'middle', text: "Owner's dashboard" },
   { at: p(268, 130, 60), to: [214, 228], ty: 14, anchor: 'middle', text: 'Clinic desk' },

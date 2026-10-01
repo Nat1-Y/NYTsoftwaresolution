@@ -296,9 +296,10 @@
   pointer-events: none;
 }
 
-/* The drawing is desktop furniture; on a phone it would push the readout a
-   full screen down. The readout carries the substance. */
-.hero-plate { display: none; }
+/* The readout sits just below the drawing, never over it: the drawing's
+   bottom callouts ("Owner's dashboard", "Gate · QR redeem") live in its last
+   tenth, and an overlap hid them. */
+.hero-visual .console { margin-top: 0.75rem; }
 
 .console {
   position: relative;
@@ -570,9 +571,6 @@
 
 .hero-figure-note .plate-kind { color: var(--mark); }
 
-/* After the base rule, or its display:flex would bring both notes back. */
-.hero-figure-note.hero-note-wide { display: none; }
-
 .hero-figure-note a {
   color: var(--text-secondary);
   text-decoration: underline;
@@ -582,13 +580,10 @@
 
 /* ---------------------------------------------------------- wider screens -- */
 @media (min-width: 720px) {
-  .hero-plate { display: block; }
-  .hero-figure-note.hero-note-wide { display: flex; }
-  .hero-figure-note.hero-note-narrow { display: none; }
-
+  /* Offset to the right of the drawing for depth, without covering it. */
   .hero-visual .console {
     width: 88%;
-    margin: -7% 0 0 auto;
+    margin: 0.75rem 0 0 auto;
   }
 
   .console-line { grid-template-columns: 14px minmax(0, 7.5rem) minmax(0, 1fr); }

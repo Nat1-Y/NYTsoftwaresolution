@@ -149,8 +149,18 @@
 .hero-plate .plate-art { aspect-ratio: 518 / 386; }
 .hero-plate .plate-cap { display: none; }
 
-@media (max-width: 620px) {
-  .hero-ill .ill-callouts { display: none; }
+/*
+ * On a phone the drawing renders at ~0.55–0.75× its drawn size, which would
+ * set the 11-unit labels at 6–8px. They are set larger in drawing units so
+ * they land near 10–12px on screen. Every label still fits inside the
+ * viewBox at these sizes (checked against the widest, "POS · offline-first").
+ */
+@media (max-width: 719px) {
+  .hero-ill .ill-label { font-size: 15.5px; }
+}
+
+@media (max-width: 379px) {
+  .hero-ill .ill-label { font-size: 16px; }
 }
 
 /* -------------------------------------------------------- device frames -- */
