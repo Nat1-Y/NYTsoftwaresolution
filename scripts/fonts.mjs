@@ -1,7 +1,7 @@
 /**
  * Self-host the site's fonts.
  *
- * Fetches Google Fonts' CSS for the three families, keeps only the subsets the
+ * Fetches Google Fonts' CSS for the four families, keeps only the subsets the
  * page uses (Latin, Latin Extended, and Ethiopic for the Ge'ez numerals),
  * downloads those WOFF2 files into public/fonts/ and writes
  * src/styles/fonts.css pointing at them.
@@ -17,11 +17,14 @@ import { writeFile, mkdir } from 'node:fs/promises';
 /*
  * Archivo is variable on both axes: the expanded widths (≈118–125%) set the
  * display type, the normal width sets body copy — one file for both.
+ * Fraunces sets the headlines in the light theme only; a browser never
+ * fetches it while the page is dark.
  */
 const CSS_URL =
   'https://fonts.googleapis.com/css2' +
   '?family=Archivo:wdth,wght@62..125,100..900' +
   '&family=JetBrains+Mono:wght@400..600' +
+  '&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600' +
   '&display=swap';
 const KEEP = new Set(['latin', 'latin-ext', 'ethiopic']);
 // A current browser UA, so Google serves WOFF2 with unicode-range subsets.

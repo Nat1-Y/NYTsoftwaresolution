@@ -125,7 +125,7 @@ main { counter-reset: sec; }
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0) 40%),
+    linear-gradient(180deg, rgba(var(--wash-rgb), 0.035), rgba(var(--wash-rgb), 0) 40%),
     var(--glass);
   box-shadow: var(--shadow-md);
 }
@@ -162,7 +162,7 @@ main { counter-reset: sec; }
   padding: 0.35rem 0.75rem;
   border: 1px solid var(--border);
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--wash-rgb), 0.03);
   font-size: var(--step--1);
   color: var(--text-secondary);
 }

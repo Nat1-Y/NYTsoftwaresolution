@@ -1,0 +1,120 @@
+/* ==========================================================================
+   THEME — what the light (paper) theme sets beyond its tokens
+
+   Nearly everything about the two themes is a token (tokens.css). These are
+   the few places where paper is a different typographic idea, not just a
+   different colour: italic serif emphasis, mono small-caps navigation, flat
+   surfaces without glass, and status colours that read on a light ground.
+
+   Every rule is scoped to :root:not([data-theme='dark']) so the light theme
+   also applies with JavaScript off.
+   ========================================================================== */
+
+/* While the toggle swaps themes, every colour changes in the same frame
+   rather than each element animating on its own transition. */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after { transition: none !important; }
+
+/* --------------------------------------------------------------- type -- */
+:root:not([data-theme='dark']) h1,
+:root:not([data-theme='dark']) h2,
+:root:not([data-theme='dark']) h3,
+:root:not([data-theme='dark']) h4 {
+  /* Fraunces' splayed leg and curled terminals keep it from reading generic. */
+  font-variation-settings: 'SOFT' 0, 'WONK' 1;
+}
+
+/* The emphasised line of a headline: sienna italic, not a gradient. */
+:root:not([data-theme='dark']) .gradient-text {
+  font-style: italic;
+  font-weight: 500;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--mark);
+}
+
+/* ------------------------------------------------------------ surfaces -- */
+:root:not([data-theme='dark']) .btn-secondary {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root:not([data-theme='dark']) .btn-secondary:hover {
+  background: var(--surface);
+  border-color: var(--text-primary);
+}
+
+:root:not([data-theme='dark']) .cmdk-trigger,
+:root:not([data-theme='dark']) .theme-toggle,
+:root:not([data-theme='dark']) .mobile-nav-toggle {
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border-color: var(--border-strong);
+}
+
+:root:not([data-theme='dark']) .cmdk-trigger:hover,
+:root:not([data-theme='dark']) .theme-toggle:hover,
+:root:not([data-theme='dark']) .mobile-nav-toggle:hover {
+  background: var(--surface);
+  border-color: var(--text-primary);
+}
+
+/* ---------------------------------------------------- status colours -- */
+:root:not([data-theme='dark']) .offline-banner {
+  border-color: #e3c58f;
+  background: #fbf1df;
+  color: #6b3f00;
+}
+
+:root:not([data-theme='dark']) .form-status.success {
+  border-color: #a9d4bd;
+  background: #eaf5ef;
+  color: var(--success);
+}
+
+:root:not([data-theme='dark']) .form-status.error {
+  border-color: #e6b2ae;
+  background: #fbeceb;
+  color: var(--danger);
+}
+
+:root:not([data-theme='dark']) .form-fallback {
+  border-color: #e3c58f;
+  background: #fbf5ea;
+}
+
+:root:not([data-theme='dark']) .form-fallback strong { color: #6b3f00; }
+
+:root:not([data-theme='dark']) .toast.success { border-color: #a9d4bd; }
+:root:not([data-theme='dark']) .toast.error { border-color: #e6b2ae; }
+
+/* Desktop navigation as small caps in mono, the way the masthead set it. */
+@media (min-width: 1200px) {
+  :root:not([data-theme='dark']) .nav-link {
+    border-radius: 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  :root:not([data-theme='dark']) .nav-link.active-nav {
+    background: none;
+    box-shadow: inset 0 -2px 0 var(--mark);
+  }
+
+  .theme-toggle { width: 40px; height: 40px; }
+}
+
+/* Spaced capitals run wider than the dark theme's sans; close them up until
+   the bar has room. */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  :root:not([data-theme='dark']) .nav-link {
+    padding-inline: 0.5rem;
+    letter-spacing: 0.06em;
+  }
+}

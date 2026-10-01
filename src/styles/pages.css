@@ -247,7 +247,7 @@
   padding: 0.35rem 0.75rem;
   border: 1px solid var(--border);
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--wash-rgb), 0.03);
   font-family: var(--font-mono);
   font-size: 0.76rem;
   color: var(--text-primary);
@@ -424,7 +424,7 @@
 
   .case-toc ol { flex-direction: column; overflow: visible; }
   .case-toc a { width: 100%; border-color: transparent; padding-inline: 0.6rem; }
-  .case-toc a:hover { border-color: var(--border); background: rgba(255, 255, 255, 0.03); }
+  .case-toc a:hover { border-color: var(--border); background: rgba(var(--wash-rgb), 0.03); }
   .case-section { scroll-margin-top: 1.5rem; }
 }
 

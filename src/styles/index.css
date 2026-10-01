@@ -1,11 +1,11 @@
 /* ==========================================================================
-   NYT SOFTWARE SOLUTIONS — STYLE ENTRY POINT  (v5 · "Signal")
+   NYT SOFTWARE SOLUTIONS — STYLE ENTRY POINT
 
    One layer per concern, written phone-first: every file sets the 360–430px
    layout first and widens it with min-width queries. Nothing restates
    anything above it — if a rule needs changing, change it where it lives.
 
-     tokens     colour, type, space, motion, the persona themes
+     tokens     colour, type, space, motion; light/dark and persona themes
      base       reset, atmosphere, type, buttons, fields, focus, preferences
      layout     container, section rhythm, section headers, the glass card
      chrome     logo, header, phone menu, footer, floating tools
@@ -15,6 +15,7 @@
      blueprint  Blueprint Studio
      overlays   chat assistant, command palette
      pages      case studies, product, working with us, legal, errors
+     theme      what the light (paper) theme sets beyond its tokens
    ========================================================================== */
 
 @import './fonts.css';
@@ -28,3 +29,4 @@
 @import './blueprint.css';
 @import './overlays.css';
 @import './pages.css';
+@import './theme.css';

@@ -75,9 +75,9 @@ body::after {
 /* ------------------------------------------------------------------ type -- */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: var(--display-weight);
   line-height: 1.12;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--display-track);
   color: var(--text-primary);
   text-wrap: balance;
 }
@@ -147,7 +147,7 @@ strong { font-weight: 650; }
 
 ::selection {
   background: rgba(var(--accent-rgb), 0.32);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* Mono kicker — the one label style used for every eyebrow and spec key. */
@@ -221,7 +221,7 @@ strong { font-weight: 650; }
   min-height: var(--tap);
   padding: 0.75rem 1.4rem;
   border: 1px solid transparent;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-btn);
   font-family: var(--font-sans);
   font-size: 0.98rem;
   font-weight: 620;
@@ -245,16 +245,16 @@ strong { font-weight: 650; }
 .btn-primary {
   background: var(--btn-bg);
   color: var(--btn-fg);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset, 0 10px 30px -10px var(--accent-glow);
+  box-shadow: var(--btn-shadow);
 }
 
 .btn-primary:hover {
   background: var(--btn-bg-hover);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 14px 38px -10px var(--accent-glow);
+  box-shadow: var(--btn-shadow-hover);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(var(--wash-rgb), 0.04);
   border-color: var(--border-strong);
   color: var(--text-primary);
   -webkit-backdrop-filter: blur(10px);
@@ -262,7 +262,7 @@ strong { font-weight: 650; }
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(var(--wash-rgb), 0.08);
   border-color: var(--border-hover);
 }
 
@@ -325,7 +325,7 @@ textarea:focus-visible {
 
 [aria-invalid='true'] {
   border-color: var(--danger) !important;
-  box-shadow: 0 0 0 4px rgba(255, 123, 134, 0.14) !important;
+  box-shadow: 0 0 0 4px rgba(var(--danger-rgb), 0.14) !important;
 }
 
 /* ---------------------------------------------------------------- reveal -- */
@@ -358,11 +358,18 @@ textarea:focus-visible {
 }
 
 @media (prefers-contrast: more) {
-  :root {
+  :root[data-theme='dark'] {
     --text-secondary: #d2d9e8;
     --text-muted: #b3bdd1;
     --border: rgba(200, 215, 245, 0.35);
     --border-strong: rgba(200, 215, 245, 0.5);
+  }
+
+  :root:not([data-theme='dark']) {
+    --text-secondary: #2f3a55;
+    --text-muted: #3f4864;
+    --border: #b9ae94;
+    --border-strong: #8f8468;
   }
 }
 

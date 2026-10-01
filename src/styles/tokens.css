@@ -1,17 +1,24 @@
 /* ==========================================================================
-   NYT SOFTWARE SOLUTIONS — DESIGN TOKENS  (v5 · "Signal")
+   NYT SOFTWARE SOLUTIONS — DESIGN TOKENS
 
-   The page is a control room at night: a deep ink ground, surfaces that sit
-   on it like lit glass, hairline borders, and colour used as signal rather
-   than decoration. Blue→violet marks the things you can act on; aurora teal
-   marks the things that are live. Everything else is greyscale.
+   Two themes, chosen with the sun/moon button in the header
+   (scripts/theme.ts) and set on <html data-theme> before first paint:
+
+     light · "Paper" — the default, and the no-JS fallback. A technical
+             broadsheet: warm paper, navy ink, one sienna mark, hairline
+             rules, a serif for the headlines. Flat fills, hard edges.
+
+     dark · "Signal" — a control room at night: a deep ink ground, surfaces
+             that sit on it like lit glass, hairline borders, and colour used
+             as signal rather than decoration. Blue→violet marks the things
+             you can act on; aurora teal marks the things that are live.
 
    Designed on a 360–430px phone first. Sizes are fluid (clamp) so the same
    values carry up to desktop without a breakpoint for every step.
 
-   The persona switch re-tunes the signal, not the building:
-     Business Operations → blue/violet actions, soft aurora glow
-     Engineering & Tech  → terminal mint, a blueprint grid on the ground
+   In either theme the persona switch re-tunes the signal, not the building:
+     Business Operations → the default actions and marks
+     Engineering & Tech  → teal/mint actions, amber marks, a stronger grid
    ========================================================================== */
 
 @counter-style geez {
@@ -21,17 +28,13 @@
 }
 
 :root {
-  color-scheme: dark;
-
   /* --- Type ------------------------------------------------------------
-     One variable family on two axes. Display type uses the expanded
-     widths — wide, engineered letterforms that read as "instrument" —
-     while body copy stays at normal width for comfortable reading. */
+     Archivo is variable on two axes: the dark theme sets headlines in its
+     expanded widths, body copy stays at normal width. The light theme sets
+     headlines in Fraunces, a serif, against the hard geometric wordmark. */
   --font-sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-display: var(--font-sans);
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-geez: 'Noto Sans Ethiopic', 'Nyala', 'Abyssinica SIL', 'Kefa', sans-serif;
-  --display-stretch: 116%;
 
   /* Fluid scale. Minimums are tuned for a 360px phone. */
   --step--2: 0.72rem;
@@ -51,12 +54,6 @@
   --gutter: clamp(1rem, 0.6rem + 2vw, 2rem);
   --section-pad: clamp(4rem, 3rem + 5vw, 7.5rem);
 
-  /* --- Radius — soft machined corners --------------------------------- */
-  --r-xs: 6px;
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 28px;
   --r-pill: 999px;
 
   /* --- Motion ---------------------------------------------------------- */
@@ -71,6 +68,155 @@
   /* --- Touch ---------------------------------------------------------- */
   --tap: 48px;
 
+  /* =====================================================================
+     PAPER (light) — the default.
+     The ground is paper (#FBFAF6), never #FFF. Separation is a 1px rule,
+     the way it is on a printed page; shadows are nearly gone.
+     ===================================================================== */
+  color-scheme: light;
+
+  --font-display: 'Fraunces', 'Iowan Old Style', 'Hoefler Text', Georgia, 'Times New Roman', serif;
+  --display-stretch: 100%;
+  --display-weight: 600;
+  --display-track: -0.015em;
+
+  /* Hard edges, like the wordmark. */
+  --r-xs: 2px;
+  --r-sm: 2px;
+  --r-md: 3px;
+  --r-lg: 4px;
+  --r-xl: 6px;
+  --r-btn: 2px;
+
+  --bg: #fbfaf6;
+  --bg-alt: #f3f0e8;
+  --bg-deep: #f0ece2;
+
+  --surface: #ffffff;
+  --surface-2: #f7f4ec;
+  --surface-3: #efebe1;
+  --surface-inset: #f7f5ef;
+  --glass: #ffffff;
+  --glass-strong: rgba(251, 250, 246, 0.96);
+  --surface-translucent: var(--glass-strong);
+  --sheet-bg: #fbfaf6;
+
+  /* Rules, not borders. Warm, so they sit on the paper instead of over it. */
+  --border: #e2dccc;
+  --border-strong: #cfc6b0;
+  --border-hover: #a89c80;
+  --rule: #e2dccc;
+  --rule-strong: #131f3a;
+
+  /* Tints laid over a surface (hover, wells). Navy at low alpha reads as an
+     ink wash on paper; the dark theme uses white for the same job. */
+  --wash-rgb: 19, 31, 58;
+
+  /* Every value clears 4.5:1 on --surface-3, the darkest paper. */
+  --text-primary: #131f3a;
+  --text-secondary: #4a5570;
+  --text-muted: #5a6380;
+  --text-on-deep: #131f3a;
+  --text-on-deep-muted: #5a6380;
+
+  --accent: #1450c8;
+  --accent-rgb: 20, 80, 200;
+  --accent-strong: #0e3b96;
+  --accent-soft: #e7edfb;
+  --accent-2: #3d4fb8;
+  --accent-2-rgb: 61, 79, 184;
+  --accent-glow: rgba(20, 80, 200, 0.14);
+
+  /* The primary action is ink, not colour: flat navy. */
+  --btn-bg: #131f3a;
+  --btn-bg-hover: #0f2350;
+  --btn-fg: #ffffff;
+  --btn-shadow: none;
+  --btn-shadow-hover: 0 8px 22px -10px rgba(19, 31, 58, 0.5);
+  --on-accent: #ffffff;
+  /* Deliberately flat: "gradient" text on paper is the sienna mark. */
+  --accent-gradient: linear-gradient(var(--mark), var(--mark));
+
+  /* Live / status — a printed green. */
+  --signal: #196b47;
+  --signal-rgb: 25, 107, 71;
+  /* The mark: one warm colour, used for numerals, rules and emphasis. */
+  --mark: #a8471a;
+  --mark-rgb: 168, 71, 26;
+  --mark-soft: #f4e8df;
+
+  --success: #196b47;
+  --danger: #b32b26;
+  --danger-rgb: 179, 43, 38;
+  --warning: #9a5b00;
+  --star: #c8871a;
+
+  --overlay: rgba(19, 31, 58, 0.44);
+  --header-bg: rgba(251, 250, 246, 0.92);
+
+  /* Elevation is a last resort. Most separation is a 1px rule. */
+  --shadow-sm: none;
+  --shadow-md: 0 1px 2px rgba(19, 31, 58, 0.05), 0 10px 28px rgba(19, 31, 58, 0.07);
+  --shadow-lg: 0 28px 70px rgba(19, 31, 58, 0.16);
+  --shadow-glow: none;
+
+  /* No glow on paper; the measuring grid stays, faintly. */
+  --aura-1: transparent;
+  --aura-2: transparent;
+  --grid-line: rgba(19, 31, 58, 0.045);
+  --grid-size: 64px;
+
+  /* Drawings (src/components/visuals). Ink line-work on paper. */
+  --ill-ink: #1d2a48;
+  --ill-line: #c9c0aa;
+  --ill-paper: #ffffff;
+  --ill-tint: #f4f1e9;
+  --ill-shade: #e6e0d1;
+  --ill-grid: rgba(19, 31, 58, 0.07);
+}
+
+/* --------------------------------------------------------------------------
+   ENGINEERING · light — blueprint ink on paper: teal actions, amber marks,
+   the measuring grid drawn a little stronger.
+   -------------------------------------------------------------------------- */
+:root.mode-tech:not([data-theme='dark']) {
+  --accent: #0b6e66;
+  --accent-rgb: 11, 110, 102;
+  --accent-strong: #08524c;
+  --accent-soft: #e2f1ee;
+  --accent-2: #1d5fa8;
+  --accent-2-rgb: 29, 95, 168;
+  --accent-glow: rgba(11, 110, 102, 0.14);
+
+  --btn-bg: #0b3d3a;
+  --btn-bg-hover: #08524c;
+
+  --mark: #9a5b00;
+  --mark-rgb: 154, 91, 0;
+  --mark-soft: #f6ead6;
+
+  --grid-line: rgba(11, 110, 102, 0.075);
+}
+
+/* ==========================================================================
+   SIGNAL (dark)
+   ========================================================================== */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --font-display: var(--font-sans);
+  --display-stretch: 116%;
+  --display-weight: 700;
+  --display-track: -0.02em;
+
+  /* Soft machined corners. */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-btn: var(--r-pill);
+
   /* --- Ground ---------------------------------------------------------- */
   --bg: #05070d;
   --bg-alt: #080b14;
@@ -83,12 +229,15 @@
   --glass: rgba(16, 23, 39, 0.62);
   --glass-strong: rgba(11, 16, 27, 0.86);
   --surface-translucent: var(--glass-strong);
+  --sheet-bg: rgba(5, 7, 13, 0.97);
 
   --border: rgba(148, 170, 220, 0.12);
   --border-strong: rgba(148, 170, 220, 0.2);
   --border-hover: rgba(148, 170, 220, 0.34);
   --rule: rgba(148, 170, 220, 0.1);
   --rule-strong: rgba(238, 242, 250, 0.5);
+
+  --wash-rgb: 255, 255, 255;
 
   /* Text. Every value clears 4.5:1 on --surface-3, the lightest ground. */
   --text-primary: #eef2fa;
@@ -110,10 +259,12 @@
   --btn-bg: linear-gradient(120deg, #3a66f0 0%, #5a55f0 55%, #6a4df0 100%);
   --btn-bg-hover: linear-gradient(120deg, #4471f7 0%, #6560f7 55%, #7657f7 100%);
   --btn-fg: #ffffff;
+  --btn-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset, 0 10px 30px -10px var(--accent-glow);
+  --btn-shadow-hover: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 14px 38px -10px var(--accent-glow);
   --on-accent: #ffffff;
   --accent-gradient: linear-gradient(100deg, #8fb0ff 0%, #b69cff 60%, #6ee7d4 100%);
 
-  /* Live / status. Also the old "mark" — numerals, rules, emphasis. */
+  /* Live / status. Also the "mark" — numerals, rules, emphasis. */
   --signal: #54e3c6;
   --signal-rgb: 84, 227, 198;
   --mark: var(--signal);
@@ -122,6 +273,7 @@
 
   --success: #4ade9b;
   --danger: #ff7b86;
+  --danger-rgb: 255, 123, 134;
   --warning: #f5b85a;
   --star: #f5b85a;
 
@@ -149,9 +301,9 @@
 }
 
 /* --------------------------------------------------------------------------
-   ENGINEERING — terminal mint, blueprint grid
+   ENGINEERING · dark — terminal mint, blueprint grid
    -------------------------------------------------------------------------- */
-:root.mode-tech {
+:root[data-theme='dark'].mode-tech {
   --accent: #4fe0c0;
   --accent-rgb: 79, 224, 192;
   --accent-strong: #9af2de;

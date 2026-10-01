@@ -128,6 +128,7 @@
 
 /* The icon-only buttons in the bar share one shape. */
 .cmdk-trigger,
+.theme-toggle,
 .mobile-nav-toggle {
   display: inline-grid;
   place-items: center;
@@ -135,22 +136,50 @@
   height: 44px;
   border: 1px solid var(--border);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(var(--wash-rgb), 0.04);
   color: var(--text-primary);
   transition: background-color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
 }
 
 .cmdk-trigger:hover,
+.theme-toggle:hover,
 .mobile-nav-toggle:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(var(--wash-rgb), 0.08);
   border-color: var(--border-hover);
 }
 
 .cmdk-trigger:active,
+.theme-toggle:active,
 .mobile-nav-toggle:active { transform: scale(0.94); }
+
+/* Sun and moon share one cell; the one shown is the theme you would switch
+   to. Each turns in from a quarter-rotation as it appears. */
+.theme-toggle { grid-template-areas: 'stack'; }
+
+.theme-icon {
+  grid-area: stack;
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-spring);
+}
+
+.theme-icon-sun,
+[data-theme='dark'] .theme-icon-moon { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+
+[data-theme='dark'] .theme-icon-sun { opacity: 1; transform: none; }
+
+.cmdk-trigger svg { flex: none; }
 
 .cmdk-trigger-text,
 .cmdk-trigger .cmdk-hint { display: none; }
+
+/* Three round buttons and the wordmark share a 360–430px bar; at 44px each
+   they push the menu button off the edge, so the phone set is 40px. */
+@media (max-width: 559px) {
+  .cmdk-trigger,
+  .theme-toggle,
+  .mobile-nav-toggle { width: 40px; height: 40px; }
+
+  .header-actions { gap: 0.4rem; }
+}
 
 .mobile-nav-toggle {
   position: relative;
@@ -172,9 +201,9 @@
 .mobile-nav-toggle[aria-expanded='true'] .bar:nth-child(1) { transform: rotate(45deg); }
 .mobile-nav-toggle[aria-expanded='true'] .bar:nth-child(2) { transform: rotate(-45deg); }
 
-/* Under 360px the wordmark and two buttons cannot share the bar; the
+/* Under 390px the wordmark and three buttons cannot share the bar; the
    monogram carries the brand and the link keeps its accessible name. */
-@media (max-width: 359px) {
+@media (max-width: 389px) {
   .main-header .logo-text { display: none; }
 }
 
@@ -204,7 +233,7 @@
     color: var(--text-secondary);
   }
 
-  .nav-link:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.04); }
+  .nav-link:hover { color: var(--text-primary); background: rgba(var(--wash-rgb), 0.04); }
 
   .nav-link.active-nav {
     color: var(--text-primary);
@@ -234,6 +263,18 @@
   .mobile-nav-toggle { display: none; }
 }
 
+/* Until the bar is wide enough for the whole nav, search is an icon button
+   like its neighbours; the Ctrl K hint returns at 1440px. */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .cmdk-trigger {
+    width: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .cmdk-trigger .cmdk-hint { display: none; }
+}
+
 @media (min-width: 1280px) {
   .nav-link { padding-inline: 0.8rem; }
 }
@@ -249,7 +290,7 @@
   background:
     radial-gradient(90% 50% at 100% 0%, var(--aura-1), transparent 70%),
     radial-gradient(80% 40% at 0% 100%, var(--aura-2), transparent 70%),
-    rgba(5, 7, 13, 0.97);
+    var(--sheet-bg);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   opacity: 0;
@@ -323,7 +364,7 @@
   height: 40px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--wash-rgb), 0.03);
   color: var(--text-secondary);
   transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
 }
@@ -380,7 +421,7 @@
   padding: 0.5rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--wash-rgb), 0.03);
   font-size: 0.9rem;
   font-weight: 560;
   color: var(--text-secondary);
@@ -418,7 +459,7 @@
   position: relative;
   margin-top: 1rem;
   border-top: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 40%), var(--bg-deep);
+  background: linear-gradient(180deg, rgba(var(--wash-rgb), 0.015), transparent 40%), var(--bg-deep);
   padding-bottom: env(safe-area-inset-bottom);
 }
 

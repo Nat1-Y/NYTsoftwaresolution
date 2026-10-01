@@ -47,6 +47,21 @@ const to = (hash: string) => (isHome ? hash : `/${hash}`);
         )
       }
 
+      <!-- Light (paper) is the default; the choice is remembered. A toggle
+           with a fixed name: aria-pressed says whether dark mode is on, and
+           scripts/theme.ts keeps it and the tooltip in step. -->
+      <button
+        type="button"
+        class="theme-toggle"
+        data-theme-toggle
+        aria-label="Dark mode"
+        aria-pressed="false"
+        title="Switch to dark mode"
+      >
+        <Icon name="moon" size={18} class="theme-icon theme-icon-moon" />
+        <Icon name="sun" size={18} class="theme-icon theme-icon-sun" />
+      </button>
+
       <a href={to('#contact')} class="btn btn-primary header-cta">Let's Build</a>
 
       <button

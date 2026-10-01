@@ -6,6 +6,7 @@
  * because it could only lift once this script had run.
  */
 import { $, $$, prefersReducedMotion, rafThrottle, renderAllSections } from './dom';
+import { initThemeToggle } from './theme';
 
 /* ------------------------------------------------------- in-page jumps --- */
 /**
@@ -289,11 +290,13 @@ function initScrollableDiagrams(): void {
 }
 
 /**
- * What every page needs: the mobile menu, the scroll affordances, the offline
- * banner and the service worker. Inner pages call this on its own — the 404
- * page used to render the header without it, so its menu never opened.
+ * What every page needs: the theme toggle, the mobile menu, the scroll
+ * affordances, the offline banner and the service worker. Inner pages call
+ * this on its own — the 404 page used to render the header without it, so
+ * its menu never opened.
  */
 export function initSiteChrome(): void {
+  initThemeToggle();
   initInPageJumps();
   initMobileNav();
   initScrollAffordances();

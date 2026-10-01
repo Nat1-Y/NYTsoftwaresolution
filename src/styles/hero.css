@@ -156,7 +156,7 @@
   padding: 0.38rem 0.8rem 0.38rem 0.6rem;
   border: 1px solid var(--border);
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--wash-rgb), 0.03);
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 500;
@@ -336,7 +336,7 @@
   gap: 0.7rem;
   padding: 0.65rem 0.9rem;
   border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--wash-rgb), 0.02);
 }
 
 .console-dots { display: inline-flex; gap: 5px; flex: none; }
@@ -550,7 +550,7 @@
   gap: 0.2rem 0.45rem;
   padding: 0.55rem 1rem;
   border-top: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--wash-rgb), 0.02);
   font-size: 0.68rem;
   color: var(--text-muted);
 }

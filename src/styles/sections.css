@@ -98,7 +98,7 @@
   padding: 0.55rem 0.9rem;
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--wash-rgb), 0.02);
   font-size: 0.9rem;
   color: var(--text-secondary);
 }
@@ -216,7 +216,7 @@
   padding: 0.45rem 0.8rem;
   border: 1px solid var(--border);
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(var(--wash-rgb), 0.025);
   font-size: 0.84rem;
   color: var(--text-secondary);
 }
@@ -349,7 +349,7 @@
   padding: 0.55rem 1rem;
   border: 1px solid var(--border-strong);
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(var(--wash-rgb), 0.04);
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--text-primary);
@@ -617,7 +617,7 @@
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--border);
   border-radius: var(--r-md);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--wash-rgb), 0.02);
 }
 
 .f-icon { width: 36px; height: 36px; border-radius: 10px; }
@@ -686,7 +686,7 @@
   padding: 0.45rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--wash-rgb), 0.03);
   font-size: 0.86rem;
   font-weight: 560;
   white-space: nowrap;
@@ -994,10 +994,10 @@
   font-weight: 700;
   font-stretch: 105%;
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--wash-rgb), 0.02);
 }
 
-.engagement-compare thead td { width: 27%; background: rgba(255, 255, 255, 0.02); }
+.engagement-compare thead td { width: 27%; background: rgba(var(--wash-rgb), 0.02); }
 
 .engagement-compare tbody th {
   font-family: var(--font-mono);
@@ -1235,12 +1235,12 @@
   height: 44px;
   border: 1px solid var(--border-strong);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--wash-rgb), 0.03);
   color: var(--text-primary);
   transition: border-color var(--t-fast), background-color var(--t-fast), transform var(--t-fast);
 }
 
-.testi-arrow:hover { border-color: var(--border-hover); background: rgba(255, 255, 255, 0.07); }
+.testi-arrow:hover { border-color: var(--border-hover); background: rgba(var(--wash-rgb), 0.07); }
 .testi-arrow:active { transform: scale(0.94); }
 
 .testi-dots { display: flex; gap: 0.25rem; }
@@ -1451,7 +1451,7 @@
   padding: 0.85rem 0.9rem;
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--wash-rgb), 0.02);
   font-size: 0.86rem;
   line-height: 1.55;
   color: var(--text-secondary);

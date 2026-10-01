@@ -1,8 +1,9 @@
 /**
  * Accessibility audit — runs axe-core against the built site.
  *
- * Checks the page in both personas (the accent colour changes, so contrast
- * has to hold twice) and with the chat and command palette open, since those
+ * Checks the page in both themes (light is the default, dark is opt-in) and
+ * both personas — the colours change with each, so contrast has to hold in
+ * every combination — and with the chat and command palette open, since those
  * overlays are where keyboard and ARIA problems usually hide.
  *
  * Usage:  npm run preview   (in one shell)
@@ -29,10 +30,11 @@ const browser = await puppeteer.launch({
 
 let totalViolations = 0;
 
-async function audit(label, setup, viewport = { width: 1440, height: 900 }, { path = '/', persona } = {}) {
+async function audit(label, setup, viewport = { width: 1440, height: 900 }, { path = '/', persona, theme } = {}) {
   const page = await browser.newPage();
   await page.setViewport(viewport);
   if (persona) await page.evaluateOnNewDocument((p) => localStorage.setItem('nyt-persona', p), persona);
+  if (theme) await page.evaluateOnNewDocument((t) => localStorage.setItem('nyt-theme', t), theme);
   await page.goto(BASE + path, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('html[data-ready="true"]', { timeout: 20000 });
   // Walk the page so every IntersectionObserver fires, then wait for the
@@ -134,6 +136,21 @@ try {
   await audit('/work/merkato88/ (desktop)', null, undefined, { path: '/work/merkato88/' });
   await audit('/products/cafe-manager/ — engineering persona', null, undefined, { path: '/products/cafe-manager/', persona: 'tech' });
   await audit('/working-with-us/ — engineering persona', null, phone, { path: '/working-with-us/', persona: 'tech' });
+
+  /* Dark theme: the home page in both personas, the phone menu, inner pages. */
+  await audit('Home — dark, business persona (desktop)', null, undefined, { theme: 'dark' });
+  await audit('Home — dark, engineering persona (desktop)', null, undefined, { theme: 'dark', persona: 'tech' });
+  await audit(
+    'Home — dark, menu open (phone)',
+    async (page) => {
+      await page.click('#mobile-nav-toggle');
+    },
+    phone,
+    { theme: 'dark' }
+  );
+  for (const path of ['/work/merkato88/', '/products/cafe-manager/', '/working-with-us/']) {
+    await audit(`${path} — dark (phone)`, null, phone, { path, theme: 'dark' });
+  }
 } finally {
   await browser.close();
 }
